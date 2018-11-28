@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysUserPlantMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysUserPlant">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="plant_id" jdbcType="INTEGER" property="plantId" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, plant_id, create_time, create_user
+  </sql>
+	<select id="getUserPlant" parameterType="String" resultType="int">
+		select plant_id from sys_user_plant where user_id=#{uId}
+	</select>
+	<select id="getPlantUser" parameterType="String" resultType="int">
+		select user_id from sys_user_plant where plant_id=#{plantId}
+	</select>
+	<insert id="saveUserPlant" parameterType="sysUserPlant">
+		insert into sys_user_plant (user_id, plant_id, create_time, create_user)
+							values (#{userId},#{plantId},#{createTime},#{createUser})
+	</insert>
+	<delete id="delUserPlant" parameterType="sysUserPlant">
+		delete from sys_user_plant where user_id=#{userId} and plant_id=#{plantId}
+	</delete>
+	<delete id="delUserAllPlant" parameterType="integer">
+		delete from sys_user_plant where user_id=#{userId} 
+	</delete>
+	<select id="selectPlantUser" parameterType="hashmap" resultMap="BaseResultMap">
+		select * from sys_user_plant where plant_id=#{plantId} and user_id=#{userId}
+	</select>
+</mapper>

@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.DataCentralInverterMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.DataCentralInverter">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="u_ac_a" jdbcType="REAL" property="uAcA" />
+    <result column="u_ac_b" jdbcType="REAL" property="uAcB" />
+    <result column="u_ac_c" jdbcType="REAL" property="uAcC" />
+    <result column="i_ac_a" jdbcType="REAL" property="iAcA" />
+    <result column="i_ac_b" jdbcType="REAL" property="iAcB" />
+    <result column="i_ca_c" jdbcType="REAL" property="iCaC" />
+    <result column="running_status" jdbcType="TINYINT" property="runningStatus" />
+    <result column="turn_on_time" jdbcType="BIGINT" property="turnOnTime" />
+    <result column="turn_off_time" jdbcType="BIGINT" property="turnOffTime" />
+    <result column="frequency" jdbcType="REAL" property="frequency" />
+    <result column="active_power" jdbcType="REAL" property="activePower" />
+    <result column="reactive_power" jdbcType="REAL" property="reactivePower" />
+    <result column="transfer_efficiency" jdbcType="REAL" property="transferEfficiency" />
+    <result column="reliability" jdbcType="REAL" property="reliability" />
+    <result column="power_factor" jdbcType="REAL" property="powerFactor" />
+    <result column="inner_temperature" jdbcType="REAL" property="innerTemperature" />
+    <result column="dc_power" jdbcType="REAL" property="dcPower" />
+    <result column="mppt_total_energy" jdbcType="REAL" property="mpptTotalEnergy" />
+    <result column="u_pv1" jdbcType="REAL" property="uPv1" />
+    <result column="u_pv2" jdbcType="REAL" property="uPv2" />
+    <result column="u_pv3" jdbcType="REAL" property="uPv3" />
+    <result column="u_pv4" jdbcType="REAL" property="uPv4" />
+    <result column="u_pv5" jdbcType="REAL" property="uPv5" />
+    <result column="u_pv6" jdbcType="REAL" property="uPv6" />
+    <result column="u_pv7" jdbcType="REAL" property="uPv7" />
+    <result column="u_pv8" jdbcType="REAL" property="uPv8" />
+    <result column="u_pv9" jdbcType="REAL" property="uPv9" />
+    <result column="u_pv10" jdbcType="REAL" property="uPv10" />
+    <result column="u_pv11" jdbcType="REAL" property="uPv11" />
+    <result column="u_pv12" jdbcType="REAL" property="uPv12" />
+    <result column="u_pv13" jdbcType="REAL" property="uPv13" />
+    <result column="u_pv14" jdbcType="REAL" property="uPv14" />
+    <result column="u_pv15" jdbcType="REAL" property="uPv15" />
+    <result column="u_pv16" jdbcType="REAL" property="uPv16" />
+    <result column="i_pv1" jdbcType="REAL" property="iPv1" />
+    <result column="i_pv2" jdbcType="REAL" property="iPv2" />
+    <result column="i_pv3" jdbcType="REAL" property="iPv3" />
+    <result column="i_pv4" jdbcType="REAL" property="iPv4" />
+    <result column="i_pv5" jdbcType="REAL" property="iPv5" />
+    <result column="i_pv6" jdbcType="REAL" property="iPv6" />
+    <result column="i_pv7" jdbcType="REAL" property="iPv7" />
+    <result column="i_pv8" jdbcType="REAL" property="iPv8" />
+    <result column="i_pv9" jdbcType="REAL" property="iPv9" />
+    <result column="i_pv10" jdbcType="REAL" property="iPv10" />
+    <result column="i_pv11" jdbcType="REAL" property="iPv11" />
+    <result column="i_pv12" jdbcType="REAL" property="iPv12" />
+    <result column="i_pv13" jdbcType="REAL" property="iPv13" />
+    <result column="i_pv14" jdbcType="REAL" property="iPv14" />
+    <result column="i_pv15" jdbcType="REAL" property="iPv15" />
+    <result column="i_pv16" jdbcType="REAL" property="iPv16" />
+    <result column="daily_energy" jdbcType="REAL" property="dailyEnergy" />
+    <result column="total_energy" jdbcType="REAL" property="totalEnergy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, plant, data_time, u_ac_a, u_ac_b, u_ac_c, i_ac_a, i_ac_b, i_ca_c, 
+    running_status, turn_on_time, turn_off_time, frequency, active_power, reactive_power, 
+    transfer_efficiency, reliability, power_factor, inner_temperature, dc_power, mppt_total_energy, 
+    u_pv1, u_pv2, u_pv3, u_pv4, u_pv5, u_pv6, u_pv7, u_pv8, u_pv9, u_pv10, u_pv11, u_pv12, 
+    u_pv13, u_pv14, u_pv15, u_pv16, i_pv1, i_pv2, i_pv3, i_pv4, i_pv5, i_pv6, i_pv7, 
+    i_pv8, i_pv9, i_pv10, i_pv11, i_pv12, i_pv13, i_pv14, i_pv15, i_pv16, daily_energy, 
+    total_energy
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_central_inverter
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 根据deviceId和dataTime查询 -->
+  <select id="selectByIdAndDataTime"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_central_inverter
+    where device_id = #{deviceId,jdbcType=INTEGER} and data_time = #{dataTime,jdbcType=BIGINT} ORDER BY total_energy DESC
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from data_central_inverter
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.DataCentralInverter">
+    insert into data_central_inverter (id, device_id, plant, 
+      data_time, u_ac_a, u_ac_b, u_ac_c, 
+      i_ac_a, i_ac_b, i_ca_c, running_status, 
+      turn_on_time, turn_off_time, frequency, 
+      active_power, reactive_power, transfer_efficiency, 
+      reliability, power_factor, inner_temperature, 
+      dc_power, mppt_total_energy, u_pv1, 
+      u_pv2, u_pv3, u_pv4, u_pv5, 
+      u_pv6, u_pv7, u_pv8, u_pv9, 
+      u_pv10, u_pv11, u_pv12, u_pv13, 
+      u_pv14, u_pv15, u_pv16, i_pv1, 
+      i_pv2, i_pv3, i_pv4, i_pv5, 
+      i_pv6, i_pv7, i_pv8, i_pv9, 
+      i_pv10, i_pv11, i_pv12, i_pv13, 
+      i_pv14, i_pv15, i_pv16, daily_energy, 
+      total_energy)
+    values (#{id,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER}, #{plant,jdbcType=INTEGER}, 
+      #{dataTime,jdbcType=BIGINT}, #{uAcA,jdbcType=REAL}, #{uAcB,jdbcType=REAL}, #{uAcC,jdbcType=REAL}, 
+      #{iAcA,jdbcType=REAL}, #{iAcB,jdbcType=REAL}, #{iCaC,jdbcType=REAL}, #{runningStatus,jdbcType=TINYINT}, 
+      #{turnOnTime,jdbcType=BIGINT}, #{turnOffTime,jdbcType=BIGINT}, #{frequency,jdbcType=REAL}, 
+      #{activePower,jdbcType=REAL}, #{reactivePower,jdbcType=REAL}, #{transferEfficiency,jdbcType=REAL}, 
+      #{reliability,jdbcType=REAL}, #{powerFactor,jdbcType=REAL}, #{innerTemperature,jdbcType=REAL}, 
+      #{dcPower,jdbcType=REAL}, #{mpptTotalEnergy,jdbcType=REAL}, #{uPv1,jdbcType=REAL}, 
+      #{uPv2,jdbcType=REAL}, #{uPv3,jdbcType=REAL}, #{uPv4,jdbcType=REAL}, #{uPv5,jdbcType=REAL}, 
+      #{uPv6,jdbcType=REAL}, #{uPv7,jdbcType=REAL}, #{uPv8,jdbcType=REAL}, #{uPv9,jdbcType=REAL}, 
+      #{uPv10,jdbcType=REAL}, #{uPv11,jdbcType=REAL}, #{uPv12,jdbcType=REAL}, #{uPv13,jdbcType=REAL}, 
+      #{uPv14,jdbcType=REAL}, #{uPv15,jdbcType=REAL}, #{uPv16,jdbcType=REAL}, #{iPv1,jdbcType=REAL}, 
+      #{iPv2,jdbcType=REAL}, #{iPv3,jdbcType=REAL}, #{iPv4,jdbcType=REAL}, #{iPv5,jdbcType=REAL}, 
+      #{iPv6,jdbcType=REAL}, #{iPv7,jdbcType=REAL}, #{iPv8,jdbcType=REAL}, #{iPv9,jdbcType=REAL}, 
+      #{iPv10,jdbcType=REAL}, #{iPv11,jdbcType=REAL}, #{iPv12,jdbcType=REAL}, #{iPv13,jdbcType=REAL}, 
+      #{iPv14,jdbcType=REAL}, #{iPv15,jdbcType=REAL}, #{iPv16,jdbcType=REAL}, #{dailyEnergy,jdbcType=REAL}, 
+      #{totalEnergy,jdbcType=REAL})
+  </insert>
+  
+    <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">  
+    insert into data_central_inverter (id, device_id, plant, 
+      data_time, u_ac_a, u_ac_b, u_ac_c, 
+      i_ac_a, i_ac_b, i_ca_c, running_status, 
+      turn_on_time, turn_off_time, frequency, 
+      active_power, reactive_power, transfer_efficiency, 
+      reliability, power_factor, inner_temperature, 
+      dc_power, mppt_total_energy, u_pv1, 
+      u_pv2, u_pv3, u_pv4, u_pv5, 
+      u_pv6, u_pv7, u_pv8, u_pv9, 
+      u_pv10, u_pv11, u_pv12, u_pv13, 
+      u_pv14, u_pv15, u_pv16, i_pv1, 
+      i_pv2, i_pv3, i_pv4, i_pv5, 
+      i_pv6, i_pv7, i_pv8, i_pv9, 
+      i_pv10, i_pv11, i_pv12, i_pv13, 
+      i_pv14, i_pv15, i_pv16, daily_energy, 
+      total_energy)
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id,jdbcType=INTEGER}, #{item.deviceId,jdbcType=INTEGER}, #{item.plant,jdbcType=INTEGER}, 
+      #{item.dataTime,jdbcType=BIGINT}, #{item.uAcA,jdbcType=REAL}, #{item.uAcB,jdbcType=REAL}, #{item.uAcC,jdbcType=REAL}, 
+      #{item.iAcA,jdbcType=REAL}, #{item.iAcB,jdbcType=REAL}, #{item.iCaC,jdbcType=REAL}, #{item.runningStatus,jdbcType=TINYINT}, 
+      #{item.turnOnTime,jdbcType=BIGINT}, #{item.turnOffTime,jdbcType=BIGINT}, #{item.frequency,jdbcType=REAL}, 
+      #{item.activePower,jdbcType=REAL}, #{item.reactivePower,jdbcType=REAL}, #{item.transferEfficiency,jdbcType=REAL}, 
+      #{item.reliability,jdbcType=REAL}, #{item.powerFactor,jdbcType=REAL}, #{item.innerTemperature,jdbcType=REAL}, 
+      #{item.dcPower,jdbcType=REAL}, #{item.mpptTotalEnergy,jdbcType=REAL}, #{item.uPv1,jdbcType=REAL}, 
+      #{item.uPv2,jdbcType=REAL}, #{item.uPv3,jdbcType=REAL}, #{item.uPv4,jdbcType=REAL}, #{item.uPv5,jdbcType=REAL}, 
+      #{item.uPv6,jdbcType=REAL}, #{item.uPv7,jdbcType=REAL}, #{item.uPv8,jdbcType=REAL}, #{item.uPv9,jdbcType=REAL}, 
+      #{item.uPv10,jdbcType=REAL}, #{item.uPv11,jdbcType=REAL}, #{item.uPv12,jdbcType=REAL}, #{item.uPv13,jdbcType=REAL}, 
+      #{item.uPv14,jdbcType=REAL}, #{item.uPv15,jdbcType=REAL}, #{item.uPv16,jdbcType=REAL}, #{item.iPv1,jdbcType=REAL}, 
+      #{item.iPv2,jdbcType=REAL}, #{item.iPv3,jdbcType=REAL}, #{item.iPv4,jdbcType=REAL}, #{item.iPv5,jdbcType=REAL}, 
+      #{item.iPv6,jdbcType=REAL}, #{item.iPv7,jdbcType=REAL}, #{item.iPv8,jdbcType=REAL}, #{item.iPv9,jdbcType=REAL}, 
+      #{item.iPv10,jdbcType=REAL}, #{item.iPv11,jdbcType=REAL}, #{item.iPv12,jdbcType=REAL}, #{item.iPv13,jdbcType=REAL}, 
+      #{item.iPv14,jdbcType=REAL}, #{item.iPv15,jdbcType=REAL}, #{item.iPv16,jdbcType=REAL}, #{item.dailyEnergy,jdbcType=REAL}, 
+      #{item.totalEnergy,jdbcType=REAL})
+    </foreach>  
+  </insert>  
+  
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataCentralInverter">
+    insert into data_central_inverter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="plant != null">
+        plant,
+      </if>
+      <if test="dataTime != null">
+        data_time,
+      </if>
+      <if test="uAcA != null">
+        u_ac_a,
+      </if>
+      <if test="uAcB != null">
+        u_ac_b,
+      </if>
+      <if test="uAcC != null">
+        u_ac_c,
+      </if>
+      <if test="iAcA != null">
+        i_ac_a,
+      </if>
+      <if test="iAcB != null">
+        i_ac_b,
+      </if>
+      <if test="iCaC != null">
+        i_ca_c,
+      </if>
+      <if test="runningStatus != null">
+        running_status,
+      </if>
+      <if test="turnOnTime != null">
+        turn_on_time,
+      </if>
+      <if test="turnOffTime != null">
+        turn_off_time,
+      </if>
+      <if test="frequency != null">
+        frequency,
+      </if>
+      <if test="activePower != null">
+        active_power,
+      </if>
+      <if test="reactivePower != null">
+        reactive_power,
+      </if>
+      <if test="transferEfficiency != null">
+        transfer_efficiency,
+      </if>
+      <if test="reliability != null">
+        reliability,
+      </if>
+      <if test="powerFactor != null">
+        power_factor,
+      </if>
+      <if test="innerTemperature != null">
+        inner_temperature,
+      </if>
+      <if test="dcPower != null">
+        dc_power,
+      </if>
+      <if test="mpptTotalEnergy != null">
+        mppt_total_energy,
+      </if>
+      <if test="uPv1 != null">
+        u_pv1,
+      </if>
+      <if test="uPv2 != null">
+        u_pv2,
+      </if>
+      <if test="uPv3 != null">
+        u_pv3,
+      </if>
+      <if test="uPv4 != null">
+        u_pv4,
+      </if>
+      <if test="uPv5 != null">
+        u_pv5,
+      </if>
+      <if test="uPv6 != null">
+        u_pv6,
+      </if>
+      <if test="uPv7 != null">
+        u_pv7,
+      </if>
+      <if test="uPv8 != null">
+        u_pv8,
+      </if>
+      <if test="uPv9 != null">
+        u_pv9,
+      </if>
+      <if test="uPv10 != null">
+        u_pv10,
+      </if>
+      <if test="uPv11 != null">
+        u_pv11,
+      </if>
+      <if test="uPv12 != null">
+        u_pv12,
+      </if>
+      <if test="uPv13 != null">
+        u_pv13,
+      </if>
+      <if test="uPv14 != null">
+        u_pv14,
+      </if>
+      <if test="uPv15 != null">
+        u_pv15,
+      </if>
+      <if test="uPv16 != null">
+        u_pv16,
+      </if>
+      <if test="iPv1 != null">
+        i_pv1,
+      </if>
+      <if test="iPv2 != null">
+        i_pv2,
+      </if>
+      <if test="iPv3 != null">
+        i_pv3,
+      </if>
+      <if test="iPv4 != null">
+        i_pv4,
+      </if>
+      <if test="iPv5 != null">
+        i_pv5,
+      </if>
+      <if test="iPv6 != null">
+        i_pv6,
+      </if>
+      <if test="iPv7 != null">
+        i_pv7,
+      </if>
+      <if test="iPv8 != null">
+        i_pv8,
+      </if>
+      <if test="iPv9 != null">
+        i_pv9,
+      </if>
+      <if test="iPv10 != null">
+        i_pv10,
+      </if>
+      <if test="iPv11 != null">
+        i_pv11,
+      </if>
+      <if test="iPv12 != null">
+        i_pv12,
+      </if>
+      <if test="iPv13 != null">
+        i_pv13,
+      </if>
+      <if test="iPv14 != null">
+        i_pv14,
+      </if>
+      <if test="iPv15 != null">
+        i_pv15,
+      </if>
+      <if test="iPv16 != null">
+        i_pv16,
+      </if>
+      <if test="dailyEnergy != null">
+        daily_energy,
+      </if>
+      <if test="totalEnergy != null">
+        total_energy,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="uAcA != null">
+        #{uAcA,jdbcType=REAL},
+      </if>
+      <if test="uAcB != null">
+        #{uAcB,jdbcType=REAL},
+      </if>
+      <if test="uAcC != null">
+        #{uAcC,jdbcType=REAL},
+      </if>
+      <if test="iAcA != null">
+        #{iAcA,jdbcType=REAL},
+      </if>
+      <if test="iAcB != null">
+        #{iAcB,jdbcType=REAL},
+      </if>
+      <if test="iCaC != null">
+        #{iCaC,jdbcType=REAL},
+      </if>
+      <if test="runningStatus != null">
+        #{runningStatus,jdbcType=TINYINT},
+      </if>
+      <if test="turnOnTime != null">
+        #{turnOnTime,jdbcType=BIGINT},
+      </if>
+      <if test="turnOffTime != null">
+        #{turnOffTime,jdbcType=BIGINT},
+      </if>
+      <if test="frequency != null">
+        #{frequency,jdbcType=REAL},
+      </if>
+      <if test="activePower != null">
+        #{activePower,jdbcType=REAL},
+      </if>
+      <if test="reactivePower != null">
+        #{reactivePower,jdbcType=REAL},
+      </if>
+      <if test="transferEfficiency != null">
+        #{transferEfficiency,jdbcType=REAL},
+      </if>
+      <if test="reliability != null">
+        #{reliability,jdbcType=REAL},
+      </if>
+      <if test="powerFactor != null">
+        #{powerFactor,jdbcType=REAL},
+      </if>
+      <if test="innerTemperature != null">
+        #{innerTemperature,jdbcType=REAL},
+      </if>
+      <if test="dcPower != null">
+        #{dcPower,jdbcType=REAL},
+      </if>
+      <if test="mpptTotalEnergy != null">
+        #{mpptTotalEnergy,jdbcType=REAL},
+      </if>
+      <if test="uPv1 != null">
+        #{uPv1,jdbcType=REAL},
+      </if>
+      <if test="uPv2 != null">
+        #{uPv2,jdbcType=REAL},
+      </if>
+      <if test="uPv3 != null">
+        #{uPv3,jdbcType=REAL},
+      </if>
+      <if test="uPv4 != null">
+        #{uPv4,jdbcType=REAL},
+      </if>
+      <if test="uPv5 != null">
+        #{uPv5,jdbcType=REAL},
+      </if>
+      <if test="uPv6 != null">
+        #{uPv6,jdbcType=REAL},
+      </if>
+      <if test="uPv7 != null">
+        #{uPv7,jdbcType=REAL},
+      </if>
+      <if test="uPv8 != null">
+        #{uPv8,jdbcType=REAL},
+      </if>
+      <if test="uPv9 != null">
+        #{uPv9,jdbcType=REAL},
+      </if>
+      <if test="uPv10 != null">
+        #{uPv10,jdbcType=REAL},
+      </if>
+      <if test="uPv11 != null">
+        #{uPv11,jdbcType=REAL},
+      </if>
+      <if test="uPv12 != null">
+        #{uPv12,jdbcType=REAL},
+      </if>
+      <if test="uPv13 != null">
+        #{uPv13,jdbcType=REAL},
+      </if>
+      <if test="uPv14 != null">
+        #{uPv14,jdbcType=REAL},
+      </if>
+      <if test="uPv15 != null">
+        #{uPv15,jdbcType=REAL},
+      </if>
+      <if test="uPv16 != null">
+        #{uPv16,jdbcType=REAL},
+      </if>
+      <if test="iPv1 != null">
+        #{iPv1,jdbcType=REAL},
+      </if>
+      <if test="iPv2 != null">
+        #{iPv2,jdbcType=REAL},
+      </if>
+      <if test="iPv3 != null">
+        #{iPv3,jdbcType=REAL},
+      </if>
+      <if test="iPv4 != null">
+        #{iPv4,jdbcType=REAL},
+      </if>
+      <if test="iPv5 != null">
+        #{iPv5,jdbcType=REAL},
+      </if>
+      <if test="iPv6 != null">
+        #{iPv6,jdbcType=REAL},
+      </if>
+      <if test="iPv7 != null">
+        #{iPv7,jdbcType=REAL},
+      </if>
+      <if test="iPv8 != null">
+        #{iPv8,jdbcType=REAL},
+      </if>
+      <if test="iPv9 != null">
+        #{iPv9,jdbcType=REAL},
+      </if>
+      <if test="iPv10 != null">
+        #{iPv10,jdbcType=REAL},
+      </if>
+      <if test="iPv11 != null">
+        #{iPv11,jdbcType=REAL},
+      </if>
+      <if test="iPv12 != null">
+        #{iPv12,jdbcType=REAL},
+      </if>
+      <if test="iPv13 != null">
+        #{iPv13,jdbcType=REAL},
+      </if>
+      <if test="iPv14 != null">
+        #{iPv14,jdbcType=REAL},
+      </if>
+      <if test="iPv15 != null">
+        #{iPv15,jdbcType=REAL},
+      </if>
+      <if test="iPv16 != null">
+        #{iPv16,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergy != null">
+        #{dailyEnergy,jdbcType=REAL},
+      </if>
+      <if test="totalEnergy != null">
+        #{totalEnergy,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataCentralInverter">
+    update data_central_inverter
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        plant = #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        data_time = #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="uAcA != null">
+        u_ac_a = #{uAcA,jdbcType=REAL},
+      </if>
+      <if test="uAcB != null">
+        u_ac_b = #{uAcB,jdbcType=REAL},
+      </if>
+      <if test="uAcC != null">
+        u_ac_c = #{uAcC,jdbcType=REAL},
+      </if>
+      <if test="iAcA != null">
+        i_ac_a = #{iAcA,jdbcType=REAL},
+      </if>
+      <if test="iAcB != null">
+        i_ac_b = #{iAcB,jdbcType=REAL},
+      </if>
+      <if test="iCaC != null">
+        i_ca_c = #{iCaC,jdbcType=REAL},
+      </if>
+      <if test="runningStatus != null">
+        running_status = #{runningStatus,jdbcType=TINYINT},
+      </if>
+      <if test="turnOnTime != null">
+        turn_on_time = #{turnOnTime,jdbcType=BIGINT},
+      </if>
+      <if test="turnOffTime != null">
+        turn_off_time = #{turnOffTime,jdbcType=BIGINT},
+      </if>
+      <if test="frequency != null">
+        frequency = #{frequency,jdbcType=REAL},
+      </if>
+      <if test="activePower != null">
+        active_power = #{activePower,jdbcType=REAL},
+      </if>
+      <if test="reactivePower != null">
+        reactive_power = #{reactivePower,jdbcType=REAL},
+      </if>
+      <if test="transferEfficiency != null">
+        transfer_efficiency = #{transferEfficiency,jdbcType=REAL},
+      </if>
+      <if test="reliability != null">
+        reliability = #{reliability,jdbcType=REAL},
+      </if>
+      <if test="powerFactor != null">
+        power_factor = #{powerFactor,jdbcType=REAL},
+      </if>
+      <if test="innerTemperature != null">
+        inner_temperature = #{innerTemperature,jdbcType=REAL},
+      </if>
+      <if test="dcPower != null">
+        dc_power = #{dcPower,jdbcType=REAL},
+      </if>
+      <if test="mpptTotalEnergy != null">
+        mppt_total_energy = #{mpptTotalEnergy,jdbcType=REAL},
+      </if>
+      <if test="uPv1 != null">
+        u_pv1 = #{uPv1,jdbcType=REAL},
+      </if>
+      <if test="uPv2 != null">
+        u_pv2 = #{uPv2,jdbcType=REAL},
+      </if>
+      <if test="uPv3 != null">
+        u_pv3 = #{uPv3,jdbcType=REAL},
+      </if>
+      <if test="uPv4 != null">
+        u_pv4 = #{uPv4,jdbcType=REAL},
+      </if>
+      <if test="uPv5 != null">
+        u_pv5 = #{uPv5,jdbcType=REAL},
+      </if>
+      <if test="uPv6 != null">
+        u_pv6 = #{uPv6,jdbcType=REAL},
+      </if>
+      <if test="uPv7 != null">
+        u_pv7 = #{uPv7,jdbcType=REAL},
+      </if>
+      <if test="uPv8 != null">
+        u_pv8 = #{uPv8,jdbcType=REAL},
+      </if>
+      <if test="uPv9 != null">
+        u_pv9 = #{uPv9,jdbcType=REAL},
+      </if>
+      <if test="uPv10 != null">
+        u_pv10 = #{uPv10,jdbcType=REAL},
+      </if>
+      <if test="uPv11 != null">
+        u_pv11 = #{uPv11,jdbcType=REAL},
+      </if>
+      <if test="uPv12 != null">
+        u_pv12 = #{uPv12,jdbcType=REAL},
+      </if>
+      <if test="uPv13 != null">
+        u_pv13 = #{uPv13,jdbcType=REAL},
+      </if>
+      <if test="uPv14 != null">
+        u_pv14 = #{uPv14,jdbcType=REAL},
+      </if>
+      <if test="uPv15 != null">
+        u_pv15 = #{uPv15,jdbcType=REAL},
+      </if>
+      <if test="uPv16 != null">
+        u_pv16 = #{uPv16,jdbcType=REAL},
+      </if>
+      <if test="iPv1 != null">
+        i_pv1 = #{iPv1,jdbcType=REAL},
+      </if>
+      <if test="iPv2 != null">
+        i_pv2 = #{iPv2,jdbcType=REAL},
+      </if>
+      <if test="iPv3 != null">
+        i_pv3 = #{iPv3,jdbcType=REAL},
+      </if>
+      <if test="iPv4 != null">
+        i_pv4 = #{iPv4,jdbcType=REAL},
+      </if>
+      <if test="iPv5 != null">
+        i_pv5 = #{iPv5,jdbcType=REAL},
+      </if>
+      <if test="iPv6 != null">
+        i_pv6 = #{iPv6,jdbcType=REAL},
+      </if>
+      <if test="iPv7 != null">
+        i_pv7 = #{iPv7,jdbcType=REAL},
+      </if>
+      <if test="iPv8 != null">
+        i_pv8 = #{iPv8,jdbcType=REAL},
+      </if>
+      <if test="iPv9 != null">
+        i_pv9 = #{iPv9,jdbcType=REAL},
+      </if>
+      <if test="iPv10 != null">
+        i_pv10 = #{iPv10,jdbcType=REAL},
+      </if>
+      <if test="iPv11 != null">
+        i_pv11 = #{iPv11,jdbcType=REAL},
+      </if>
+      <if test="iPv12 != null">
+        i_pv12 = #{iPv12,jdbcType=REAL},
+      </if>
+      <if test="iPv13 != null">
+        i_pv13 = #{iPv13,jdbcType=REAL},
+      </if>
+      <if test="iPv14 != null">
+        i_pv14 = #{iPv14,jdbcType=REAL},
+      </if>
+      <if test="iPv15 != null">
+        i_pv15 = #{iPv15,jdbcType=REAL},
+      </if>
+      <if test="iPv16 != null">
+        i_pv16 = #{iPv16,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergy != null">
+        daily_energy = #{dailyEnergy,jdbcType=REAL},
+      </if>
+      <if test="totalEnergy != null">
+        total_energy = #{totalEnergy,jdbcType=REAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.DataCentralInverter">
+    update data_central_inverter
+    set device_id = #{deviceId,jdbcType=INTEGER},
+      plant = #{plant,jdbcType=INTEGER},
+      data_time = #{dataTime,jdbcType=BIGINT},
+      u_ac_a = #{uAcA,jdbcType=REAL},
+      u_ac_b = #{uAcB,jdbcType=REAL},
+      u_ac_c = #{uAcC,jdbcType=REAL},
+      i_ac_a = #{iAcA,jdbcType=REAL},
+      i_ac_b = #{iAcB,jdbcType=REAL},
+      i_ca_c = #{iCaC,jdbcType=REAL},
+      running_status = #{runningStatus,jdbcType=TINYINT},
+      turn_on_time = #{turnOnTime,jdbcType=BIGINT},
+      turn_off_time = #{turnOffTime,jdbcType=BIGINT},
+      frequency = #{frequency,jdbcType=REAL},
+      active_power = #{activePower,jdbcType=REAL},
+      reactive_power = #{reactivePower,jdbcType=REAL},
+      transfer_efficiency = #{transferEfficiency,jdbcType=REAL},
+      reliability = #{reliability,jdbcType=REAL},
+      power_factor = #{powerFactor,jdbcType=REAL},
+      inner_temperature = #{innerTemperature,jdbcType=REAL},
+      dc_power = #{dcPower,jdbcType=REAL},
+      mppt_total_energy = #{mpptTotalEnergy,jdbcType=REAL},
+      u_pv1 = #{uPv1,jdbcType=REAL},
+      u_pv2 = #{uPv2,jdbcType=REAL},
+      u_pv3 = #{uPv3,jdbcType=REAL},
+      u_pv4 = #{uPv4,jdbcType=REAL},
+      u_pv5 = #{uPv5,jdbcType=REAL},
+      u_pv6 = #{uPv6,jdbcType=REAL},
+      u_pv7 = #{uPv7,jdbcType=REAL},
+      u_pv8 = #{uPv8,jdbcType=REAL},
+      u_pv9 = #{uPv9,jdbcType=REAL},
+      u_pv10 = #{uPv10,jdbcType=REAL},
+      u_pv11 = #{uPv11,jdbcType=REAL},
+      u_pv12 = #{uPv12,jdbcType=REAL},
+      u_pv13 = #{uPv13,jdbcType=REAL},
+      u_pv14 = #{uPv14,jdbcType=REAL},
+      u_pv15 = #{uPv15,jdbcType=REAL},
+      u_pv16 = #{uPv16,jdbcType=REAL},
+      i_pv1 = #{iPv1,jdbcType=REAL},
+      i_pv2 = #{iPv2,jdbcType=REAL},
+      i_pv3 = #{iPv3,jdbcType=REAL},
+      i_pv4 = #{iPv4,jdbcType=REAL},
+      i_pv5 = #{iPv5,jdbcType=REAL},
+      i_pv6 = #{iPv6,jdbcType=REAL},
+      i_pv7 = #{iPv7,jdbcType=REAL},
+      i_pv8 = #{iPv8,jdbcType=REAL},
+      i_pv9 = #{iPv9,jdbcType=REAL},
+      i_pv10 = #{iPv10,jdbcType=REAL},
+      i_pv11 = #{iPv11,jdbcType=REAL},
+      i_pv12 = #{iPv12,jdbcType=REAL},
+      i_pv13 = #{iPv13,jdbcType=REAL},
+      i_pv14 = #{iPv14,jdbcType=REAL},
+      i_pv15 = #{iPv15,jdbcType=REAL},
+      i_pv16 = #{iPv16,jdbcType=REAL},
+      daily_energy = #{dailyEnergy,jdbcType=REAL},
+      total_energy = #{totalEnergy,jdbcType=REAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysAddressLocationMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysAddressLocation">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="location_x" jdbcType="VARCHAR" property="locationX" />
+    <result column="location_y" jdbcType="VARCHAR" property="locationY" />
+    <result column="father_id" jdbcType="INTEGER" property="fatherId" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, area_name, location_x, location_y, father_id, level
+  </sql>
+
+  <select id="getLocationByName" parameterType="String" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/> from sys_address_location where area_name=#{areaName} limit 0,1
+  </select>
+  <insert id="saveAddrLocation" parameterType="sysAddressLocation">
+    insert into sys_address_location (area_name, location_x,  location_y
+      )
+    values ( #{areaName}, #{locationX},  #{locationY} )
+  </insert>
+  
+
+
+</mapper>

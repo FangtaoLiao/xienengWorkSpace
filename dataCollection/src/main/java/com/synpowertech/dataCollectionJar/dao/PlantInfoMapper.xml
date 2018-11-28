@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.PlantInfoMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.PlantInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="plant_name" jdbcType="VARCHAR" property="plantName" />
+    <result column="capacity" jdbcType="DOUBLE" property="capacity" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="plant_type" jdbcType="VARCHAR" property="plantType" />
+    <result column="plant_addr" jdbcType="VARCHAR" property="plantAddr" />
+    <result column="grid_connected_date" jdbcType="BIGINT" property="gridConnectedDate" />
+    <result column="grid_connected_category" jdbcType="VARCHAR" property="gridConnectedCategory" />
+    <result column="loaction" jdbcType="VARCHAR" property="loaction" />
+    <result column="plant_photo" jdbcType="VARCHAR" property="plantPhoto" />
+    <result column="contacts" jdbcType="VARCHAR" property="contacts" />
+    <result column="safely_run_start_date" jdbcType="BIGINT" property="safelyRunStartDate" />
+    <result column="org_id" jdbcType="INTEGER" property="orgId" />
+    <result column="pinyin_search" jdbcType="VARCHAR" property="pinyinSearch" />
+    <result column="last_modify_time" jdbcType="BIGINT" property="lastModifyTime" />
+    <result column="last_modify_user" jdbcType="INTEGER" property="lastModifyUser" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="plant_valid" jdbcType="CHAR" property="plantValid" />
+    <result column="plant_status" jdbcType="CHAR" property="plantStatus" />
+    <result column="plant_introduction" jdbcType="VARCHAR" property="plantIntroduction" />
+    <result column="plant_area" jdbcType="INTEGER" property="plantArea" />
+    <result column="plant_full_address" jdbcType="VARCHAR" property="plantFullAddress" />
+    <result column="plant_single_capacity" jdbcType="REAL" property="plantSingleCapacity" />
+    <result column="start_year_elec_value" jdbcType="REAL" property="startYearElecValue" />
+    <result column="start_month_elec_value" jdbcType="REAL" property="startMonthElecValue" />
+    <result column="voltage_changer_capacity" jdbcType="REAL" property="voltageChangerCapacity" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plant_name, capacity, unit, plant_type, plant_addr, grid_connected_date, grid_connected_category,
+    loaction, plant_photo, contacts, safely_run_start_date, org_id, pinyin_search, last_modify_time,
+    last_modify_user, create_time, plant_valid, plant_status, plant_introduction, plant_area,
+    plant_full_address, plant_single_capacity,start_year_elec_value,start_month_elec_value,voltage_changer_capacity
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from plant_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from plant_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.PlantInfo">
+    insert into plant_info (id, plant_name, capacity,
+    unit, plant_type, plant_addr,
+    grid_connected_date, grid_connected_category,
+    loaction, plant_photo, contacts,
+    safely_run_start_date, org_id, pinyin_search,
+    last_modify_time, last_modify_user, create_time,
+    plant_valid, plant_status, plant_introduction,
+    plant_area, plant_full_address, plant_single_capacity,start_year_elec_value,start_month_elec_value,voltage_changer_capacity
+    )
+    values (#{id,jdbcType=INTEGER}, #{plantName,jdbcType=VARCHAR}, #{capacity,jdbcType=DOUBLE},
+    #{unit,jdbcType=VARCHAR}, #{plantType,jdbcType=VARCHAR}, #{plantAddr,jdbcType=VARCHAR},
+    #{gridConnectedDate,jdbcType=BIGINT}, #{gridConnectedCategory,jdbcType=VARCHAR},
+    #{loaction,jdbcType=VARCHAR}, #{plantPhoto,jdbcType=VARCHAR}, #{contacts,jdbcType=VARCHAR},
+    #{safelyRunStartDate,jdbcType=BIGINT}, #{orgId,jdbcType=INTEGER}, #{pinyinSearch,jdbcType=VARCHAR},
+    #{lastModifyTime,jdbcType=BIGINT}, #{lastModifyUser,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT},
+    #{plantValid,jdbcType=CHAR}, #{plantStatus,jdbcType=CHAR}, #{plantIntroduction,jdbcType=VARCHAR},
+    #{plantArea,jdbcType=INTEGER}, #{plantFullAddress,jdbcType=VARCHAR}, #{plantSingleCapacity,jdbcType=REAL},
+    #{startYearElecValue,jdbcType=REAL}, #{startMonthElecValue,jdbcType=REAL}, #{voltageChangerCapacity,jdbcType=REAL}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.PlantInfo">
+    insert into plant_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plantName != null">
+        plant_name,
+      </if>
+      <if test="capacity != null">
+        capacity,
+      </if>
+      <if test="unit != null">
+        unit,
+      </if>
+      <if test="plantType != null">
+        plant_type,
+      </if>
+      <if test="plantAddr != null">
+        plant_addr,
+      </if>
+      <if test="gridConnectedDate != null">
+        grid_connected_date,
+      </if>
+      <if test="gridConnectedCategory != null">
+        grid_connected_category,
+      </if>
+      <if test="loaction != null">
+        loaction,
+      </if>
+      <if test="plantPhoto != null">
+        plant_photo,
+      </if>
+      <if test="contacts != null">
+        contacts,
+      </if>
+      <if test="safelyRunStartDate != null">
+        safely_run_start_date,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="pinyinSearch != null">
+        pinyin_search,
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time,
+      </if>
+      <if test="lastModifyUser != null">
+        last_modify_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="plantValid != null">
+        plant_valid,
+      </if>
+      <if test="plantStatus != null">
+        plant_status,
+      </if>
+      <if test="plantIntroduction != null">
+        plant_introduction,
+      </if>
+      <if test="plantArea != null">
+        plant_area,
+      </if>
+      <if test="plantFullAddress != null">
+        plant_full_address,
+      </if>
+      <if test="plantSingleCapacity != null">
+        plant_single_capacity,
+      </if>
+
+      <if test="startYearElecValue != null">
+        start_year_elec_value,
+      </if>
+      <if test="startMonthElecValue != null">
+        start_month_elec_value,
+      </if>
+      <if test="voltageChangerCapacity != null">
+        voltage_changer_capacity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="plantName != null">
+        #{plantName,jdbcType=VARCHAR},
+      </if>
+      <if test="capacity != null">
+        #{capacity,jdbcType=DOUBLE},
+      </if>
+      <if test="unit != null">
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="plantType != null">
+        #{plantType,jdbcType=VARCHAR},
+      </if>
+      <if test="plantAddr != null">
+        #{plantAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="gridConnectedDate != null">
+        #{gridConnectedDate,jdbcType=BIGINT},
+      </if>
+      <if test="gridConnectedCategory != null">
+        #{gridConnectedCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="loaction != null">
+        #{loaction,jdbcType=VARCHAR},
+      </if>
+      <if test="plantPhoto != null">
+        #{plantPhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null">
+        #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="safelyRunStartDate != null">
+        #{safelyRunStartDate,jdbcType=BIGINT},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="pinyinSearch != null">
+        #{pinyinSearch,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyTime != null">
+        #{lastModifyTime,jdbcType=BIGINT},
+      </if>
+      <if test="lastModifyUser != null">
+        #{lastModifyUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="plantValid != null">
+        #{plantValid,jdbcType=CHAR},
+      </if>
+      <if test="plantStatus != null">
+        #{plantStatus,jdbcType=CHAR},
+      </if>
+      <if test="plantIntroduction != null">
+        #{plantIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="plantArea != null">
+        #{plantArea,jdbcType=INTEGER},
+      </if>
+      <if test="plantFullAddress != null">
+        #{plantFullAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="plantSingleCapacity != null">
+        #{plantSingleCapacity,jdbcType=REAL},
+      </if>
+
+      <if test="startYearElecValue != null">
+        #{start_year_elec_value,jdbcType=VARCHAR},
+      </if>
+      <if test="startMonthElecValue != null">
+        #{start_month_elec_value,jdbcType=VARCHAR},
+      </if>
+      <if test="voltageChangerCapacity != null">
+        #{voltage_changer_capacity,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.PlantInfo">
+    update plant_info
+    <set>
+      <if test="plantName != null">
+        plant_name = #{plantName,jdbcType=VARCHAR},
+      </if>
+      <if test="capacity != null">
+        capacity = #{capacity,jdbcType=DOUBLE},
+      </if>
+      <if test="unit != null">
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="plantType != null">
+        plant_type = #{plantType,jdbcType=VARCHAR},
+      </if>
+      <if test="plantAddr != null">
+        plant_addr = #{plantAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="gridConnectedDate != null">
+        grid_connected_date = #{gridConnectedDate,jdbcType=BIGINT},
+      </if>
+      <if test="gridConnectedCategory != null">
+        grid_connected_category = #{gridConnectedCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="loaction != null">
+        loaction = #{loaction,jdbcType=VARCHAR},
+      </if>
+      <if test="plantPhoto != null">
+        plant_photo = #{plantPhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null">
+        contacts = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="safelyRunStartDate != null">
+        safely_run_start_date = #{safelyRunStartDate,jdbcType=BIGINT},
+      </if>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="pinyinSearch != null">
+        pinyin_search = #{pinyinSearch,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time = #{lastModifyTime,jdbcType=BIGINT},
+      </if>
+      <if test="lastModifyUser != null">
+        last_modify_user = #{lastModifyUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="plantValid != null">
+        plant_valid = #{plantValid,jdbcType=CHAR},
+      </if>
+      <if test="plantStatus != null">
+        plant_status = #{plantStatus,jdbcType=CHAR},
+      </if>
+      <if test="plantIntroduction != null">
+        plant_introduction = #{plantIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="plantArea != null">
+        plant_area = #{plantArea,jdbcType=INTEGER},
+      </if>
+      <if test="plantFullAddress != null">
+        plant_full_address = #{plantFullAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="plantSingleCapacity != null">
+        plant_single_capacity = #{plantSingleCapacity,jdbcType=REAL},
+      </if>
+
+      <if test="startYearElecValue != null">
+        start_year_elec_value = #{startYearElecValue,jdbcType=VARCHAR},
+      </if>
+      <if test="startMonthElecValue != null">
+        start_month_elec_value = #{startMonthElecValue,jdbcType=VARCHAR},
+      </if>
+      <if test="voltageChangerCapacity != null">
+        voltage_changer_capacity = #{voltageChangerCapacity,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.PlantInfo">
+    update plant_info
+    set plant_name = #{plantName,jdbcType=VARCHAR},
+      capacity = #{capacity,jdbcType=DOUBLE},
+      unit = #{unit,jdbcType=VARCHAR},
+      plant_type = #{plantType,jdbcType=VARCHAR},
+      plant_addr = #{plantAddr,jdbcType=VARCHAR},
+      grid_connected_date = #{gridConnectedDate,jdbcType=BIGINT},
+      grid_connected_category = #{gridConnectedCategory,jdbcType=VARCHAR},
+      loaction = #{loaction,jdbcType=VARCHAR},
+      plant_photo = #{plantPhoto,jdbcType=VARCHAR},
+      contacts = #{contacts,jdbcType=VARCHAR},
+      safely_run_start_date = #{safelyRunStartDate,jdbcType=BIGINT},
+      org_id = #{orgId,jdbcType=INTEGER},
+      pinyin_search = #{pinyinSearch,jdbcType=VARCHAR},
+      last_modify_time = #{lastModifyTime,jdbcType=BIGINT},
+      last_modify_user = #{lastModifyUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=BIGINT},
+      plant_valid = #{plantValid,jdbcType=CHAR},
+      plant_status = #{plantStatus,jdbcType=CHAR},
+      plant_introduction = #{plantIntroduction,jdbcType=VARCHAR},
+      plant_area = #{plantArea,jdbcType=INTEGER},
+      plant_full_address = #{plantFullAddress,jdbcType=VARCHAR},
+      plant_single_capacity = #{plantSingleCapacity,jdbcType=REAL},
+      start_year_elec_value = #{startYearElecValue,jdbcType=VARCHAR},
+      start_month_elec_value = #{startMonthElecValue,jdbcType=VARCHAR},
+      voltage_changer_capacity = #{voltageChangerCapacity,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.CollJsonDevSetMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.CollJsonDevSet">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="coll_id" jdbcType="INTEGER" property="collId" />
+    <result column="com_id" jdbcType="VARCHAR" property="comId" />
+    <result column="dev_id" jdbcType="INTEGER" property="devId" />
+    <result column="slave_id" jdbcType="VARCHAR" property="slaveId" />
+    <result column="verify_mode" jdbcType="VARCHAR" property="verifyMode" />
+    <result column="verify_order" jdbcType="VARCHAR" property="verifyOrder" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, coll_id, com_id, dev_id, slave_id, verify_mode, verify_order, valid
+  </sql>
+  <!-- <include refid="Base_Column_List" /> -->
+  <insert id="insertCollJsonDevSet" parameterType="com.synpower.bean.CollJsonDevSet" useGeneratedKeys="true" keyProperty="id">
+  	INSERT INTO coll_json_dev_set(
+  		coll_id, 
+  		com_id, 
+  		dev_id, 
+  		slave_id, 
+  		valid) 
+  	VALUES (
+	  	#{collId},
+	  	#{comId},
+	  	#{devId},
+	  	#{slaveId},
+	  	#{valid}
+  	)
+  </insert>
+  <select id="getJsonDevSetByComId" parameterType="map" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List" /> FROM coll_json_dev_set WHERE valid = 1 AND com_id = #{comId} AND coll_id = #{collId}
+  </select>
+  <update id="updateDevices" parameterType="list">
+  	update coll_json_dev_set set valid=0 where 
+  	  	<foreach collection="list" item="item" open="  dev_id IN (" close=") " separator=",">
+				#{item}
+		</foreach>
+  </update>
+  <update id="updateSlaveId" parameterType="hashmap">
+  	update coll_json_dev_set set slave_id = #{slaveId} where dev_id = #{deviceId}
+  </update>
+  <select id="getJsonDevSetById" parameterType="Integer" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List" /> FROM coll_json_dev_set WHERE valid = 1 AND dev_id = #{id}
+  </select>
+  <select id="getUnique" parameterType="map" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List" /> FROM coll_json_dev_set WHERE coll_id = #{collId} AND com_id = #{comId} AND slave_id = #{slaveId}
+  </select>
+  <update id="updateSlaveIdAndComId" parameterType="map">
+  	UPDATE coll_json_dev_set SET com_id = #{comId},slave_id = #{slaveId} WHERE dev_id = #{deviceId}
+  </update>
+</mapper>

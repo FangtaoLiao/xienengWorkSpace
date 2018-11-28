@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.Sp10Mapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysUser">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="login_id" jdbcType="VARCHAR" property="loginId" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="work_code" jdbcType="VARCHAR" property="workCode" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="icon_url" jdbcType="VARCHAR" property="iconUrl" />
+    <result column="gender" jdbcType="CHAR" property="gender" />
+    <result column="user_tel" jdbcType="VARCHAR" property="userTel" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="user_post" jdbcType="INTEGER" property="userPost" />
+    <result column="org_id" jdbcType="INTEGER" property="companyId" />
+    <result column="pinyin_search" jdbcType="VARCHAR" property="pinyinSearch" />
+    <result column="last_modify_time" jdbcType="BIGINT" property="lastModifyTime" />
+    <result column="last_modify_user" jdbcType="INTEGER" property="lastModifyUser" />
+    <result column="last_login_time" jdbcType="BIGINT" property="lastLoginTime" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
+    <result column="user_valid" jdbcType="CHAR" property="userValid" />
+    <result column="user_status" jdbcType="CHAR" property="userStatus" />
+    <association property="userRole" javaType="SysRole" 
+		select="getRoleByUid" column="id">
+	</association>
+  </resultMap>
+  <select id="getRoleByUid" parameterType="integer" resultMap="com.synpower.dao.SysRoleMapper.BaseResultMap">
+	 SELECT r.*
+	 	from sys_user u 
+	 	join sys_user_role ur on u.id=ur.user_id 
+	 	join  sys_role r on ur.role_id=r.id 
+	 	where u.id=#{id}
+  </select>
+  <insert id="insertUserInfo" parameterType="sysuser">
+  	INSERT INTO sys_user(login_id,password,user_name,gender,user_tel,org_id,pinyin_search,last_modify_time,
+  	last_modify_user,create_time,user_valid,user_status) VALUES (#{userTel},#{password},#{userName},#{gender},#{userTel},
+  	#{companyId},#{pinyinSearch},#{lastModifyTime},#{lastModifyUser},#{createTime},#{userValid},#{userStatus})
+  </insert>
+  <select id="getUserByLoginId" parameterType="String" resultMap="BaseResultMap">
+  	SELECT * FROM sys_user s WHERE s.login_id = #{loginId}
+  </select>
+  <select id="getUserByTel" parameterType="String" resultMap="BaseResultMap">
+  	SELECT * FROM sys_user s WHERE s.user_tel = #{tel}
+  </select>
+  <select id="countUser"  resultType="int">
+  	SELECT count(*) 
+  	FROM sys_user su JOIN sys_user_role sur ON su.id = sur.user_id 
+  	JOIN sys_role sr ON sur.role_id = sr.id WHERE su.user_valid = 0 and su.user_name like CONCAT(#{userName},'%') and su.org_id in 
+  	<foreach collection="reList" index="index" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+  	
+  </select>
+  <sql id="userDynaSql">
+	<if test="sort != null and sort != ''">
+		<choose>
+			<when test="order != null and order != ''">
+				order by #{sort} #{order}
+			</when>
+			<otherwise>
+				order by #{sort}
+			</otherwise>
+		</choose>
+	</if>
+  </sql>
+  <select id="listUserInfo" parameterType="hashmap" resultMap="BaseResultMap">
+  	SELECT su.id,su.login_id,sr.role_name,su.user_name,su.user_tel,su.`password`,su.user_status 
+  	FROM sys_user su JOIN sys_user_role sur ON su.id = sur.user_id 
+  	JOIN sys_role sr ON sur.role_id = sr.id WHERE su.user_valid = 0 and su.user_name like CONCAT(#{userName},'%') and su.org_id in 
+  	<foreach collection="reList" index="index" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+  	<include refid="userDynaSql"/>
+  	limit #{min},#{max};
+  </select>
+  <update id="updateUserStatus" parameterType="hashmap">
+  	UPDATE sys_user s SET s.user_status = #{status},s.last_modify_time = #{lastModifyTime},s.last_modify_user = #{id} WHERE s.id = #{uid}
+  </update>
+  <update id="updateUserValid">
+  	UPDATE sys_user s SET s.user_valid = #{valid},s.last_modify_time = #{lastModifyTime},s.last_modify_user = #{id} WHERE s.id = #{uid}
+  </update>
+  <select id="getUserInfo" parameterType="String" resultMap="BaseResultMap">
+  	SELECT s.id,s.user_name,s.user_tel,s.`password` FROM sys_user s WHERE s.id = #{id}
+  </select>
+  <update id="updateUserInfo" parameterType="sysuser">
+  	UPDATE sys_user s SET s.user_name = #{userName},s.user_tel = #{userTel},s.`password` = #{password},s.last_modify_time = #{lastModifyTime},s.last_modify_user = #{id} WHERE s.id = #{id}
+  </update>
+</mapper>

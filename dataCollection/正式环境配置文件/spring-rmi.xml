@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"  
+    xmlns:aop="http://www.springframework.org/schema/aop"  
+    xsi:schemaLocation="  
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">  
+
+	
+	<context:property-placeholder location="classpath:spring-rmi.properties" ignore-unresolvable="true" />
+	 
+	<!-- 注入要发布的RMI服务类 -->
+	<bean id="ykYtServiceImpl" class="com.synpowertech.dataCollectionJar.service.impl.YkYtServiceImpl"></bean>
+
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<!-- RMI服务名称,可自定义服务名称 -->
+		<property name="serviceName" value="ykYtService" />
+		<!-- 导出实体 -->
+		<property name="service" ref="ykYtServiceImpl" />
+		<!-- 导出接口 -->
+		<property name="serviceInterface" value="com.synpowertech.dataCollectionJar.service.IYkYtService" />
+		<!-- spring默认使用1099端口 -->
+		<property name="registryPort" value="${rmi.registryPort}" />
+		<!-- 通信端口端口(可不设置,458) -->
+<!-- 		<property name="servicePort" value="${rmi.servicePort}" /> -->
+		<!-- 配置拦截器 -->
+		<property name="interceptors">
+	        <list>
+	        	<ref bean="securityInterceptor"/>
+	        </list>
+	    </property>
+	</bean>
+	
+	<!-- 配置拦截器，实现安全策略 -->
+	<bean id="securityInterceptor" class="com.synpowertech.dataCollectionJar.initialization.SecurityInterceptor">
+	    <!-- 这里配置允许访问RMI的客户端IP地址 -->
+	    <property name="allowedIps" >
+	        <set>
+	            <value>127.0.1.1</value>
+	            <value>192.168.1.127</value>
+	            <value>192.168.1.111</value>
+	            <value>118.112.98.36</value>
+	            <value>47.96.183.194</value>
+	            <value>116.62.60.33</value>
+	            <value>172.16.176.29</value>
+	        </set>
+	    </property>
+	</bean>
+
+	<!-- 客户端访问************ -->
+<!-- 	<bean id="rmiUserService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean"> 
+	  <property name="serviceUrl" value="${rmi.adress}" /> 
+	  <property name="serviceInterface" value="com.synpowertech.dataCollectionJar.service.IYkYtService" />
+	</bean> -->
+</beans>

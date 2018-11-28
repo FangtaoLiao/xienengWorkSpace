@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DeviceDetailCameraMapper">
+   <resultMap id="CameraModelMap" type="com.synpower.bean.DeviceDetailCamera">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="model_name" jdbcType="VARCHAR" property="modelName" />
+    <result column="manufacture" jdbcType="VARCHAR" property="manufacture" />
+    <result column="camera_resolution" jdbcType="VARCHAR" property="cameraResolution" />
+    <result column="support_infra" jdbcType="CHAR" property="supportInfra" />
+    <result column="guard_level" jdbcType="VARCHAR" property="guardLevel" />
+    <result column="network" jdbcType="VARCHAR" property="network" />
+    <result column="max_resolution" jdbcType="VARCHAR" property="maxResolution" />
+    <result column="in_storage" jdbcType="VARCHAR" property="inStorage" />
+    <result column="camera_photo" jdbcType="VARCHAR" property="cameraPhoto" />
+    <result column="model_identity" jdbcType="VARCHAR" property="modelIdentity" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  
+  <select id="getAllType"  resultMap="CameraModelMap">
+  	SELECT * from device_detail_camera dv where dv.valid=0
+  </select>
+  <select id="countCamera" parameterType="hashmap" resultType="int">
+  	SELECT 
+  		COUNT(*) 
+  	FROM 
+  		device_detail_camera 
+  	WHERE 
+  		1 = 1 
+  	<include refid="equipmentDynaSql"></include>
+  </select>
+  <sql id="equipmentDynaSql">
+	<if test="status != null and status != ''">
+		 AND status = #{status} 
+	</if>
+	<if test="manufacturer != null and manufacturer != ''">
+		 AND manufacture like CONCAT(#{manufacturer},'%') 
+	</if>
+	<if test="model != null and model != ''">
+		 AND model_name LIKE CONCAT('%',#{model},'%') 
+	</if>
+  </sql>
+  <select id="listCamera" parameterType="hashmap" resultMap="CameraModelMap">
+  	select 
+  		* 
+  	from 
+  		device_detail_camera  
+  	where valid = 0 
+  	<include refid="equipmentDynaSql"></include> 
+  	limit #{min},#{max} 
+  </select>
+  <update id="updateStatus" parameterType="hashmap">
+  	UPDATE device_detail_camera SET status = #{status} WHERE id = #{deviceId} 
+  </update>
+  <update id="updateEquipmentBasic" parameterType="hashmap">
+  	UPDATE 
+  		device_detail_camera 
+  	SET 
+  		model_identity = #{modelIdentity},
+  		manufacture = #{manufacturer},
+  		model_name = #{cameraModel},
+  		support_infra = #{supportInfra},
+  		guard_level = #{guardLevel},
+  		camera_resolution = #{cameraResolution},
+  		network = #{network},
+  		max_resolution = #{maxResolution},
+  		in_storage = #{inStorage} 
+  	WHERE id = #{id}
+  </update>
+  <update id="updatePhotoNull" parameterType="String">
+  	UPDATE device_detail_camera SET camera_photo = NULL WHERE id = #{deviceId}
+  </update>
+  <update id="insertCameraPhoto" parameterType="hashmap">
+  	UPDATE device_detail_camera SET camera_photo = #{url} WHERE id = #{deviceId}
+  </update>
+  <select id="getCameraInfo" resultMap="cameraMap">
+  	SELECT 
+		model_identity,
+		model_name,
+		manufacture,
+		camera_resolution,
+		(CASE 
+			WHEN support_infra = '1' THEN '支持' 
+			WHEN support_infra = '0' THEN '不支持' 
+			ELSE 0 
+			END) support_infra,
+		guard_level,
+		network,
+		max_resolution,
+		in_storage 
+	FROM device_detail_camera 
+	where valid = 0 
+  	<include refid="equipmentDynaSql"></include> 
+  </select>
+  <resultMap id="cameraMap" type="java.util.HashMap">
+  	<result column="model_identity" property="modelIdentity" jdbcType="VARCHAR"/>
+  	<result column="model_name" property="modelName" jdbcType="VARCHAR"/>
+  	<result column="manufacture" property="manufacture" jdbcType="VARCHAR"/>
+  	<result column="camera_resolution" property="cameraResolution" jdbcType="VARCHAR"/>
+  	<result column="support_infra" property="supportInfra" jdbcType="VARCHAR"/>
+  	<result column="guard_level" property="guardLevel" jdbcType="VARCHAR"/>
+  	<result column="network" property="network" jdbcType="VARCHAR"/>
+  	<result column="max_resolution" property="maxResolution" jdbcType="VARCHAR"/>
+  	<result column="in_storage" property="inStorage" jdbcType="VARCHAR"/>
+  </resultMap>
+  <insert id="insertCamera" parameterType="List">
+  	insert into device_detail_camera (
+	  	model_identity,
+		manufacture,
+		model_name,
+		support_infra,
+		guard_level,
+		camera_resolution, 
+		network,
+		max_resolution,
+		in_storage,
+		status,
+		valid
+  	) values 
+  	<foreach collection="list" item="item" index="index" separator=","> 
+  		(#{item.modelIdentity},
+  		#{item.manufacture},
+  		#{item.modelName},
+  		#{item.supportInfra},
+  		#{item.guardLevel},
+  		#{item.cameraResolution},
+  		#{item.network},
+  		#{item.maxResolution},
+  		#{item.inStorage},
+  		#{item.status},
+  		#{item.valid})
+  	</foreach>
+  </insert>
+  <insert id="insertCameraByBean" parameterType="DeviceDetailCamera"  useGeneratedKeys="true" keyProperty="id">
+  	insert into device_detail_camera (
+	  	model_identity,
+		manufacture,
+		model_name,
+		support_infra,
+		guard_level,
+		camera_resolution, 
+		network,
+		max_resolution,
+		in_storage,
+		status,
+		valid
+  	) values 
+  		(#{modelIdentity},
+  		#{manufacture},
+  		#{modelName},
+  		#{supportInfra},
+  		#{guardLevel},
+  		#{cameraResolution},
+  		#{network},
+  		#{maxResolution},
+  		#{inStorage},
+  		#{status},
+  		#{valid})
+  </insert>
+  <select id="getCameraById" parameterType="String" resultMap="CameraModelMap">
+  	select * from device_detail_camera where id = #{deviceId}
+  </select>
+</mapper>

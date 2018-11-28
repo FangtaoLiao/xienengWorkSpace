@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.CollModelProtocolTypeMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.CollModelProtocolType">
+    <id column="id" jdbcType="TINYINT" property="id" />
+    <result column="protocol_name" jdbcType="VARCHAR" property="protocolName" />
+    <result column="protocol_valid" jdbcType="CHAR" property="protocolValid" />
+    <result column="protocol_status" jdbcType="CHAR" property="protocolStatus" />
+  </resultMap>
+  
+  <select id="getIdByName" parameterType="String"  resultType="integer">
+  	SELECT pt.id from coll_model_protocal_type pt where pt.protocol_name=#{connProtocol}
+  </select>
+</mapper>

@@ -1,0 +1,11 @@
+jdbc.driverClassName=com.mysql.jdbc.Driver
+#jdbc.url=jdbc:mysql://localhost:3306/synpower_solar
+#jdbc.url=jdbc:mysql://localhost:3306/synpower_localtest
+#jdbc.url=jdbc:mysql://localhost:3306/formaltest
+#\u751f\u4ea7\u670d
+#jdbc.url=jdbc:mysql://116.62.60.33:3306/synpower_solar
+jdbc.url=jdbc:mysql://192.168.1.199:3306/synpower_solar_lz
+#jdbc.url=jdbc:mysql://39.104.80.201:3306/synpower_solar_ybj?useUnicode=true&characterEncoding=utf-8&useSSL=false
+jdbc.username=root
+jdbc.password=Synpower-2017
+#jdbc.password=Synpower-2017

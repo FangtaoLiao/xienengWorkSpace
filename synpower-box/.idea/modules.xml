@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/box-model/box-model.iml" filepath="$PROJECT_DIR$/box-model/box-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/box-service/box-service.iml" filepath="$PROJECT_DIR$/box-service/box-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/box-util/box-util.iml" filepath="$PROJECT_DIR$/box-util/box-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/box-web/box-web.iml" filepath="$PROJECT_DIR$/box-web/box-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/synpower.iml" filepath="$PROJECT_DIR$/synpower.iml" />
+    </modules>
+  </component>
+</project>

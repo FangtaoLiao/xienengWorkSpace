@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DeviceTypeMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DeviceType">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="type_valid" jdbcType="CHAR" property="typeValid" />
+    <result column="type_status" jdbcType="CHAR" property="typeStatus" />
+  </resultMap>
+  
+  <select id="getIdByName" parameterType="String" resultType="integer">	
+  	SELECT dt.id FROM device_type dt WHERE dt.type_valid=0 and dt.type_status=1 and dt.type_name = #{typeString}
+  </select>
+  <select id="getDeviceTypeInfo" resultMap="BaseResultMap">
+  	SELECT d.id,d.type_name FROM device_type d WHERE d.type_valid = 0 AND d.type_status = 1 AND id in (1,2,3,11,13)
+  </select>
+  <select id="getNameById" parameterType="String" resultType="String">	
+  	SELECT dt.type_name FROM device_type dt WHERE dt.type_valid=0 and dt.type_status=1 and dt.id = #{typeId} 
+  </select>
+  <select id="getIdByCon" parameterType="String" resultType="integer">	
+  	SELECT dt.id FROM device_type dt WHERE dt.type_valid=0 and dt.type_status=1
+  	<if test=" deviceType != null and deviceType != ''">
+		and dt.type_name LIKE CONCAT('%',#{deviceType},'%')
+	</if>
+  </select>
+</mapper>

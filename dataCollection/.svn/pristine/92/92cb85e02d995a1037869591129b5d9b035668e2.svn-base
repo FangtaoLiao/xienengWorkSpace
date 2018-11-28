@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.DataCombinerBoxMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.DataCombinerBox">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="running_status" jdbcType="TINYINT" property="runningStatus" />
+    <result column="inner_temperature" jdbcType="REAL" property="innerTemperature" />
+    <result column="current_count" jdbcType="INTEGER" property="currentCount" />
+    <result column="u_box" jdbcType="REAL" property="uBox" />
+    <result column="i_total" jdbcType="REAL" property="iTotal" />
+    <result column="i_pv1" jdbcType="REAL" property="iPv1" />
+    <result column="i_pv2" jdbcType="REAL" property="iPv2" />
+    <result column="i_pv3" jdbcType="REAL" property="iPv3" />
+    <result column="i_pv4" jdbcType="REAL" property="iPv4" />
+    <result column="i_pv5" jdbcType="REAL" property="iPv5" />
+    <result column="i_pv6" jdbcType="REAL" property="iPv6" />
+    <result column="i_pv7" jdbcType="REAL" property="iPv7" />
+    <result column="i_pv8" jdbcType="REAL" property="iPv8" />
+    <result column="i_pv9" jdbcType="REAL" property="iPv9" />
+    <result column="i_pv10" jdbcType="REAL" property="iPv10" />
+    <result column="i_pv11" jdbcType="REAL" property="iPv11" />
+    <result column="i_pv12" jdbcType="REAL" property="iPv12" />
+    <result column="i_pv13" jdbcType="REAL" property="iPv13" />
+    <result column="i_pv14" jdbcType="REAL" property="iPv14" />
+    <result column="i_pv15" jdbcType="REAL" property="iPv15" />
+    <result column="i_pv16" jdbcType="REAL" property="iPv16" />
+    <result column="power_total" jdbcType="REAL" property="powerTotal" />
+    <result column="power_pv1" jdbcType="REAL" property="powerPv1" />
+    <result column="power_pv2" jdbcType="REAL" property="powerPv2" />
+    <result column="power_pv3" jdbcType="REAL" property="powerPv3" />
+    <result column="power_pv4" jdbcType="REAL" property="powerPv4" />
+    <result column="power_pv5" jdbcType="REAL" property="powerPv5" />
+    <result column="power_pv6" jdbcType="REAL" property="powerPv6" />
+    <result column="power_pv7" jdbcType="REAL" property="powerPv7" />
+    <result column="power_pv8" jdbcType="REAL" property="powerPv8" />
+    <result column="power_pv9" jdbcType="REAL" property="powerPv9" />
+    <result column="power_pv10" jdbcType="REAL" property="powerPv10" />
+    <result column="power_pv11" jdbcType="REAL" property="powerPv11" />
+    <result column="power_pv12" jdbcType="REAL" property="powerPv12" />
+    <result column="power_pv13" jdbcType="REAL" property="powerPv13" />
+    <result column="power_pv14" jdbcType="REAL" property="powerPv14" />
+    <result column="power_pv15" jdbcType="REAL" property="powerPv15" />
+    <result column="power_pv16" jdbcType="REAL" property="powerPv16" />
+    <result column="daily_energy" jdbcType="REAL" property="dailyEnergy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, plant, data_time, running_status, inner_temperature, current_count, 
+    u_box, i_total, i_pv1, i_pv2, i_pv3, i_pv4, i_pv5, i_pv6, i_pv7, i_pv8, i_pv9, i_pv10, 
+    i_pv11, i_pv12, i_pv13, i_pv14, i_pv15, i_pv16, power_total, power_pv1, power_pv2, 
+    power_pv3, power_pv4, power_pv5, power_pv6, power_pv7, power_pv8, power_pv9, power_pv10, 
+    power_pv11, power_pv12, power_pv13, power_pv14, power_pv15, power_pv16, daily_energy
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_combiner_box
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 根据deviceId和dataTime查询 -->
+  <select id="selectByIdAndDataTime"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_combiner_box
+    where device_id = #{deviceId,jdbcType=INTEGER} and data_time = #{dataTime,jdbcType=BIGINT} ORDER BY power_total DESC
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from data_combiner_box
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.DataCombinerBox">
+    insert into data_combiner_box (id, device_id, plant, 
+      data_time, running_status, inner_temperature, 
+      current_count, u_box, i_total, 
+      i_pv1, i_pv2, i_pv3, i_pv4, 
+      i_pv5, i_pv6, i_pv7, i_pv8, 
+      i_pv9, i_pv10, i_pv11, i_pv12, 
+      i_pv13, i_pv14, i_pv15, i_pv16, 
+      power_total, power_pv1, power_pv2, 
+      power_pv3, power_pv4, power_pv5, 
+      power_pv6, power_pv7, power_pv8, 
+      power_pv9, power_pv10, power_pv11, 
+      power_pv12, power_pv13, power_pv14, 
+      power_pv15, power_pv16, daily_energy
+      )
+    values (#{id,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER}, #{plant,jdbcType=INTEGER}, 
+      #{dataTime,jdbcType=BIGINT}, #{runningStatus,jdbcType=TINYINT}, #{innerTemperature,jdbcType=REAL}, 
+      #{currentCount,jdbcType=INTEGER}, #{uBox,jdbcType=REAL}, #{iTotal,jdbcType=REAL}, 
+      #{iPv1,jdbcType=REAL}, #{iPv2,jdbcType=REAL}, #{iPv3,jdbcType=REAL}, #{iPv4,jdbcType=REAL}, 
+      #{iPv5,jdbcType=REAL}, #{iPv6,jdbcType=REAL}, #{iPv7,jdbcType=REAL}, #{iPv8,jdbcType=REAL}, 
+      #{iPv9,jdbcType=REAL}, #{iPv10,jdbcType=REAL}, #{iPv11,jdbcType=REAL}, #{iPv12,jdbcType=REAL}, 
+      #{iPv13,jdbcType=REAL}, #{iPv14,jdbcType=REAL}, #{iPv15,jdbcType=REAL}, #{iPv16,jdbcType=REAL}, 
+      #{powerTotal,jdbcType=REAL}, #{powerPv1,jdbcType=REAL}, #{powerPv2,jdbcType=REAL}, 
+      #{powerPv3,jdbcType=REAL}, #{powerPv4,jdbcType=REAL}, #{powerPv5,jdbcType=REAL}, 
+      #{powerPv6,jdbcType=REAL}, #{powerPv7,jdbcType=REAL}, #{powerPv8,jdbcType=REAL}, 
+      #{powerPv9,jdbcType=REAL}, #{powerPv10,jdbcType=REAL}, #{powerPv11,jdbcType=REAL}, 
+      #{powerPv12,jdbcType=REAL}, #{powerPv13,jdbcType=REAL}, #{powerPv14,jdbcType=REAL}, 
+      #{powerPv15,jdbcType=REAL}, #{powerPv16,jdbcType=REAL}, #{dailyEnergy,jdbcType=REAL}
+      )
+  </insert>
+  
+  <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">  
+    insert into data_combiner_box (id, device_id, plant, 
+      data_time, running_status, inner_temperature, 
+      current_count, u_box, i_total, 
+      i_pv1, i_pv2, i_pv3, i_pv4, 
+      i_pv5, i_pv6, i_pv7, i_pv8, 
+      i_pv9, i_pv10, i_pv11, i_pv12, 
+      i_pv13, i_pv14, i_pv15, i_pv16, 
+      power_total, power_pv1, power_pv2, 
+      power_pv3, power_pv4, power_pv5, 
+      power_pv6, power_pv7, power_pv8, 
+      power_pv9, power_pv10, power_pv11, 
+      power_pv12, power_pv13, power_pv14, 
+      power_pv15, power_pv16, daily_energy
+      )
+      values
+    <foreach collection="list" item="item" index="index" separator="," >  
+       (#{item.id,jdbcType=INTEGER}, #{item.deviceId,jdbcType=INTEGER}, #{item.plant,jdbcType=INTEGER}, 
+      #{item.dataTime,jdbcType=BIGINT}, #{item.runningStatus,jdbcType=TINYINT}, #{item.innerTemperature,jdbcType=REAL}, 
+      #{item.currentCount,jdbcType=INTEGER}, #{item.uBox,jdbcType=REAL}, #{item.iTotal,jdbcType=REAL}, 
+      #{item.iPv1,jdbcType=REAL}, #{item.iPv2,jdbcType=REAL}, #{item.iPv3,jdbcType=REAL}, #{item.iPv4,jdbcType=REAL}, 
+      #{item.iPv5,jdbcType=REAL}, #{item.iPv6,jdbcType=REAL}, #{item.iPv7,jdbcType=REAL}, #{item.iPv8,jdbcType=REAL}, 
+      #{item.iPv9,jdbcType=REAL}, #{item.iPv10,jdbcType=REAL}, #{item.iPv11,jdbcType=REAL}, #{item.iPv12,jdbcType=REAL}, 
+      #{item.iPv13,jdbcType=REAL}, #{item.iPv14,jdbcType=REAL}, #{item.iPv15,jdbcType=REAL}, #{item.iPv16,jdbcType=REAL}, 
+      #{item.powerTotal,jdbcType=REAL}, #{item.powerPv1,jdbcType=REAL}, #{item.powerPv2,jdbcType=REAL}, 
+      #{item.powerPv3,jdbcType=REAL}, #{item.powerPv4,jdbcType=REAL}, #{item.powerPv5,jdbcType=REAL}, 
+      #{item.powerPv6,jdbcType=REAL}, #{item.powerPv7,jdbcType=REAL}, #{item.powerPv8,jdbcType=REAL}, 
+      #{item.powerPv9,jdbcType=REAL}, #{item.powerPv10,jdbcType=REAL}, #{item.powerPv11,jdbcType=REAL}, 
+      #{item.powerPv12,jdbcType=REAL}, #{item.powerPv13,jdbcType=REAL}, #{item.powerPv14,jdbcType=REAL}, 
+      #{item.powerPv15,jdbcType=REAL}, #{item.powerPv16,jdbcType=REAL}, #{item.dailyEnergy,jdbcType=REAL}
+      )
+    </foreach>  
+  </insert>  
+  
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataCombinerBox">
+    insert into data_combiner_box
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="plant != null">
+        plant,
+      </if>
+      <if test="dataTime != null">
+        data_time,
+      </if>
+      <if test="runningStatus != null">
+        running_status,
+      </if>
+      <if test="innerTemperature != null">
+        inner_temperature,
+      </if>
+      <if test="currentCount != null">
+        current_count,
+      </if>
+      <if test="uBox != null">
+        u_box,
+      </if>
+      <if test="iTotal != null">
+        i_total,
+      </if>
+      <if test="iPv1 != null">
+        i_pv1,
+      </if>
+      <if test="iPv2 != null">
+        i_pv2,
+      </if>
+      <if test="iPv3 != null">
+        i_pv3,
+      </if>
+      <if test="iPv4 != null">
+        i_pv4,
+      </if>
+      <if test="iPv5 != null">
+        i_pv5,
+      </if>
+      <if test="iPv6 != null">
+        i_pv6,
+      </if>
+      <if test="iPv7 != null">
+        i_pv7,
+      </if>
+      <if test="iPv8 != null">
+        i_pv8,
+      </if>
+      <if test="iPv9 != null">
+        i_pv9,
+      </if>
+      <if test="iPv10 != null">
+        i_pv10,
+      </if>
+      <if test="iPv11 != null">
+        i_pv11,
+      </if>
+      <if test="iPv12 != null">
+        i_pv12,
+      </if>
+      <if test="iPv13 != null">
+        i_pv13,
+      </if>
+      <if test="iPv14 != null">
+        i_pv14,
+      </if>
+      <if test="iPv15 != null">
+        i_pv15,
+      </if>
+      <if test="iPv16 != null">
+        i_pv16,
+      </if>
+      <if test="powerTotal != null">
+        power_total,
+      </if>
+      <if test="powerPv1 != null">
+        power_pv1,
+      </if>
+      <if test="powerPv2 != null">
+        power_pv2,
+      </if>
+      <if test="powerPv3 != null">
+        power_pv3,
+      </if>
+      <if test="powerPv4 != null">
+        power_pv4,
+      </if>
+      <if test="powerPv5 != null">
+        power_pv5,
+      </if>
+      <if test="powerPv6 != null">
+        power_pv6,
+      </if>
+      <if test="powerPv7 != null">
+        power_pv7,
+      </if>
+      <if test="powerPv8 != null">
+        power_pv8,
+      </if>
+      <if test="powerPv9 != null">
+        power_pv9,
+      </if>
+      <if test="powerPv10 != null">
+        power_pv10,
+      </if>
+      <if test="powerPv11 != null">
+        power_pv11,
+      </if>
+      <if test="powerPv12 != null">
+        power_pv12,
+      </if>
+      <if test="powerPv13 != null">
+        power_pv13,
+      </if>
+      <if test="powerPv14 != null">
+        power_pv14,
+      </if>
+      <if test="powerPv15 != null">
+        power_pv15,
+      </if>
+      <if test="powerPv16 != null">
+        power_pv16,
+      </if>
+      <if test="dailyEnergy != null">
+        daily_energy,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="runningStatus != null">
+        #{runningStatus,jdbcType=TINYINT},
+      </if>
+      <if test="innerTemperature != null">
+        #{innerTemperature,jdbcType=REAL},
+      </if>
+      <if test="currentCount != null">
+        #{currentCount,jdbcType=INTEGER},
+      </if>
+      <if test="uBox != null">
+        #{uBox,jdbcType=REAL},
+      </if>
+      <if test="iTotal != null">
+        #{iTotal,jdbcType=REAL},
+      </if>
+      <if test="iPv1 != null">
+        #{iPv1,jdbcType=REAL},
+      </if>
+      <if test="iPv2 != null">
+        #{iPv2,jdbcType=REAL},
+      </if>
+      <if test="iPv3 != null">
+        #{iPv3,jdbcType=REAL},
+      </if>
+      <if test="iPv4 != null">
+        #{iPv4,jdbcType=REAL},
+      </if>
+      <if test="iPv5 != null">
+        #{iPv5,jdbcType=REAL},
+      </if>
+      <if test="iPv6 != null">
+        #{iPv6,jdbcType=REAL},
+      </if>
+      <if test="iPv7 != null">
+        #{iPv7,jdbcType=REAL},
+      </if>
+      <if test="iPv8 != null">
+        #{iPv8,jdbcType=REAL},
+      </if>
+      <if test="iPv9 != null">
+        #{iPv9,jdbcType=REAL},
+      </if>
+      <if test="iPv10 != null">
+        #{iPv10,jdbcType=REAL},
+      </if>
+      <if test="iPv11 != null">
+        #{iPv11,jdbcType=REAL},
+      </if>
+      <if test="iPv12 != null">
+        #{iPv12,jdbcType=REAL},
+      </if>
+      <if test="iPv13 != null">
+        #{iPv13,jdbcType=REAL},
+      </if>
+      <if test="iPv14 != null">
+        #{iPv14,jdbcType=REAL},
+      </if>
+      <if test="iPv15 != null">
+        #{iPv15,jdbcType=REAL},
+      </if>
+      <if test="iPv16 != null">
+        #{iPv16,jdbcType=REAL},
+      </if>
+      <if test="powerTotal != null">
+        #{powerTotal,jdbcType=REAL},
+      </if>
+      <if test="powerPv1 != null">
+        #{powerPv1,jdbcType=REAL},
+      </if>
+      <if test="powerPv2 != null">
+        #{powerPv2,jdbcType=REAL},
+      </if>
+      <if test="powerPv3 != null">
+        #{powerPv3,jdbcType=REAL},
+      </if>
+      <if test="powerPv4 != null">
+        #{powerPv4,jdbcType=REAL},
+      </if>
+      <if test="powerPv5 != null">
+        #{powerPv5,jdbcType=REAL},
+      </if>
+      <if test="powerPv6 != null">
+        #{powerPv6,jdbcType=REAL},
+      </if>
+      <if test="powerPv7 != null">
+        #{powerPv7,jdbcType=REAL},
+      </if>
+      <if test="powerPv8 != null">
+        #{powerPv8,jdbcType=REAL},
+      </if>
+      <if test="powerPv9 != null">
+        #{powerPv9,jdbcType=REAL},
+      </if>
+      <if test="powerPv10 != null">
+        #{powerPv10,jdbcType=REAL},
+      </if>
+      <if test="powerPv11 != null">
+        #{powerPv11,jdbcType=REAL},
+      </if>
+      <if test="powerPv12 != null">
+        #{powerPv12,jdbcType=REAL},
+      </if>
+      <if test="powerPv13 != null">
+        #{powerPv13,jdbcType=REAL},
+      </if>
+      <if test="powerPv14 != null">
+        #{powerPv14,jdbcType=REAL},
+      </if>
+      <if test="powerPv15 != null">
+        #{powerPv15,jdbcType=REAL},
+      </if>
+      <if test="powerPv16 != null">
+        #{powerPv16,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergy != null">
+        #{dailyEnergy,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataCombinerBox">
+    update data_combiner_box
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        plant = #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        data_time = #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="runningStatus != null">
+        running_status = #{runningStatus,jdbcType=TINYINT},
+      </if>
+      <if test="innerTemperature != null">
+        inner_temperature = #{innerTemperature,jdbcType=REAL},
+      </if>
+      <if test="currentCount != null">
+        current_count = #{currentCount,jdbcType=INTEGER},
+      </if>
+      <if test="uBox != null">
+        u_box = #{uBox,jdbcType=REAL},
+      </if>
+      <if test="iTotal != null">
+        i_total = #{iTotal,jdbcType=REAL},
+      </if>
+      <if test="iPv1 != null">
+        i_pv1 = #{iPv1,jdbcType=REAL},
+      </if>
+      <if test="iPv2 != null">
+        i_pv2 = #{iPv2,jdbcType=REAL},
+      </if>
+      <if test="iPv3 != null">
+        i_pv3 = #{iPv3,jdbcType=REAL},
+      </if>
+      <if test="iPv4 != null">
+        i_pv4 = #{iPv4,jdbcType=REAL},
+      </if>
+      <if test="iPv5 != null">
+        i_pv5 = #{iPv5,jdbcType=REAL},
+      </if>
+      <if test="iPv6 != null">
+        i_pv6 = #{iPv6,jdbcType=REAL},
+      </if>
+      <if test="iPv7 != null">
+        i_pv7 = #{iPv7,jdbcType=REAL},
+      </if>
+      <if test="iPv8 != null">
+        i_pv8 = #{iPv8,jdbcType=REAL},
+      </if>
+      <if test="iPv9 != null">
+        i_pv9 = #{iPv9,jdbcType=REAL},
+      </if>
+      <if test="iPv10 != null">
+        i_pv10 = #{iPv10,jdbcType=REAL},
+      </if>
+      <if test="iPv11 != null">
+        i_pv11 = #{iPv11,jdbcType=REAL},
+      </if>
+      <if test="iPv12 != null">
+        i_pv12 = #{iPv12,jdbcType=REAL},
+      </if>
+      <if test="iPv13 != null">
+        i_pv13 = #{iPv13,jdbcType=REAL},
+      </if>
+      <if test="iPv14 != null">
+        i_pv14 = #{iPv14,jdbcType=REAL},
+      </if>
+      <if test="iPv15 != null">
+        i_pv15 = #{iPv15,jdbcType=REAL},
+      </if>
+      <if test="iPv16 != null">
+        i_pv16 = #{iPv16,jdbcType=REAL},
+      </if>
+      <if test="powerTotal != null">
+        power_total = #{powerTotal,jdbcType=REAL},
+      </if>
+      <if test="powerPv1 != null">
+        power_pv1 = #{powerPv1,jdbcType=REAL},
+      </if>
+      <if test="powerPv2 != null">
+        power_pv2 = #{powerPv2,jdbcType=REAL},
+      </if>
+      <if test="powerPv3 != null">
+        power_pv3 = #{powerPv3,jdbcType=REAL},
+      </if>
+      <if test="powerPv4 != null">
+        power_pv4 = #{powerPv4,jdbcType=REAL},
+      </if>
+      <if test="powerPv5 != null">
+        power_pv5 = #{powerPv5,jdbcType=REAL},
+      </if>
+      <if test="powerPv6 != null">
+        power_pv6 = #{powerPv6,jdbcType=REAL},
+      </if>
+      <if test="powerPv7 != null">
+        power_pv7 = #{powerPv7,jdbcType=REAL},
+      </if>
+      <if test="powerPv8 != null">
+        power_pv8 = #{powerPv8,jdbcType=REAL},
+      </if>
+      <if test="powerPv9 != null">
+        power_pv9 = #{powerPv9,jdbcType=REAL},
+      </if>
+      <if test="powerPv10 != null">
+        power_pv10 = #{powerPv10,jdbcType=REAL},
+      </if>
+      <if test="powerPv11 != null">
+        power_pv11 = #{powerPv11,jdbcType=REAL},
+      </if>
+      <if test="powerPv12 != null">
+        power_pv12 = #{powerPv12,jdbcType=REAL},
+      </if>
+      <if test="powerPv13 != null">
+        power_pv13 = #{powerPv13,jdbcType=REAL},
+      </if>
+      <if test="powerPv14 != null">
+        power_pv14 = #{powerPv14,jdbcType=REAL},
+      </if>
+      <if test="powerPv15 != null">
+        power_pv15 = #{powerPv15,jdbcType=REAL},
+      </if>
+      <if test="powerPv16 != null">
+        power_pv16 = #{powerPv16,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergy != null">
+        daily_energy = #{dailyEnergy,jdbcType=REAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.DataCombinerBox">
+    update data_combiner_box
+    set device_id = #{deviceId,jdbcType=INTEGER},
+      plant = #{plant,jdbcType=INTEGER},
+      data_time = #{dataTime,jdbcType=BIGINT},
+      running_status = #{runningStatus,jdbcType=TINYINT},
+      inner_temperature = #{innerTemperature,jdbcType=REAL},
+      current_count = #{currentCount,jdbcType=INTEGER},
+      u_box = #{uBox,jdbcType=REAL},
+      i_total = #{iTotal,jdbcType=REAL},
+      i_pv1 = #{iPv1,jdbcType=REAL},
+      i_pv2 = #{iPv2,jdbcType=REAL},
+      i_pv3 = #{iPv3,jdbcType=REAL},
+      i_pv4 = #{iPv4,jdbcType=REAL},
+      i_pv5 = #{iPv5,jdbcType=REAL},
+      i_pv6 = #{iPv6,jdbcType=REAL},
+      i_pv7 = #{iPv7,jdbcType=REAL},
+      i_pv8 = #{iPv8,jdbcType=REAL},
+      i_pv9 = #{iPv9,jdbcType=REAL},
+      i_pv10 = #{iPv10,jdbcType=REAL},
+      i_pv11 = #{iPv11,jdbcType=REAL},
+      i_pv12 = #{iPv12,jdbcType=REAL},
+      i_pv13 = #{iPv13,jdbcType=REAL},
+      i_pv14 = #{iPv14,jdbcType=REAL},
+      i_pv15 = #{iPv15,jdbcType=REAL},
+      i_pv16 = #{iPv16,jdbcType=REAL},
+      power_total = #{powerTotal,jdbcType=REAL},
+      power_pv1 = #{powerPv1,jdbcType=REAL},
+      power_pv2 = #{powerPv2,jdbcType=REAL},
+      power_pv3 = #{powerPv3,jdbcType=REAL},
+      power_pv4 = #{powerPv4,jdbcType=REAL},
+      power_pv5 = #{powerPv5,jdbcType=REAL},
+      power_pv6 = #{powerPv6,jdbcType=REAL},
+      power_pv7 = #{powerPv7,jdbcType=REAL},
+      power_pv8 = #{powerPv8,jdbcType=REAL},
+      power_pv9 = #{powerPv9,jdbcType=REAL},
+      power_pv10 = #{powerPv10,jdbcType=REAL},
+      power_pv11 = #{powerPv11,jdbcType=REAL},
+      power_pv12 = #{powerPv12,jdbcType=REAL},
+      power_pv13 = #{powerPv13,jdbcType=REAL},
+      power_pv14 = #{powerPv14,jdbcType=REAL},
+      power_pv15 = #{powerPv15,jdbcType=REAL},
+      power_pv16 = #{powerPv16,jdbcType=REAL},
+      daily_energy = #{dailyEnergy,jdbcType=REAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

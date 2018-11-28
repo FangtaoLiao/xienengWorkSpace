@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DeviceDetailCentralInverterMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DeviceDetailCentralInverter">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="model_identity" jdbcType="VARCHAR" property="modelIdentity" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="power" jdbcType="VARCHAR" property="power" />
+    <result column="nominal_conversion_efficiency" jdbcType="VARCHAR" property="nominalConversionEfficiency" />
+    <result column="mppt_channels" jdbcType="INTEGER" property="mpptChannels" />
+    <result column="max_input_channels" jdbcType="INTEGER" property="maxInputChannels" />
+    <result column="photo_path" jdbcType="VARCHAR" property="photoPath" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+    <association property="device" javaType="CollDevice" 
+    	select="getDeviceById" column="id">
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, model_identity, device_type, manufacturer, model, power, nominal_conversion_efficiency, 
+    mppt_channels, max_input_channels, photo_path, valid
+  </sql>
+  <select id="getDeviceById" parameterType="integer" resultMap="com.synpower.dao.CollDeviceMapper.BaseResultMap">
+  	SELECT * FROM coll_device cd JOIN device_detail_central_inverter mdci ON cd.device_model_id = mdci.id
+  </select>
+  <select id="getFactoryAndPower" parameterType="integer" resultMap="BaseResultMap">
+  	SELECT * FROM device_detail_central_inverter where id=#{modelId2} and valid=1
+  </select>
+  <sql id="equipmentDynaSql">
+	<if test="status != null and status != ''">
+		 AND mdci.valid = #{status} 
+	</if>
+	<if test="manufacturer != null and manufacturer != ''">
+		 AND mdci.manufacturer like CONCAT(#{manufacturer},'%') 
+	</if>
+	<if test="model != null and model != ''">
+		 AND mdci.model LIKE CONCAT('%',#{model},'%') 
+	</if>
+  </sql>
+  <select id="listInverterInfo" parameterType="hashmap" resultMap="inverterInfoMap">
+  	SELECT * FROM (
+	  	SELECT 
+			mdci.id,
+			mdci.device_type,
+			mdci.model_identity,
+			dt.type_name,
+			mdci.manufacturer,
+			mdci.model,
+			mdci.power,
+			mdci.nominal_conversion_efficiency,
+			mdci.mppt_channels,
+			mdci.max_input_channels,
+			mdci.photo_path,
+			mdci.valid  
+		FROM device_detail_central_inverter mdci 
+		JOIN device_type dt ON mdci.device_type = dt.id 
+		UNION
+		SELECT
+			mdci.id,
+			mdci.device_type,
+			mdci.model_identity,
+			dt.type_name,
+			mdci.manufacturer,
+			mdci.model,
+			mdci.power,
+			mdci.nominal_conversion_efficiency,
+			mdci.mppt_channels,
+			mdci.max_input_channels,
+			mdci.photo_path,
+			mdci.valid  
+		FROM device_detail_string_inverter mdci 
+		JOIN device_type dt ON mdci.device_type = dt.id 
+	) mdci 
+	where 1 = 1
+	<include refid="equipmentDynaSql"></include>
+	LIMIT #{min},#{max}
+  </select>
+  <resultMap id="inverterInfoMap" type="java.util.HashMap">
+  	<result column="mdci.id" property="id" jdbcType="VARCHAR"/>
+  	<result column="mdci.device_type" property="device_type" jdbcType="VARCHAR"/>
+  	<result column="mdci.model_identity" property="modelIdentity" jdbcType="VARCHAR"/>
+  	<result column="dt.type_name" property="typeName" jdbcType="VARCHAR"/>
+  	<result column="mdci.manufacturer" property="manufacturer" jdbcType="VARCHAR"/>
+  	<result column="mdci.model" property="model" jdbcType="VARCHAR"/>
+  	<result column="mdci.power" property="power" jdbcType="VARCHAR"/>
+  	<result column="mdci.nominal_conversion_efficiency" property="efficiency" jdbcType="VARCHAR"/>
+  	<result column="mdci.mppt_channels" property="channels" jdbcType="VARCHAR"/>
+  	<result column="mdci.max_input_channels" property="max" jdbcType="VARCHAR"/>
+  	<result column="mdci.photo_path " property="photo" jdbcType="VARCHAR"/>
+  	<result column="mdci.valid " property="valid" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="countInverterInfo" parameterType="hashmap" resultType="int">
+  	SELECT COUNT(*) FROM 	(SELECT 
+		mdci.id,
+		mdci.model_identity,
+		dt.type_name,
+		mdci.manufacturer,
+		mdci.model,
+		mdci.power,
+		mdci.nominal_conversion_efficiency,
+		mdci.mppt_channels,
+		mdci.max_input_channels,
+		mdci.photo_path,
+		mdci.valid  
+	FROM device_detail_central_inverter mdci 
+	JOIN device_type dt ON mdci.device_type = dt.id 
+	UNION
+	SELECT
+		mdci.id,
+		mdci.model_identity,
+		dt.type_name,
+		mdci.manufacturer,
+		mdci.model,
+		mdci.power,
+		mdci.nominal_conversion_efficiency,
+		mdci.mppt_channels,
+		mdci.max_input_channels,
+		mdci.photo_path,
+		mdci.valid  
+	FROM device_detail_string_inverter mdci 
+	JOIN device_type dt ON mdci.device_type = dt.id 
+	) mdci where 1 = 1
+	<include refid="equipmentDynaSql"></include>
+  </select>
+  <select id="getEquipmentBasic" parameterType="String" resultMap="inverterInfoMap">
+  	SELECT 
+		mdci.id,
+		mdci.model_identity,
+		dt.type_name,
+		mdci.manufacturer,
+		mdci.model,
+		mdci.power,
+		mdci.nominal_conversion_efficiency,
+		mdci.mppt_channels,
+		mdci.max_input_channels,
+		mdci.photo_path
+	FROM device_detail_central_inverter mdci 
+	JOIN device_type dt ON mdci.device_type = dt.id 
+	WHERE mdci.id = #{deviceId}
+  </select>
+  <update id="updateStatus" parameterType="hashmap">
+  	UPDATE device_detail_central_inverter m SET m.valid = #{status} WHERE m.id = #{deviceId}
+  </update>
+  <update id="updateEquipmentBasic" parameterType="hashmap">
+  	UPDATE 
+  		device_detail_central_inverter m 
+  	SET 
+		m.model_identity=#{modelIdentity},
+		m.manufacturer=#{manufacturer},
+		m.model=#{model},
+		m.power=#{power},
+		m.nominal_conversion_efficiency=#{efficiency},
+		m.mppt_channels=#{channels},
+		m.max_input_channels=#{max} 
+	WHERE m.id = #{id}
+  </update>
+  <update id="updatePhotoNull" parameterType="String">
+  	UPDATE device_detail_central_inverter m SET m.photo_path = NULL WHERE m.id = #{deviceId}
+  </update>
+  <update id="updatePhoto" parameterType="hashmap">
+  	UPDATE device_detail_central_inverter m SET m.photo_path = #{url} WHERE m.id = #{deviceId}
+  </update>
+  <select id="getInverterInfo" resultMap="inverterMap">
+  	SELECT 
+		mdci.model_identity,
+		dt.type_name,
+		mdci.manufacturer,
+		mdci.model,
+		mdci.power,
+		mdci.nominal_conversion_efficiency,
+		mdci.mppt_channels,
+		mdci.max_input_channels 
+	FROM device_detail_central_inverter mdci 
+	JOIN device_type dt ON mdci.device_type = dt.id 
+	where 1 = 1
+	<include refid="equipmentDynaSql"></include>
+  </select>
+  <resultMap id="inverterMap" type="java.util.HashMap">
+  	<result column="mdci.model_identity" property="modelIdentity" jdbcType="VARCHAR"/>
+  	<result column="dt.type_name" property="typeName" jdbcType="VARCHAR"/>
+  	<result column="mdci.manufacturer" property="manufacturer" jdbcType="VARCHAR"/>
+  	<result column="mdci.model" property="model" jdbcType="VARCHAR"/>
+  	<result column="mdci.power" property="power" jdbcType="VARCHAR"/>
+  	<result column="mdci.nominal_conversion_efficiency" property="efficiency" jdbcType="VARCHAR"/>
+  	<result column="mdci.mppt_channels" property="channels" jdbcType="VARCHAR"/>
+  	<result column="mdci.max_input_channels" property="max" jdbcType="VARCHAR"/>
+  </resultMap>
+  <insert id="insertInverter" parameterType="List">
+  	insert into device_detail_central_inverter (
+  		model_identity, 
+  		device_type, 
+  		manufacturer, 
+  		model, 
+  		power, 
+  		nominal_conversion_efficiency, 
+  		mppt_channels, 
+  		max_input_channels, 
+  		valid) 
+  	values 
+  	<foreach collection="list" item="item" index="index" separator=","> 
+  		(#{item.modelIdentity},
+  		#{item.deviceType},
+  		#{item.manufacturer},
+  		#{item.model},
+  		#{item.power},
+  		#{item.nominalConversionEfficiency},
+  		#{item.mpptChannels},
+  		#{item.maxInputChannels},
+  		#{item.valid})
+  	</foreach>
+  </insert>
+  <insert id="insertInverterByMap" parameterType="DeviceDetailCentralInverter"  useGeneratedKeys="true" keyProperty="id">
+  	insert into device_detail_central_inverter (
+  		model_identity, 
+  		device_type, 
+  		manufacturer, 
+  		model, 
+  		power, 
+  		nominal_conversion_efficiency, 
+  		mppt_channels, 
+  		max_input_channels, 
+  		valid) 
+  	values 
+  		(#{modelIdentity},
+  		#{deviceType},
+  		#{manufacturer},
+  		#{model},
+  		#{power},
+  		#{nominalConversionEfficiency},
+  		#{mpptChannels},
+  		#{maxInputChannels},
+  		#{valid})
+  </insert>
+   <select id="getModel" parameterType="integer"  resultMap="BaseResultMap">
+  	SELECT si.model_identity,si.manufacturer,si.power,si.model,si.power,si.mppt_channels,
+  	si.max_input_channels,si.nominal_conversion_efficiency from device_detail_central_inverter si where si.id=#{mId}
+  </select>
+   <select id="getModelforChoice"  resultMap="BaseResultMap">
+  	SELECT si.id,si.model_identity,si.manufacturer,si.power,si.model,si.power,si.mppt_channels,
+  	si.max_input_channels,si.nominal_conversion_efficiency from device_detail_central_inverter si where si.valid=1
+  </select>
+   <select id="getAllModelInfoCen"  resultMap="BaseResultMap">
+  	SELECT * from device_detail_central_inverter si where si.valid=1
+  </select>
+   <update id="updateIdentity" parameterType="map" >
+  	update device_detail_central_inverter set model_identity=#{identity} where id=#{modelId} and valid=1
+  </update>
+  <select id="getInverterById" parameterType="String" resultMap="BaseResultMap">
+  	select * from device_detail_central_inverter where id = #{deviceId}
+  </select>
+</mapper>

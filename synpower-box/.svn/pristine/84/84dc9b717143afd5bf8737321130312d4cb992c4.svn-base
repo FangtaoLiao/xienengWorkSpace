@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DataPcsMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DataPcs">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="u_ac_a" jdbcType="REAL" property="uAcA" />
+    <result column="u_ac_b" jdbcType="REAL" property="uAcB" />
+    <result column="u_ac_c" jdbcType="REAL" property="uAcC" />
+    <result column="i_ac_a" jdbcType="REAL" property="iAcA" />
+    <result column="i_ac_b" jdbcType="REAL" property="iAcB" />
+    <result column="i_ac_c" jdbcType="REAL" property="iAcC" />
+    <result column="frequency" jdbcType="REAL" property="frequency" />
+    <result column="active_power" jdbcType="REAL" property="activePower" />
+    <result column="reactive_power" jdbcType="REAL" property="reactivePower" />
+    <result column="igbt_temp_a" jdbcType="REAL" property="igbtTempA" />
+    <result column="igbt_temp_c" jdbcType="REAL" property="igbtTempC" />
+    <result column="igbt_temp_b" jdbcType="REAL" property="igbtTempB" />
+    <result column="u_pv" jdbcType="REAL" property="uPv" />
+    <result column="u_bat" jdbcType="REAL" property="uBat" />
+    <result column="i_pv" jdbcType="REAL" property="iPv" />
+    <result column="i_bat2" jdbcType="REAL" property="iBat2" />
+    <result column="power_pv" jdbcType="REAL" property="powerPv" />
+    <result column="power_bat" jdbcType="REAL" property="powerBat" />
+    <result column="igbt_temp_pv" jdbcType="REAL" property="igbtTempPv" />
+    <result column="igbt_temp_bat" jdbcType="REAL" property="igbtTempBat" />
+    <result column="daily_energy_pv" jdbcType="REAL" property="dailyEnergyPv" />
+    <result column="total_energy_pv" jdbcType="REAL" property="totalEnergyPv" />
+    <result column="daily_energy_bat_chg" jdbcType="REAL" property="dailyEnergyBatChg" />
+    <result column="total_energy_bat_chg" jdbcType="REAL" property="totalEnergyBatChg" />
+    <result column="daily_energy_bat_dischg" jdbcType="REAL" property="dailyEnergyBatDischg" />
+    <result column="total_energy_bat_dischg" jdbcType="REAL" property="totalEnergyBatDischg" />
+    <result column="daily_energy_in" jdbcType="REAL" property="dailyEnergyIn" />
+    <result column="total_energy_in" jdbcType="REAL" property="totalEnergyIn" />
+    <result column="daily_energy_out" jdbcType="REAL" property="dailyEnergyOut" />
+    <result column="total_energy_out" jdbcType="REAL" property="totalEnergyOut" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, plant, data_time, u_ac_a, u_ac_b, u_ac_c, i_ac_a, i_ac_b, i_ac_c, 
+    frequency, active_power, reactive_power, igbt_temp_a, igbt_temp_c, igbt_temp_b, u_pv, 
+    u_bat, i_pv, i_bat2, power_pv, power_bat, igbt_temp_pv, igbt_temp_bat, daily_energy_pv, 
+    total_energy_pv, daily_energy_bat_chg, total_energy_bat_chg, daily_energy_bat_dischg, 
+    total_energy_bat_dischg, daily_energy_in, total_energy_in, daily_energy_out, total_energy_out
+  </sql>
+  <select id="getVoltagePower" parameterType="hashmap" resultMap="BaseResultMap">
+  	SELECT u_ac_a,u_bat,active_power,power_bat,data_time FROM data_pcs WHERE device_id = #{deviceId} AND FROM_UNIXTIME(data_time/1000,'%Y-%m-%d') =#{dataTime} order by data_time
+  </select>
+  <select id="getBatAndGridPower" parameterType="String" resultMap="batAndGiedPowerMap">
+	SELECT sum(active_power),SUM(power_bat) from data_pcs where plant=#{pId}
+  </select>
+  <resultMap id="batAndGiedPowerMap" type="java.util.HashMap">
+  	<result column="sum(active_power)" property="activePower" jdbcType="FLOAT"/>
+  	<result column="SUM(power_bat)" property="batPower" jdbcType="FLOAT"/>
+  </resultMap>
+   <select id="getEnergyPlantDataForStorage" parameterType="Map" resultMap="com.synpower.dao.DataElectricMeterMapper.BaseResultMap">
+  	select total_energy_in em_neg_active_energy,total_energy_out em_pos_active_energy,device_id,data_time from data_pcs
+  		where data_time>=#{minTime} and #{maxTime}>=data_time and device_id=#{deviceId} order by data_time 
+  </select>
+     <select id="getLastHistoryDataPcs" parameterType="Map" resultMap="com.synpower.dao.DataElectricMeterMapper.BaseResultMap">
+  	SELECT device_id,MAX(data_time)data_time ,MAX(total_energy_out)em_pos_active_energy,MAX(total_energy_in)em_neg_active_energy
+	from (SELECT * from data_pcs 
+	where #{endTime}>=data_time and data_time>=#{startTime}
+		<if test="devices!=null">
+			<foreach collection="devices" item="deviceId" open=" and device_id IN (" close=")" separator=",">
+						#{deviceId}
+		</foreach>
+		</if>
+	)a GROUP BY device_id
+	</select>
+  <select id="getTimesPower" parameterType="Map" resultMap="BaseResultMap">
+  	  	SELECT sum(active_power) active_power,data_time from(
+	  	SELECT DISTINCT device_id,data_time,active_power from data_pcs  
+	  	where data_time>=#{minTime} and #{maxTime}>=data_time
+		<foreach collection="devices" item="deviceId" open=" and device_id IN (" close=")" separator=",">
+					#{deviceId}
+		</foreach>
+	)a
+  	GROUP BY data_time
+  </select>
+  <select id="getTimesPowerForMulti" parameterType="Map" resultMap="BaseResultMap">
+  	  	SELECT sum(active_power) active_power,sum(power_bat) power_bat,data_time from(
+	  	SELECT DISTINCT device_id,data_time,active_power,power_bat from data_pcs  
+	  	where data_time>=#{minTime} and #{maxTime}>=data_time
+		<foreach collection="devices" item="deviceId" open=" and device_id IN (" close=")" separator=",">
+					#{deviceId}
+		</foreach>
+	)a
+  	GROUP BY data_time
+  </select>
+</mapper>

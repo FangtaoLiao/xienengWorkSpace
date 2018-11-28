@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.DataPcsMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.DataPcs">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="u_ac_a" jdbcType="REAL" property="uAcA" />
+    <result column="u_ac_b" jdbcType="REAL" property="uAcB" />
+    <result column="u_ac_c" jdbcType="REAL" property="uAcC" />
+    <result column="i_ac_a" jdbcType="REAL" property="iAcA" />
+    <result column="i_ac_b" jdbcType="REAL" property="iAcB" />
+    <result column="i_ac_c" jdbcType="REAL" property="iAcC" />
+    <result column="frequency" jdbcType="REAL" property="frequency" />
+    <result column="active_power" jdbcType="REAL" property="activePower" />
+    <result column="reactive_power" jdbcType="REAL" property="reactivePower" />
+    <result column="igbt_temp_a" jdbcType="REAL" property="igbtTempA" />
+    <result column="igbt_temp_c" jdbcType="REAL" property="igbtTempC" />
+    <result column="igbt_temp_b" jdbcType="REAL" property="igbtTempB" />
+    <result column="u_pv" jdbcType="REAL" property="uPv" />
+    <result column="u_bat" jdbcType="REAL" property="uBat" />
+    <result column="i_pv" jdbcType="REAL" property="iPv" />
+    <result column="i_bat2" jdbcType="REAL" property="iBat2" />
+    <result column="power_pv" jdbcType="REAL" property="powerPv" />
+    <result column="power_bat" jdbcType="REAL" property="powerBat" />
+    <result column="igbt_temp_pv" jdbcType="REAL" property="igbtTempPv" />
+    <result column="igbt_temp_bat" jdbcType="REAL" property="igbtTempBat" />
+    <result column="daily_energy_pv" jdbcType="REAL" property="dailyEnergyPv" />
+    <result column="total_energy_pv" jdbcType="REAL" property="totalEnergyPv" />
+    <result column="daily_energy_bat_chg" jdbcType="REAL" property="dailyEnergyBatChg" />
+    <result column="total_energy_bat_chg" jdbcType="REAL" property="totalEnergyBatChg" />
+    <result column="daily_energy_bat_dischg" jdbcType="REAL" property="dailyEnergyBatDischg" />
+    <result column="total_energy_bat_dischg" jdbcType="REAL" property="totalEnergyBatDischg" />
+    <result column="daily_energy_in" jdbcType="REAL" property="dailyEnergyIn" />
+    <result column="total_energy_in" jdbcType="REAL" property="totalEnergyIn" />
+    <result column="daily_energy_out" jdbcType="REAL" property="dailyEnergyOut" />
+    <result column="total_energy_out" jdbcType="REAL" property="totalEnergyOut" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, plant, data_time, u_ac_a, u_ac_b, u_ac_c, i_ac_a, i_ac_b, i_ac_c, 
+    frequency, active_power, reactive_power, igbt_temp_a, igbt_temp_c, igbt_temp_b, u_pv, 
+    u_bat, i_pv, i_bat2, power_pv, power_bat, igbt_temp_pv, igbt_temp_bat, daily_energy_pv, 
+    total_energy_pv, daily_energy_bat_chg, total_energy_bat_chg, daily_energy_bat_dischg, 
+    total_energy_bat_dischg, daily_energy_in, total_energy_in, daily_energy_out, total_energy_out
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_pcs
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 根据deviceId和dataTime查询 -->
+  <select id="selectByIdAndDataTime"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_pcs
+    where device_id = #{deviceId,jdbcType=INTEGER} and data_time = #{dataTime,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from data_pcs
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.DataPcs">
+    insert into data_pcs (id, device_id, plant, 
+      data_time, u_ac_a, u_ac_b, u_ac_c, 
+      i_ac_a, i_ac_b, i_ac_c, frequency, 
+      active_power, reactive_power, igbt_temp_a, 
+      igbt_temp_c, igbt_temp_b, u_pv, u_bat, 
+      i_pv, i_bat2, power_pv, power_bat, 
+      igbt_temp_pv, igbt_temp_bat, daily_energy_pv, 
+      total_energy_pv, daily_energy_bat_chg, total_energy_bat_chg, 
+      daily_energy_bat_dischg, total_energy_bat_dischg, daily_energy_in, 
+      total_energy_in, daily_energy_out, total_energy_out
+      )
+    values (#{id,jdbcType=BIGINT}, #{deviceId,jdbcType=INTEGER}, #{plant,jdbcType=INTEGER}, 
+      #{dataTime,jdbcType=BIGINT}, #{uAcA,jdbcType=REAL}, #{uAcB,jdbcType=REAL}, #{uAcC,jdbcType=REAL}, 
+      #{iAcA,jdbcType=REAL}, #{iAcB,jdbcType=REAL}, #{iAcC,jdbcType=REAL}, #{frequency,jdbcType=REAL}, 
+      #{activePower,jdbcType=REAL}, #{reactivePower,jdbcType=REAL}, #{igbtTempA,jdbcType=REAL}, 
+      #{igbtTempC,jdbcType=REAL}, #{igbtTempB,jdbcType=REAL}, #{uPv,jdbcType=REAL}, #{uBat,jdbcType=REAL}, 
+      #{iPv,jdbcType=REAL}, #{iBat2,jdbcType=REAL}, #{powerPv,jdbcType=REAL}, #{powerBat,jdbcType=REAL}, 
+      #{igbtTempPv,jdbcType=REAL}, #{igbtTempBat,jdbcType=REAL}, #{dailyEnergyPv,jdbcType=REAL}, 
+      #{totalEnergyPv,jdbcType=REAL}, #{dailyEnergyBatChg,jdbcType=REAL}, #{totalEnergyBatChg,jdbcType=REAL}, 
+      #{dailyEnergyBatDischg,jdbcType=REAL}, #{totalEnergyBatDischg,jdbcType=REAL}, #{dailyEnergyIn,jdbcType=REAL}, 
+      #{totalEnergyIn,jdbcType=REAL}, #{dailyEnergyOut,jdbcType=REAL}, #{totalEnergyOut,jdbcType=REAL}
+      )
+  </insert>
+  
+    <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">  
+	insert into data_pcs (id, device_id, plant, 
+      data_time, u_ac_a, u_ac_b, u_ac_c, 
+      i_ac_a, i_ac_b, i_ac_c, frequency, 
+      active_power, reactive_power, igbt_temp_a, 
+      igbt_temp_c, igbt_temp_b, u_pv, u_bat, 
+      i_pv, i_bat2, power_pv, power_bat, 
+      igbt_temp_pv, igbt_temp_bat, daily_energy_pv, 
+      total_energy_pv, daily_energy_bat_chg, total_energy_bat_chg, 
+      daily_energy_bat_dischg, total_energy_bat_dischg, daily_energy_in, 
+      total_energy_in, daily_energy_out, total_energy_out
+      )
+      values
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id,jdbcType=BIGINT}, #{item.deviceId,jdbcType=INTEGER}, #{item.plant,jdbcType=INTEGER}, 
+      #{item.dataTime,jdbcType=BIGINT}, #{item.uAcA,jdbcType=REAL}, #{item.uAcB,jdbcType=REAL}, #{item.uAcC,jdbcType=REAL}, 
+      #{item.iAcA,jdbcType=REAL}, #{item.iAcB,jdbcType=REAL}, #{item.iAcC,jdbcType=REAL}, #{item.frequency,jdbcType=REAL}, 
+      #{item.activePower,jdbcType=REAL}, #{item.reactivePower,jdbcType=REAL}, #{item.igbtTempA,jdbcType=REAL}, 
+      #{item.igbtTempC,jdbcType=REAL}, #{item.igbtTempB,jdbcType=REAL}, #{item.uPv,jdbcType=REAL}, #{item.uBat,jdbcType=REAL}, 
+      #{item.iPv,jdbcType=REAL}, #{item.iBat2,jdbcType=REAL}, #{item.powerPv,jdbcType=REAL}, #{item.powerBat,jdbcType=REAL}, 
+      #{item.igbtTempPv,jdbcType=REAL}, #{item.igbtTempBat,jdbcType=REAL}, #{item.dailyEnergyPv,jdbcType=REAL}, 
+      #{item.totalEnergyPv,jdbcType=REAL}, #{item.dailyEnergyBatChg,jdbcType=REAL}, #{item.totalEnergyBatChg,jdbcType=REAL}, 
+      #{item.dailyEnergyBatDischg,jdbcType=REAL}, #{item.totalEnergyBatDischg,jdbcType=REAL}, #{item.dailyEnergyIn,jdbcType=REAL}, 
+      #{item.totalEnergyIn,jdbcType=REAL}, #{item.dailyEnergyOut,jdbcType=REAL}, #{item.totalEnergyOut,jdbcType=REAL}
+      )
+    </foreach>  
+  </insert>  
+  
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataPcs">
+    insert into data_pcs
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="plant != null">
+        plant,
+      </if>
+      <if test="dataTime != null">
+        data_time,
+      </if>
+      <if test="uAcA != null">
+        u_ac_a,
+      </if>
+      <if test="uAcB != null">
+        u_ac_b,
+      </if>
+      <if test="uAcC != null">
+        u_ac_c,
+      </if>
+      <if test="iAcA != null">
+        i_ac_a,
+      </if>
+      <if test="iAcB != null">
+        i_ac_b,
+      </if>
+      <if test="iAcC != null">
+        i_ac_c,
+      </if>
+      <if test="frequency != null">
+        frequency,
+      </if>
+      <if test="activePower != null">
+        active_power,
+      </if>
+      <if test="reactivePower != null">
+        reactive_power,
+      </if>
+      <if test="igbtTempA != null">
+        igbt_temp_a,
+      </if>
+      <if test="igbtTempC != null">
+        igbt_temp_c,
+      </if>
+      <if test="igbtTempB != null">
+        igbt_temp_b,
+      </if>
+      <if test="uPv != null">
+        u_pv,
+      </if>
+      <if test="uBat != null">
+        u_bat,
+      </if>
+      <if test="iPv != null">
+        i_pv,
+      </if>
+      <if test="iBat2 != null">
+        i_bat2,
+      </if>
+      <if test="powerPv != null">
+        power_pv,
+      </if>
+      <if test="powerBat != null">
+        power_bat,
+      </if>
+      <if test="igbtTempPv != null">
+        igbt_temp_pv,
+      </if>
+      <if test="igbtTempBat != null">
+        igbt_temp_bat,
+      </if>
+      <if test="dailyEnergyPv != null">
+        daily_energy_pv,
+      </if>
+      <if test="totalEnergyPv != null">
+        total_energy_pv,
+      </if>
+      <if test="dailyEnergyBatChg != null">
+        daily_energy_bat_chg,
+      </if>
+      <if test="totalEnergyBatChg != null">
+        total_energy_bat_chg,
+      </if>
+      <if test="dailyEnergyBatDischg != null">
+        daily_energy_bat_dischg,
+      </if>
+      <if test="totalEnergyBatDischg != null">
+        total_energy_bat_dischg,
+      </if>
+      <if test="dailyEnergyIn != null">
+        daily_energy_in,
+      </if>
+      <if test="totalEnergyIn != null">
+        total_energy_in,
+      </if>
+      <if test="dailyEnergyOut != null">
+        daily_energy_out,
+      </if>
+      <if test="totalEnergyOut != null">
+        total_energy_out,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="uAcA != null">
+        #{uAcA,jdbcType=REAL},
+      </if>
+      <if test="uAcB != null">
+        #{uAcB,jdbcType=REAL},
+      </if>
+      <if test="uAcC != null">
+        #{uAcC,jdbcType=REAL},
+      </if>
+      <if test="iAcA != null">
+        #{iAcA,jdbcType=REAL},
+      </if>
+      <if test="iAcB != null">
+        #{iAcB,jdbcType=REAL},
+      </if>
+      <if test="iAcC != null">
+        #{iAcC,jdbcType=REAL},
+      </if>
+      <if test="frequency != null">
+        #{frequency,jdbcType=REAL},
+      </if>
+      <if test="activePower != null">
+        #{activePower,jdbcType=REAL},
+      </if>
+      <if test="reactivePower != null">
+        #{reactivePower,jdbcType=REAL},
+      </if>
+      <if test="igbtTempA != null">
+        #{igbtTempA,jdbcType=REAL},
+      </if>
+      <if test="igbtTempC != null">
+        #{igbtTempC,jdbcType=REAL},
+      </if>
+      <if test="igbtTempB != null">
+        #{igbtTempB,jdbcType=REAL},
+      </if>
+      <if test="uPv != null">
+        #{uPv,jdbcType=REAL},
+      </if>
+      <if test="uBat != null">
+        #{uBat,jdbcType=REAL},
+      </if>
+      <if test="iPv != null">
+        #{iPv,jdbcType=REAL},
+      </if>
+      <if test="iBat2 != null">
+        #{iBat2,jdbcType=REAL},
+      </if>
+      <if test="powerPv != null">
+        #{powerPv,jdbcType=REAL},
+      </if>
+      <if test="powerBat != null">
+        #{powerBat,jdbcType=REAL},
+      </if>
+      <if test="igbtTempPv != null">
+        #{igbtTempPv,jdbcType=REAL},
+      </if>
+      <if test="igbtTempBat != null">
+        #{igbtTempBat,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergyPv != null">
+        #{dailyEnergyPv,jdbcType=REAL},
+      </if>
+      <if test="totalEnergyPv != null">
+        #{totalEnergyPv,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergyBatChg != null">
+        #{dailyEnergyBatChg,jdbcType=REAL},
+      </if>
+      <if test="totalEnergyBatChg != null">
+        #{totalEnergyBatChg,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergyBatDischg != null">
+        #{dailyEnergyBatDischg,jdbcType=REAL},
+      </if>
+      <if test="totalEnergyBatDischg != null">
+        #{totalEnergyBatDischg,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergyIn != null">
+        #{dailyEnergyIn,jdbcType=REAL},
+      </if>
+      <if test="totalEnergyIn != null">
+        #{totalEnergyIn,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergyOut != null">
+        #{dailyEnergyOut,jdbcType=REAL},
+      </if>
+      <if test="totalEnergyOut != null">
+        #{totalEnergyOut,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataPcs">
+    update data_pcs
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        plant = #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        data_time = #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="uAcA != null">
+        u_ac_a = #{uAcA,jdbcType=REAL},
+      </if>
+      <if test="uAcB != null">
+        u_ac_b = #{uAcB,jdbcType=REAL},
+      </if>
+      <if test="uAcC != null">
+        u_ac_c = #{uAcC,jdbcType=REAL},
+      </if>
+      <if test="iAcA != null">
+        i_ac_a = #{iAcA,jdbcType=REAL},
+      </if>
+      <if test="iAcB != null">
+        i_ac_b = #{iAcB,jdbcType=REAL},
+      </if>
+      <if test="iAcC != null">
+        i_ac_c = #{iAcC,jdbcType=REAL},
+      </if>
+      <if test="frequency != null">
+        frequency = #{frequency,jdbcType=REAL},
+      </if>
+      <if test="activePower != null">
+        active_power = #{activePower,jdbcType=REAL},
+      </if>
+      <if test="reactivePower != null">
+        reactive_power = #{reactivePower,jdbcType=REAL},
+      </if>
+      <if test="igbtTempA != null">
+        igbt_temp_a = #{igbtTempA,jdbcType=REAL},
+      </if>
+      <if test="igbtTempC != null">
+        igbt_temp_c = #{igbtTempC,jdbcType=REAL},
+      </if>
+      <if test="igbtTempB != null">
+        igbt_temp_b = #{igbtTempB,jdbcType=REAL},
+      </if>
+      <if test="uPv != null">
+        u_pv = #{uPv,jdbcType=REAL},
+      </if>
+      <if test="uBat != null">
+        u_bat = #{uBat,jdbcType=REAL},
+      </if>
+      <if test="iPv != null">
+        i_pv = #{iPv,jdbcType=REAL},
+      </if>
+      <if test="iBat2 != null">
+        i_bat2 = #{iBat2,jdbcType=REAL},
+      </if>
+      <if test="powerPv != null">
+        power_pv = #{powerPv,jdbcType=REAL},
+      </if>
+      <if test="powerBat != null">
+        power_bat = #{powerBat,jdbcType=REAL},
+      </if>
+      <if test="igbtTempPv != null">
+        igbt_temp_pv = #{igbtTempPv,jdbcType=REAL},
+      </if>
+      <if test="igbtTempBat != null">
+        igbt_temp_bat = #{igbtTempBat,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergyPv != null">
+        daily_energy_pv = #{dailyEnergyPv,jdbcType=REAL},
+      </if>
+      <if test="totalEnergyPv != null">
+        total_energy_pv = #{totalEnergyPv,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergyBatChg != null">
+        daily_energy_bat_chg = #{dailyEnergyBatChg,jdbcType=REAL},
+      </if>
+      <if test="totalEnergyBatChg != null">
+        total_energy_bat_chg = #{totalEnergyBatChg,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergyBatDischg != null">
+        daily_energy_bat_dischg = #{dailyEnergyBatDischg,jdbcType=REAL},
+      </if>
+      <if test="totalEnergyBatDischg != null">
+        total_energy_bat_dischg = #{totalEnergyBatDischg,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergyIn != null">
+        daily_energy_in = #{dailyEnergyIn,jdbcType=REAL},
+      </if>
+      <if test="totalEnergyIn != null">
+        total_energy_in = #{totalEnergyIn,jdbcType=REAL},
+      </if>
+      <if test="dailyEnergyOut != null">
+        daily_energy_out = #{dailyEnergyOut,jdbcType=REAL},
+      </if>
+      <if test="totalEnergyOut != null">
+        total_energy_out = #{totalEnergyOut,jdbcType=REAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.DataPcs">
+    update data_pcs
+    set device_id = #{deviceId,jdbcType=INTEGER},
+      plant = #{plant,jdbcType=INTEGER},
+      data_time = #{dataTime,jdbcType=BIGINT},
+      u_ac_a = #{uAcA,jdbcType=REAL},
+      u_ac_b = #{uAcB,jdbcType=REAL},
+      u_ac_c = #{uAcC,jdbcType=REAL},
+      i_ac_a = #{iAcA,jdbcType=REAL},
+      i_ac_b = #{iAcB,jdbcType=REAL},
+      i_ac_c = #{iAcC,jdbcType=REAL},
+      frequency = #{frequency,jdbcType=REAL},
+      active_power = #{activePower,jdbcType=REAL},
+      reactive_power = #{reactivePower,jdbcType=REAL},
+      igbt_temp_a = #{igbtTempA,jdbcType=REAL},
+      igbt_temp_c = #{igbtTempC,jdbcType=REAL},
+      igbt_temp_b = #{igbtTempB,jdbcType=REAL},
+      u_pv = #{uPv,jdbcType=REAL},
+      u_bat = #{uBat,jdbcType=REAL},
+      i_pv = #{iPv,jdbcType=REAL},
+      i_bat2 = #{iBat2,jdbcType=REAL},
+      power_pv = #{powerPv,jdbcType=REAL},
+      power_bat = #{powerBat,jdbcType=REAL},
+      igbt_temp_pv = #{igbtTempPv,jdbcType=REAL},
+      igbt_temp_bat = #{igbtTempBat,jdbcType=REAL},
+      daily_energy_pv = #{dailyEnergyPv,jdbcType=REAL},
+      total_energy_pv = #{totalEnergyPv,jdbcType=REAL},
+      daily_energy_bat_chg = #{dailyEnergyBatChg,jdbcType=REAL},
+      total_energy_bat_chg = #{totalEnergyBatChg,jdbcType=REAL},
+      daily_energy_bat_dischg = #{dailyEnergyBatDischg,jdbcType=REAL},
+      total_energy_bat_dischg = #{totalEnergyBatDischg,jdbcType=REAL},
+      daily_energy_in = #{dailyEnergyIn,jdbcType=REAL},
+      total_energy_in = #{totalEnergyIn,jdbcType=REAL},
+      daily_energy_out = #{dailyEnergyOut,jdbcType=REAL},
+      total_energy_out = #{totalEnergyOut,jdbcType=REAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

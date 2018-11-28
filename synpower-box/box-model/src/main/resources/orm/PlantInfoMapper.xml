@@ -1,0 +1,1255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.PlantInfoMapper">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="plantInfoMap"
+		type="com.synpower.bean.PlantInfo">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="plant_name" jdbcType="VARCHAR"
+			property="plantName" />
+		<result column="capacity" jdbcType="DOUBLE" property="capacity" />
+		<result column="capacity_base" jdbcType="DOUBLE" property="capacityBase"/>
+		<result column="unit" jdbcType="VARCHAR" property="unit" />
+		<result column="plant_type_a" jdbcType="INTEGER"
+			property="plantTypeA" />
+		<result column="plant_type_b" jdbcType="INTEGER"
+			property="plantTypeB" />
+		<result column="price_id" jdbcType="INTEGER" property="priceId" />
+		<result column="plant_addr" jdbcType="VARCHAR"
+			property="plantAddr" />
+		<result column="grid_connected_date" jdbcType="BIGINT"
+			property="gridConnectedDate" />
+		<result column="grid_connected_category" jdbcType="VARCHAR"
+			property="gridConnectedCategory" />
+		<result column="loaction" jdbcType="VARCHAR"
+			property="loaction" />
+		<result column="plant_photo" jdbcType="VARCHAR"
+			property="plantPhoto" />
+		<result column="contacts" jdbcType="VARCHAR"
+			property="contacts" />
+		<result column="pids" jdbcType="VARCHAR" property="pids" />
+		<result column="safely_run_start_date" jdbcType="BIGINT"
+			property="safelyRunStartDate" />
+		<result column="org_id" jdbcType="INTEGER" property="orgId" />
+		<result column="pinyin_search" jdbcType="VARCHAR"
+			property="pinyinSearch" />
+		<result column="last_modify_time" jdbcType="BIGINT"
+			property="lastModifyTime" />
+		<result column="last_modify_user" jdbcType="INTEGER"
+			property="lastModifyUser" />
+		<result column="create_time" jdbcType="BIGINT"
+			property="createTime" />
+		<result column="plant_valid" jdbcType="CHAR"
+			property="plantValid" />
+		<result column="plant_status" jdbcType="CHAR"
+			property="plantStatus" />
+		<result column="plant_introduction" jdbcType="VARCHAR"
+			property="plantIntroduction" />
+		<result column="plant_area" jdbcType="INTEGER"
+			property="plantArea" />
+		<result column="plant_full_address" jdbcType="VARCHAR"
+			property="plantFullAddress" />
+		<result column="plant_single_capacity" jdbcType="REAL"
+			property="plantSingleCapacity" />
+		<result column="plant_artificial_capacity" jdbcType="CHAR"
+			property="plantArtificialCapacity" />
+		<result column="plant_automatic_calculation" jdbcType="REAL"
+			property="plantAutomaticCalculation" />
+		<result column="plant_single_capacity" jdbcType="REAL"
+			property="plantSingleCapacity" />
+		<result column="plant_artificial_capacity" jdbcType="CHAR"
+			property="plantArtificialCapacity" />
+		<result column="plant_automatic_calculation" jdbcType="REAL"
+			property="plantAutomaticCalculation" />
+
+		<result column="start_year_elec_value" jdbcType="REAL"
+			property="startYearElecValue" />
+		<result column="start_month_elec_value" jdbcType="REAL"
+			property="startMonthElecValue" />
+		<result column="voltage_changer_capacity" jdbcType="REAL"
+			property="voltageChangerCapacity" />
+		<result column="plant_power_factor_type" jdbcType="CHAR"
+			property="plantPowerFactorType" />
+		<result column="max_factor" jdbcType="REAL"
+			property="maxFactor" />
+		<result column="min_factor" jdbcType="REAL"
+			property="minFactor" />
+
+		<association property="contactUser" javaType="SysUser"
+			select="getUserById" column="contacts">
+		</association>
+		<association property="plantTypeAInfo"
+			javaType="plantTypeA" select="getPlantTypeAInfo"
+			column="plant_type_a">
+		</association>
+		<association property="plantTypeBInfo"
+			javaType="plantTypeB" select="getPlantTypeBInfo"
+			column="plant_type_b">
+		</association>
+		<!-- <collection property="user" javaType="ArrayList" select="com.synpower.dao.SysUserMapper.getUserByUid" 
+			column="id"> </collection> -->
+		<collection property="powerPriceDetails"
+			ofType="SysPowerPriceDetail"
+			select="com.synpower.dao.SysPowerPriceDetailMapper.getPlantPowerPrice"
+			column="price_id">
+		</collection>
+	</resultMap>
+	<resultMap type="Map" id="plantTypeIds">
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="ids" jdbcType="VARCHAR" property="ids" />
+	</resultMap>
+	<select id="getPlantTypeAInfo" parameterType="integer"
+		resultMap="com.synpower.dao.PlantTypeAMapper.BaseResultMap">
+		select * from plant_type_a where id=#{plant_type_a}
+	</select>
+	<select id="getPlantTypeBInfo" parameterType="integer"
+		resultMap="com.synpower.dao.PlantTypeBMapper.BaseResultMap">
+		select * from plant_type_b where id=#{plant_type_b}
+	</select>
+	<select id="getPlantType" parameterType="String"
+		resultType="String">
+		SELECT su.*
+		FROM sys_user su
+		JOIN plant_type pt ON pt.id =
+		sup.user_id
+		JOIN plant_info p ON p.id = sup.plant_id
+		where p.id=#{id}
+		AND p.plant_valid = 0
+	</select>
+	<select id="getPlantTypeB" parameterType="integer"
+		resultType="integer">
+		SELECT plant_type_b FROM plant_info where id=#{pId}
+	</select>
+	<select id="findName" resultMap="plantInfoMap">
+		select plant_name from
+		plant_info where id=#{id}
+	</select>
+	<!-- <update id="updatePlantInfo" parameterType="String" > update plant_info 
+		set unit=#{str} </update> -->
+	<sql id="countDynaSql">
+		<if test=" orgId != null and orgId != ''">
+			AND p.org_id = #{orgId}
+		</if>
+	</sql>
+	<select id="countPlantInfo" parameterType="hashmap"
+		resultType="int">
+		SELECT COUNT(*) FROM plant_info p WHERE p.plant_name LIKE
+		CONCAT(#{plantName},'%') AND
+		p.plant_addr LIKE CONCAT(#{plantAddr},'%')
+		<include refid="countDynaSql" />
+		AND p.org_id IN
+		<foreach collection="countList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<sql id="plantInfoDynaSql">
+		<if test=" orgId != null and orgId != ''">
+			AND p.org_id = #{orgId}
+		</if>
+		<if test="sort != null and sort != ''">
+			<choose>
+				<when test="order != null and order != ''">
+					order by #{sort} #{order}
+				</when>
+				<otherwise>
+					order by #{sort}
+				</otherwise>
+			</choose>
+		</if>
+	</sql>
+	<select id="listPlantInfo" parameterType="hashmap"
+		resultMap="plantInfoMap">
+		SELECT
+		p.id,
+		p.plant_name,
+		p.plant_type,
+		p.capacity,
+		p.unit,
+		p.grid_connected_date
+		FROM plant_info p
+		WHERE p.plant_name LIKE
+		CONCAT(#{plantName},'%')
+		AND p.plant_addr LIKE CONCAT(#{plantAddr},'%')
+		AND p.org_id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<include refid="plantInfoDynaSql" />
+		limit #{min},#{max};
+	</select>
+	<select id="getPlantInfo" parameterType="String"
+		resultMap="plantInfoMap">
+		SELECT
+		p.id,
+		p.plant_name,
+		p.grid_connected_date,
+		p.capacity,
+		p.unit,
+		p.plant_type_a,
+		p.plant_type_b,
+		p.plant_addr,
+		p.create_time,
+		p.loaction,
+		p.plant_full_address,
+		p.plant_area,
+		p.plant_single_capacity,
+		p.plant_status,
+		p.plant_introduction ,
+		p.unit,
+		p.org_id,
+		p.plant_photo,
+		p.price_id,
+		p.contacts
+		FROM plant_info p WHERE p.id = #{id} AND
+		p.plant_valid = 0
+	</select>
+	<select id="getPlantInfoByPage" parameterType="map"
+		resultMap="plantInfoMap">
+		SELECT
+		p.id,
+		p.plant_name,
+		p.plant_addr
+		FROM plant_info p WHERE
+		p.plant_valid = 0 and p.id in
+		<foreach collection="pids" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+		LIMIT #{offset},#{length}
+	</select>
+	<update id="updatePlantInfo"
+		parameterType="com.synpower.bean.PlantInfo">
+		UPDATE plant_info p SET
+		p.plant_name = #{plantName},
+		p.grid_connected_date = #{gridConnectedDate},
+		p.capacity =#{capacity},
+		p.plant_type_a = #{plantTypeA},
+		p.plant_type_b = #{plantTypeB},
+		p.plant_addr = #{plantAddr},
+		p.loaction = #{loaction},
+		p.plant_full_address = #{plantFullAddress},
+		p.plant_area =
+		#{plantArea},
+		p.plant_single_capacity = #{plantSingleCapacity},
+		p.plant_introduction = #{plantIntroduction},
+		p.last_modify_time =
+		#{lastModifyTime},
+		p.last_modify_user = #{lastModifyUser},
+		p.unit =
+		#{unit},
+		p.price_id = #{priceId},
+		p.capacity_base = #{capacityBase}
+		WHERE p.id = #{id}
+	</update>
+	<insert id="insertPlantInfo"
+		parameterType="com.synpower.bean.PlantInfo" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO plant_info(
+			plant_name,
+			grid_connected_date,
+			capacity,
+			unit,
+			plant_type_a,
+			plant_type_b,
+			plant_addr,
+			loaction,
+			contacts,
+			org_id,
+			plant_full_address,
+			plant_area,
+			plant_single_capacity,
+			plant_status,
+			plant_introduction,
+			last_modify_time,
+			last_modify_user,
+			plant_valid,
+			price_id,
+			create_time,
+			capacity_base
+		)
+		VALUES (
+		#{plantName},
+		#{gridConnectedDate},
+		#{capacity},
+		#{unit},
+		#{plantTypeA},
+		#{plantTypeB},
+		#{plantAddr},
+		#{loaction},
+		#{contacts},
+		#{orgId},
+		#{plantFullAddress},
+			#{plantArea},
+			#{plantSingleCapacity},
+			#{plantStatus},
+			#{plantIntroduction},
+			#{lastModifyTime},
+			#{lastModifyUser},
+			#{plantValid},
+			#{priceId},
+			#{createTime},
+			#{capacityBase}
+		)
+	</insert>
+	<select id="getPlantTotal" parameterType="hashmap"
+		resultType="int">
+		SELECT count(*)
+		FROM plant_info p
+		WHERE p.plant_valid = 0
+		AND
+		p.plant_status = 1
+		AND p.org_id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getTotalCapacity" parameterType="hashmap"
+		resultType="String">
+		SELECT SUM(p.capacity)
+		FROM plant_info p
+		WHERE p.plant_valid = 0
+		AND
+		p.plant_status = 1
+		AND p.org_id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="listPlantDistribution" parameterType="hashmap"
+		resultMap="allInfo">
+		SELECT sum(capacity),area_name FROM
+		(
+		SELECT
+		p.id,
+		(
+		CASE p.unit
+		WHEN 'MW'
+		THEN
+		CAST( p.capacity * 1000 AS DECIMAL(8,2))
+		ELSE
+		p.capacity
+		END
+		)
+		capacity,
+		sa.area_name
+		FROM
+		plant_info p JOIN sys_address sa ON p.id =
+		sa.plant_id
+		WHERE sa.`level` = #{level} AND sa.plant_id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		) temp
+		GROUP BY area_name
+	</select>
+	<select id="listPlantDistributionByPlantId" parameterType="list"
+		resultMap="allInfo">
+		SELECT sum(capacity),area_name FROM
+		(
+		SELECT
+		p.id,
+		(
+		CASE p.unit
+		WHEN 'MW'
+		THEN
+		CAST( p.capacity * 1000 AS DECIMAL(8,2))
+		ELSE
+		p.capacity
+		END
+		)
+		capacity,
+		sa.area_name
+		FROM
+		plant_info p JOIN sys_address sa ON p.id =
+		sa.plant_id
+		WHERE sa.`level` = 2 AND p.id IN
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+		) temp
+		GROUP BY area_name
+	</select>
+	<resultMap id="allInfo" type="java.util.HashMap">
+		<result column="sum(capacity)" property="sum"
+			jdbcType="VARCHAR" />
+		<result column="area_name" property="name" jdbcType="VARCHAR" />
+	</resultMap>
+	<update id="updatePlantAddr" parameterType="hashmap">
+		UPDATE sys_address
+		ssa SET
+		ssa.area_name = #{areaName},
+		ssa.location_x = #{locationX},
+		ssa.location_y = #{locationY}
+		WHERE ssa.plant_id = #{id} AND
+		ssa.`level` = #{level}
+	</update>
+	<insert id="insertPlantAddr" parameterType="hashmap">
+		INSERT INTO
+		sys_address(
+		plant_id,
+		area_name,
+		location_x,
+		location_y,
+		level
+		) VALUES (
+		#{plantId},
+		#{areaName},
+		#{locationX},
+		#{locationY},
+		#{level}
+		)
+	</insert>
+	<select id="getPlantNameById" parameterType="String"
+		resultMap="plantInfoMap">
+		select p.plant_name from plant_info p where p.id = #{id}
+	</select>
+	<select id="getPNameByPId" parameterType="String"
+		resultType="String">
+		select p.plant_name from plant_info p where p.id = #{pId}
+	</select>
+	<select id="getTotalArea" parameterType="hashmap"
+		resultType="String">
+		SELECT SUM(p.plant_area)
+		FROM plant_info p
+		WHERE p.plant_valid = 0
+		AND
+		p.plant_status = 1
+		AND p.id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getPlantDistribution" parameterType="String"
+		resultMap="plantInfoMap">
+		select p.capacity,p.plant_area from plant_info p
+		join sys_org
+		o on o.id=p.org_id
+		where o.id=#{orgId} and o.org_valid=0 and
+		p.plant_valid=0
+	</select>
+
+	<select id="getCapacityList" parameterType="hashmap"
+		resultType="String">
+		SELECT ROUND(capacity/plant_single_capacity,0) as Pcount
+		FROM
+		plant_info p
+		WHERE p.plant_status = 1 AND p.plant_valid = 0 AND
+		p.org_id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="getAllPlant" parameterType="hashmap"
+		resultType="Map">
+		SELECT p.id,p.loaction,p.plant_name from plant_info p
+	</select>
+	<select id="getScreenPlantCount" parameterType="hashmap"
+		resultMap="plantInfoMap">
+		SELECT *
+		FROM plant_info p
+		WHERE p.plant_valid = 0
+		AND p.plant_status = 1
+		AND p.org_id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="getIdByName" parameterType="String"
+		resultType="String">
+		SELECT p.id FROM plant_info p
+		WHERE p.plant_status = 1 AND
+		p.plant_valid = 0 AND p.plant_name =
+		#{plantName}
+	</select>
+
+	<select id="getAreaPlant" resultMap="plantInfoMap">
+		SELECT
+		p.id,
+		p.plant_name,
+		p.loaction
+		FROM plant_info p WHERE
+		p.plant_valid = 0 AND p.org_id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getPlantList" resultMap="plantInfoMap">
+		SELECT
+		p.id,
+		p.loaction
+		FROM
+		plant_info p WHERE p.plant_valid !=1
+	</select>
+	<select id="getPhotosByPid" parameterType="int"
+		resultMap="com.synpower.dao.SysPhotoMapper.BaseResultMap">
+		SELECT * from plant_info plant join sys_photo photo on
+		plant.id=photo.plant_id
+	</select>
+	<select id="getPlantsForOrg" parameterType="int"
+		resultType="int">
+		select id from plant_info where plant_valid=0
+		<foreach collection="list" item="orgId"
+			open=" and org_id IN (" close=")" separator=",">
+			#{orgId}
+		</foreach>
+	</select>
+	<select id="getNowPlants" parameterType="map"
+		resultMap="plantInfoMap">
+		SELECT
+		p.id,
+		p.plant_name,
+		p.loaction
+		FROM plant_info p WHERE
+		p.plant_valid = 0 AND p.id IN
+		<foreach collection="list" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</select>
+	<select id="getLocation" parameterType="String"
+		resultType="String">
+		SELECT p.loaction
+		FROM plant_info p WHERE p.plant_valid = 0
+		AND p.id=#{plantId}
+	</select>
+
+	<select id="getPList" parameterType="map" resultType="integer">
+		SELECT p.id FROM plant_info p WHERE
+		<if test="v1 != null and v1 != ''">
+			p.capacity &gt;= #{v1} and
+		</if>
+		<if test="v2 != null and v2 != ''">
+			p.capacity &lt;= #{v2} and
+		</if>
+		<if test="condition != null and condition != ''">
+			p.plant_name LIKE CONCAT('%',#{condition},'%') or
+			p.plant_addr LIKE
+			CONCAT('%',#{condition},'%') and
+		</if>
+		p.plant_valid = 0 AND p.id IN
+		<foreach collection="list" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</select>
+	<select id="getPListWithUKW" parameterType="map"
+		resultType="integer">
+		SELECT p.id FROM plant_info p WHERE
+		<if test="v1 != null and v1 != ''">
+			p.capacity &gt;= #{v1} and
+		</if>
+		<if test="v2 != null and v2 != ''">
+			p.capacity &lt;= #{v2} and
+		</if>
+		<if test="condition != null and condition != ''">
+			p.plant_name LIKE CONCAT('%',#{condition},'%') or
+			p.plant_addr LIKE
+			CONCAT('%',#{condition},'%') and
+		</if>
+		p.plant_valid = 0 AND p.id=#{id}
+	</select>
+	<select id="getPListWithUMW" parameterType="map"
+		resultType="integer">
+		SELECT p.id FROM plant_info p WHERE
+		<if test="v1 != null and v1 != ''">
+			p.capacity*1000 &gt;= #{v1} and
+		</if>
+		<if test="v2 != null and v2 != ''">
+			p.capacity*1000 &lt;= #{v2} and
+		</if>
+		<if test="condition != null and condition != ''">
+			p.plant_name LIKE CONCAT('%',#{condition},'%') or
+			p.plant_addr LIKE
+			CONCAT('%',#{condition},'%') and
+		</if>
+		p.plant_valid = 0 AND p.id=#{id}
+	</select>
+	<select id="getPListWithUGW" parameterType="map"
+		resultType="integer">
+		SELECT p.id FROM plant_info p WHERE
+		<if test="v1 != null and v1 != ''">
+			p.capacity*1000000 &gt;= #{v1} and
+		</if>
+		<if test="v2 != null and v2 != ''">
+			p.capacity*1000000 &lt;= #{v2} and
+		</if>
+		<if test="condition != null and condition != ''">
+			p.plant_name LIKE CONCAT('%',#{condition},'%') or
+			p.plant_addr LIKE
+			CONCAT('%',#{condition},'%') and
+		</if>
+		p.plant_valid = 0 AND p.id=#{id}
+	</select>
+	<select id="getPListOutCon" parameterType="map"
+		resultType="integer">
+		SELECT p.id FROM plant_info p WHERE
+		<if test="v1 != null">
+			p.capacity &gt;= #{v1} and
+		</if>
+		<if test="v2 != null">
+			p.capacity &lt;= #{v2} and
+		</if>
+		p.plant_valid = 0 AND p.id IN
+		<foreach collection="list" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</select>
+	<select id="getEachPlantInfo" parameterType="map"
+		resultMap="plantInfoMap">
+		SELECT p.id,p.plant_name,p.plant_addr,p.capacity,p.unit,p.loaction
+		FROM plant_info p WHERE
+		p.plant_valid = 0 AND p.id IN
+		<foreach collection="list" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+		ORDER BY
+		<choose>
+			<when test="order != null and order != ''">
+				#{order}
+			</when>
+			<otherwise>
+				p.capacity DESC
+			</otherwise>
+		</choose>
+	</select>
+	<select id="getEachPlantInfoPage" parameterType="map"
+		resultMap="plantInfoMap">
+		SELECT * FROM plant_info p WHERE
+		p.plant_valid = 0 AND
+		p.plant_type_a=#{plantTypeA} AND p.id IN
+		<foreach collection="list" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+		ORDER BY p.id LIMIT #{offset},#{length}
+	</select>
+	<select id="getTotalCount" parameterType="map"
+		resultType="integer">
+		SELECT IFNULL(count(*),0) FROM plant_info p WHERE
+		p.plant_valid = 0 AND
+		p.plant_type_a=#{plantTypeA} AND p.id IN
+		<foreach collection="list" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</select>
+	<select id="getPlantsByCon" parameterType="map"
+		resultMap="plantInfoMap">
+		SELECT
+		p.id,p.plant_name,p.plant_addr,p.capacity,p.loaction,p.plant_photo,p.unit
+		FROM plant_info p WHERE
+		p.plant_valid = 0 AND
+		<if test="keyword != null and keyword != ''">
+			p.plant_name LIKE CONCAT('%',#{keyword},'%') or
+			p.plant_addr LIKE
+			CONCAT('%',#{keyword},'%') and
+		</if>
+		<foreach collection="list" item="id" open=" p.id IN ("
+			separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+
+	<select id="getPlantsByStatus" parameterType="map"
+		resultMap="plantInfoMap">
+		SELECT p.id,p.plant_name,p.plant_addr,p.capacity,p.loaction,p.unit
+		FROM plant_info p WHERE
+		p.plant_valid = 0 AND p.id IN
+		<foreach collection="statusList" item="id" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+		ORDER BY p.capacity DESC
+	</select>
+	<select id="getPlantsByStatus2" parameterType="map"
+		resultMap="plantInfoMap">
+		SELECT * FROM plant_info p WHERE
+		p.plant_valid = 0 AND p.id IN
+		<foreach collection="statusList" item="id" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+		ORDER BY p.id LIMIT #{offset},#{length}
+	</select>
+	<select id="getPlantsByStatus2Count" parameterType="map"
+		resultType="int">
+		SELECT count(*) FROM plant_info p WHERE
+		p.plant_valid = 0 AND p.id IN
+		<foreach collection="statusList" item="id" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+	<select id="getPlantsNoStatusAndType" parameterType="map"
+		resultMap="plantInfoMap">
+		SELECT * FROM plant_info p WHERE
+		p.plant_valid = 0 AND p.id IN
+		<foreach collection="statusList" item="id" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+		LIMIT #{offset},#{length}
+	</select>
+	<select id="getPlantsGroupByType" parameterType="map"
+		resultMap="plantInfoMap">
+		SELECT * FROM plant_info p WHERE
+		p.plant_valid = 0 AND p.id IN
+		<foreach collection="typeBList" item="id" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+		LIMIT #{offset},#{length}
+	</select>
+	<select id="getCreateTime" parameterType="hashmap"
+		resultMap="createTimeMap">
+		SELECT MIN(FROM_UNIXTIME(p.create_time/1000,'%Y-%m-%d')) create_time
+		FROM plant_info p WHERE p.id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<resultMap id="createTimeMap" type="java.util.HashMap">
+		<result column="create_time" property="time" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getCreateTimeByMon" parameterType="hashmap"
+		resultMap="createTimeMap">
+		SELECT MIN(FROM_UNIXTIME(p.create_time/1000,'%Y-%m')) create_time FROM
+		plant_info p WHERE p.id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getCreateTimeByYear" parameterType="hashmap"
+		resultMap="createTimeMap">
+		SELECT MIN(FROM_UNIXTIME(p.create_time/1000,'%Y')) create_time FROM
+		plant_info p WHERE p.id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getCreateTimeById" parameterType="hashmap"
+		resultMap="createTimeMap">
+		SELECT FROM_UNIXTIME(p.create_time/1000,#{date}) create_time
+		FROM plant_info
+		p WHERE p.id = #{plantId}
+	</select>
+	<select id="getUserById" parameterType="String"
+		resultMap="com.synpower.dao.SysUserMapper.BaseResultMap">
+		<choose>
+			<when test="_parameter !=null ">
+				select * from sys_user s where id=#{contacts}
+			</when>
+			<otherwise>
+				select null from dual
+			</otherwise>
+		</choose>
+	</select>
+	<select id="getPlantByName" parameterType="Map"
+		resultMap="plantInfoMap">
+		SELECT id,plant_name from plant_info where plant_name like
+		CONCAT('%',#{plantName},'%') and plant_valid=0
+		<foreach collection="list" item="plantId" open=" and id IN ("
+			close=")" separator=",">
+			#{plantId}
+		</foreach>
+	</select>
+	<select id="getPlantCount2" parameterType="list"
+		resultType="integer">
+		SELECT count(*) from plant_info where plant_valid=0
+		<foreach collection="list" item="plantId" open=" and id IN ("
+			close=")" separator=",">
+			#{plantId}
+		</foreach>
+	</select>
+	<select id="getCapacityUnit" parameterType="list"
+		resultMap="plantInfoMap">
+		SELECT p.id,p.capacity,p.unit FROM plant_info p WHERE p.plant_valid=0
+		and p.org_id IN
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getCapacityUnit2" parameterType="list"
+		resultMap="plantInfoMap">
+		SELECT p.id,p.capacity,p.unit FROM plant_info p WHERE p.plant_valid=0
+		and p.id IN
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getPlantsForSearch" parameterType="String"
+		resultMap="plantInfoMap">
+		select * from (
+		SELECT
+		p.id,plant_name,plant_addr,u.user_name,u.user_tel,p.create_time from
+		plant_info p left join sys_user u on p.contacts=u.id where plant_name
+		like CONCAT('%',#{plantName},'%') and plant_valid=0
+		UNION
+		SELECT
+		p.id,plant_name,plant_addr,u.user_name,u.user_tel,p.create_time from
+		plant_info p left join sys_user u on p.contacts=u.id where plant_addr
+		like CONCAT('%',#{plantName},'%') and plant_valid=0
+		UNION
+		SELECT
+		p.id,plant_name,plant_addr,u.user_name,u.user_tel,p.create_time from
+		plant_info p left join sys_user u on p.contacts=u.id where user_tel
+		like CONCAT('%',#{plantName},'%') and plant_valid=0
+		UNION
+		SELECT
+		p.id,plant_name,plant_addr,u.user_name,u.user_tel,p.create_time from
+		plant_info p left join sys_user u on p.contacts=u.id where user_name
+		like CONCAT('%',#{plantName},'%') and plant_valid=0
+		UNION
+		SELECT
+		p.id,plant_name,plant_addr,u.user_name,u.user_tel,p.create_time from
+		plant_info p left join sys_user u on p.contacts=u.id where
+		p.pinyin_search like CONCAT('%',#{plantName},'%') and plant_valid=0
+		) a
+		where 1=1
+		<foreach collection="list" item="plantId" open=" and id IN ("
+			close=")" separator=",">
+			#{plantId}
+		</foreach>
+	</select>
+	<select id="getPlantsForSearchStoredOnly" parameterType="String"
+		resultMap="plantInfoMap">
+		select * from (
+		SELECT
+		p.id,plant_name,plant_addr,u.user_name,u.user_tel,p.create_time,p.plant_type_a
+		from plant_info p left join sys_user u on p.contacts=u.id where
+		plant_name like CONCAT('%',#{plantName},'%') and plant_valid=0
+		UNION
+		SELECT
+		p.id,plant_name,plant_addr,u.user_name,u.user_tel,p.create_time,p.plant_type_a
+		from plant_info p left join sys_user u on p.contacts=u.id where
+		plant_addr like CONCAT('%',#{plantName},'%') and plant_valid=0
+		UNION
+		SELECT
+		p.id,plant_name,plant_addr,u.user_name,u.user_tel,p.create_time,p.plant_type_a
+		from plant_info p left join sys_user u on p.contacts=u.id where
+		user_tel like CONCAT('%',#{plantName},'%') and plant_valid=0
+		UNION
+		SELECT
+		p.id,plant_name,plant_addr,u.user_name,u.user_tel,p.create_time,p.plant_type_a
+		from plant_info p left join sys_user u on p.contacts=u.id where
+		user_name like CONCAT('%',#{plantName},'%') and plant_valid=0
+		UNION
+		SELECT
+		p.id,plant_name,plant_addr,u.user_name,u.user_tel,p.create_time,p.plant_type_a
+		from plant_info p left join sys_user u on p.contacts=u.id where
+		p.pinyin_search like CONCAT('%',#{plantName},'%') and plant_valid=0
+		) a
+		where 1=1 and plant_type_a=2
+		<foreach collection="list" item="plantId" open=" and id IN ("
+			close=")" separator=",">
+			#{plantId}
+		</foreach>
+	</select>
+	<select id="getPlantsForUser" parameterType="list"
+		resultType="integer">
+		select id FROM plant_info p WHERE p.plant_valid=0 and p.org_id IN
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getPlantByIds" parameterType="list"
+		resultMap="plantInfoMap">
+		select * from plant_info where plant_valid=0
+		<foreach collection="list" index="index" item="item"
+			open=" and id in (" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getPlantByIdsSolarOnly" parameterType="list"
+		resultMap="plantInfoMap">
+		select * from plant_info where plant_valid=0 and plant_type_a=1
+		<foreach collection="list" index="index" item="item"
+			open=" and id in (" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getPlantByIdsStoredOnly" parameterType="list"
+		resultMap="plantInfoMap">
+		select * from plant_info where plant_valid=0 and plant_type_a=2
+		<foreach collection="list" index="index" item="item"
+			open=" and id in (" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getPlantById" parameterType="String"
+			resultMap="plantInfoMap">
+		select
+			p.id,
+			p.plant_name,
+			p.capacity,
+			p.unit,
+			p.plant_type_a,
+			p.plant_addr,
+			p.loaction,
+			p.plant_full_address,
+			p.plant_area,
+			p.plant_single_capacity,
+			p.plant_status,
+			p.plant_introduction,
+			p.unit,
+			p.plant_photo,
+			p.price_id,
+			p.capacity_base,
+			u.user_name contacts,
+			u.user_tel contectsTel
+		from plant_info p
+			LEFT JOIN sys_user u ON p.contacts = u.id
+		where p.id = #{plantId} AND
+			  plant_valid = 0
+	</select>
+	<select id="getPlantByOrgId" parameterType="String"
+		resultMap="plantInfoMap">
+		SELECT * FROM plant_info p WHERE p.org_id =#{orgId} AND
+		plant_valid = 0
+	</select>
+	<select id="getPlantByOrgIdTree" parameterType="String"
+		resultMap="plantInfoMap">
+		SELECT * FROM plant_info p WHERE p.org_id IN
+		<foreach collection="reList" index="index" item="item"
+			open=" (" separator="," close=")">
+			#{item}
+		</foreach>
+		AND plant_valid = 0
+	</select>
+	<select id="getToutPlants" parameterType="map" resultMap="nextC">
+		select
+		contacts,group_concat(CAST(id as char)) from plant_info where
+		plant_valid=0 and plant_status=1 group by contacts
+	</select>
+	<resultMap id="nextC" type="java.util.HashMap">
+		<result column="contacts" property="contacts"
+			jdbcType="VARCHAR" />
+		<result column="group_concat(CAST(id as char))" property="pids"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getPlantInfoByOrgId" parameterType="String"
+		resultMap="plantInfoMap">
+		SELECT * FROM plant_info p WHERE p.org_id =#{orgId} AND
+		plant_valid = 0
+	</select>
+	<select id="getPlantByOrgIds" parameterType="hashmap"
+		resultMap="plantInfoMap">
+		SELECT * FROM plant_info p WHERE plant_valid = 0
+		<foreach collection="reList" index="index" item="item"
+			open=" and p.org_id IN (" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getPhoto" parameterType="String" resultType="String">
+		SELECT
+		p.plant_photo FROM plant_info p WHERE p.id =#{plantId}
+	</select>
+	<update id="insertPlantPhoto" parameterType="hashmap">
+		UPDATE plant_info p
+		SET
+		p.plant_photo = #{url} WHERE p.id = #{plantId} and p.plant_valid=0
+		and
+		p.plant_status=1
+	</update>
+	<delete id="deletePlantPhoto" parameterType="hashmap">
+		DELETE p.plant_photo
+		FROM plant_info p WHERE p.id =#{plantId} and
+		p.plant_valid=0 and
+		p.plant_status=1
+	</delete>
+	<update id="updatePlantInfoSelective" parameterType="plantInfo">
+		update plant_info
+		<set>
+			<if test="plantName != null">
+				plant_name = #{plantName,jdbcType=VARCHAR},
+			</if>
+			<if test="capacity != null">
+				capacity = #{capacity,jdbcType=DOUBLE},
+			</if>
+			<if test="unit != null">
+				unit = #{unit,jdbcType=VARCHAR},
+			</if>
+			<if test="plantTypeA != null">
+				plant_type_a = #{plantTypeA,jdbcType=INTEGER},
+			</if>
+			<if test="plantTypeB != null">
+				plant_type_b = #{plantTypeB,jdbcType=INTEGER},
+			</if>
+			<if test="priceId != null">
+				price_id = #{priceId,jdbcType=INTEGER},
+			</if>
+			<if test="plantAddr != null">
+				plant_addr = #{plantAddr,jdbcType=VARCHAR},
+			</if>
+			<if test="gridConnectedDate != null">
+				grid_connected_date =
+				#{gridConnectedDate,jdbcType=BIGINT},
+			</if>
+			<if test="gridConnectedCategory != null">
+				grid_connected_category =
+				#{gridConnectedCategory,jdbcType=VARCHAR},
+			</if>
+			<if test="loaction != null">
+				loaction = #{loaction,jdbcType=VARCHAR},
+			</if>
+			<if test="plantPhoto != null">
+				plant_photo = #{plantPhoto,jdbcType=VARCHAR},
+			</if>
+			<if test="contacts != null">
+				contacts = #{contacts,jdbcType=VARCHAR},
+			</if>
+			<if test="safelyRunStartDate != null">
+				safely_run_start_date =
+				#{safelyRunStartDate,jdbcType=BIGINT},
+			</if>
+			<if test="orgId != null">
+				org_id = #{orgId,jdbcType=INTEGER},
+			</if>
+			<if test="pinyinSearch != null">
+				pinyin_search = #{pinyinSearch,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModifyTime != null">
+				last_modify_time = #{lastModifyTime,jdbcType=BIGINT},
+			</if>
+			<if test="lastModifyUser != null">
+				last_modify_user = #{lastModifyUser,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="plantValid != null">
+				plant_valid = #{plantValid,jdbcType=CHAR},
+			</if>
+			<if test="plantStatus != null">
+				plant_status = #{plantStatus,jdbcType=CHAR},
+			</if>
+			<if test="plantIntroduction != null">
+				plant_introduction =
+				#{plantIntroduction,jdbcType=VARCHAR},
+			</if>
+			<if test="plantArea != null">
+				plant_area = #{plantArea,jdbcType=INTEGER},
+			</if>
+			<if test="plantFullAddress != null">
+				plant_full_address =
+				#{plantFullAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="plantSingleCapacity != null">
+				plant_single_capacity =
+				#{plantSingleCapacity,jdbcType=REAL},
+			</if>
+			<if test="capacityBase != null">
+				capacity_base =
+				#{capacityBase,jdbcType=DOUBLE},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<insert id="insertPlantSelective" useGeneratedKeys="true"
+		keyProperty="id" parameterType="com.synpower.bean.PlantInfo">
+		insert into plant_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="plantName != null">
+				plant_name,
+			</if>
+			<if test="capacity != null">
+				capacity,
+			</if>
+			<if test="unit != null">
+				unit,
+			</if>
+			<if test="plantTypeA != null">
+				plant_type_a,
+			</if>
+			<if test="plantTypeB != null">
+				plant_type_b,
+			</if>
+			<if test="priceId != null">
+				price_id,
+			</if>
+			<if test="plantAddr != null">
+				plant_addr,
+			</if>
+			<if test="gridConnectedDate != null">
+				grid_connected_date,
+			</if>
+			<if test="gridConnectedCategory != null">
+				grid_connected_category,
+			</if>
+			<if test="loaction != null">
+				loaction,
+			</if>
+			<if test="plantPhoto != null">
+				plant_photo,
+			</if>
+			<if test="contacts != null">
+				contacts,
+			</if>
+			<if test="safelyRunStartDate != null">
+				safely_run_start_date,
+			</if>
+			<if test="orgId != null">
+				org_id,
+			</if>
+			<if test="pinyinSearch != null">
+				pinyin_search,
+			</if>
+			<if test="lastModifyTime != null">
+				last_modify_time,
+			</if>
+			<if test="lastModifyUser != null">
+				last_modify_user,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="plantValid != null">
+				plant_valid,
+			</if>
+			<if test="plantStatus != null">
+				plant_status,
+			</if>
+			<if test="plantIntroduction != null">
+				plant_introduction,
+			</if>
+			<if test="plantArea != null">
+				plant_area,
+			</if>
+			<if test="plantFullAddress != null">
+				plant_full_address,
+			</if>
+			<if test="plantSingleCapacity != null">
+				plant_single_capacity,
+			</if>
+			<if test="capacityBase != null">
+				capacity_base,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="plantName != null">
+				#{plantName,jdbcType=VARCHAR},
+			</if>
+			<if test="capacity != null">
+				#{capacity,jdbcType=DOUBLE},
+			</if>
+			<if test="unit != null">
+				#{unit,jdbcType=VARCHAR},
+			</if>
+			<if test="plantTypeA != null">
+				#{plantTypeA,jdbcType=INTEGER},
+			</if>
+			<if test="plantTypeB != null">
+				#{plantTypeB,jdbcType=INTEGER},
+			</if>
+			<if test="priceId != null">
+				#{priceId,jdbcType=INTEGER},
+			</if>
+			<if test="plantAddr != null">
+				#{plantAddr,jdbcType=VARCHAR},
+			</if>
+			<if test="gridConnectedDate != null">
+				#{gridConnectedDate,jdbcType=BIGINT},
+			</if>
+			<if test="gridConnectedCategory != null">
+				#{gridConnectedCategory,jdbcType=VARCHAR},
+			</if>
+			<if test="loaction != null">
+				#{loaction,jdbcType=VARCHAR},
+			</if>
+			<if test="plantPhoto != null">
+				#{plantPhoto,jdbcType=VARCHAR},
+			</if>
+			<if test="contacts != null">
+				#{contacts,jdbcType=VARCHAR},
+			</if>
+			<if test="safelyRunStartDate != null">
+				#{safelyRunStartDate,jdbcType=BIGINT},
+			</if>
+			<if test="orgId != null">
+				#{orgId,jdbcType=INTEGER},
+			</if>
+			<if test="pinyinSearch != null">
+				#{pinyinSearch,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModifyTime != null">
+				#{lastModifyTime,jdbcType=BIGINT},
+			</if>
+			<if test="lastModifyUser != null">
+				#{lastModifyUser,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="plantValid != null">
+				#{plantValid,jdbcType=CHAR},
+			</if>
+			<if test="plantStatus != null">
+				#{plantStatus,jdbcType=CHAR},
+			</if>
+			<if test="plantIntroduction != null">
+				#{plantIntroduction,jdbcType=VARCHAR},
+			</if>
+			<if test="plantArea != null">
+				#{plantArea,jdbcType=INTEGER},
+			</if>
+			<if test="plantFullAddress != null">
+				#{plantFullAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="plantSingleCapacity != null">
+				#{plantSingleCapacity,jdbcType=REAL},
+			</if>
+			<if test="capacityBase != null">
+				#{capacityBase,jdbcType=DOUBLE},
+			</if>
+		</trim>
+	</insert>
+	<update id="updatePlantPhotoNull" parameterType="String">
+		UPDATE
+		plant_info p SET p.plant_photo = NULL WHERE p.id = #{plantId}
+	</update>
+	<select id="getPlantIdsByType" resultMap="plantTypeIds">
+		SELECT pi.plant_type_a
+		type,GROUP_CONCAT(pi.id) ids from plant_info pi where
+		pi.plant_valid='0' GROUP BY pi.plant_type_a
+	</select>
+	<select id="getPlantLocation" parameterType="String"
+		resultMap="plantInfoMap">
+		SELECT * FROM plant_info WHERE loaction = #{location}
+	</select>
+	<update id="updatePlantPrice" parameterType="plantInfo">
+		UPDATE plant_info p
+		SET p.price_id = #{priceId} WHERE p.id = #{id}
+	</update>
+
+	<select id="getDefautIdList" resultType="int">
+		SELECT id
+		FROM plant_info
+		ORDER BY id ASC;
+	</select>
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DataBoxChangeMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DataBoxChange">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="running_status" jdbcType="TINYINT" property="runningStatus" />
+    <result column="inner_temperature" jdbcType="REAL" property="innerTemperature" />
+    <result column="u_ac_a" jdbcType="REAL" property="uAcA" />
+    <result column="u_ac_b" jdbcType="REAL" property="uAcB" />
+    <result column="u_ac_c" jdbcType="REAL" property="uAcC" />
+    <result column="u_line_ab" jdbcType="REAL" property="uLineAb" />
+    <result column="u_line_bc" jdbcType="REAL" property="uLineBc" />
+    <result column="u_line_ca" jdbcType="REAL" property="uLineCa" />
+    <result column="i_ac_a" jdbcType="REAL" property="iAcA" />
+    <result column="i_ac_b" jdbcType="REAL" property="iAcB" />
+    <result column="i_ac_c" jdbcType="REAL" property="iAcC" />
+    <result column="active_power" jdbcType="REAL" property="activePower" />
+    <result column="reactive_power" jdbcType="REAL" property="reactivePower" />
+    <result column="power_factor" jdbcType="REAL" property="powerFactor" />
+    <result column="frequency" jdbcType="REAL" property="frequency" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, plant, data_time, running_status, inner_temperature, u_ac_a, u_ac_b, 
+    u_ac_c, u_line_ab, u_line_bc, u_line_ca, i_ac_a, i_ac_b, i_ac_c, active_power, reactive_power, 
+    power_factor, frequency
+  </sql>
+  <!-- <include refid="Base_Column_List" /> -->
+  <select id="getVoltageAndPower" parameterType="map" resultMap="BaseResultMap">
+  	SELECT active_power,u_line_ab,u_line_bc,u_line_ca,data_time FROM data_box_change WHERE device_id = #{deviceId} AND FROM_UNIXTIME(data_time/1000,'%Y-%m-%d') =#{dataTime} order by data_time
+  </select>
+</mapper>

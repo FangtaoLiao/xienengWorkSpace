@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:int-mqtt="http://www.springframework.org/schema/integration/mqtt"
+	xsi:schemaLocation="  
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.1.xsd  
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd  
+        http://www.springframework.org/schema/integration/mqtt http://www.springframework.org/schema/integration/mqtt/spring-integration-mqtt-4.1.xsd  
+        http://www.springframework.org/schema/context  
+        http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+	<context:property-placeholder
+		location="classpath:spring-quartz.properties"
+		ignore-unresolvable="true" />
+	<!-- ******************************************************* -->
+	<!-- spring自动任务调度器配置 -->
+	<!-- 任务配置列表 -->
+	<!-- For times when you need more complex processing, passing data to the 
+		scheduled job -->
+	<bean name="dataSaveTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.synpowertech.dataCollectionJar.timedTask.DataSaveTask" />
+		<property name="name" value="dataSaveTask" />
+		<!-- 指定job的分组 -->
+		<property name="group" value="EXTJWEB_JOBGROUP_NAME" />
+		<!-- 必须设置为true，如果为false，当没有活动的触发器与之关联时会在调度器中删除该任务 -->
+		<property name="durability" value="true" />
+	</bean>
+	<!-- 触发器配置 时间指定 -->
+	<!--定时将设备的遥测数据按设备的不同类别存入数据库不同表 -->
+	<bean id="trigger4dataSave"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="dataSaveTask"></property>
+		<!-- cron表达式 -->
+		<property name="cronExpression"
+			value="${quartz.dataSaveCron}"></property>
+		<!-- 指定Trigger的名称 -->
+		<property name="name" value="trigger4dataSave" />
+		<!-- 指定Trigger组的名称 -->
+		<property name="group" value="EXTJWEB_TRIGGERGROUP_NAME" />
+	</bean>
+	<!-- ******************************************************* -->
+
+	<bean name="syncTimeTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.synpowertech.dataCollectionJar.timedTask.SyncTimeTask" />
+		<property name="name" value="syncTimeTask" />
+		<!-- 指定job的分组 -->
+		<property name="group" value="EXTJWEB_JOBGROUP_NAME" />
+		<!-- 必须设置为true，如果为false，当没有活动的触发器与之关联时会在调度器中删除该任务 -->
+		<property name="durability" value="true" />
+	</bean>
+	<!--定时与数据采集节点下设备对时，保证数据实时性，同时记录使用60ktl点表设备今天日发电量 -->
+	<bean id="trigger4syncTime"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="syncTimeTask"></property>
+		<!-- cron表达式 -->
+		<property name="cronExpression"
+			value="${quartz.syncTimeCron}"></property>
+		<!-- 指定Trigger的名称 -->
+		<property name="name" value="trigger4syncTime" />
+		<!-- 指定Trigger组的名称 -->
+		<property name="group" value="EXTJWEB_TRIGGERGROUP_NAME" />
+	</bean>
+	<!-- ******************************************************* -->
+	<bean name="cleanLogTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.synpowertech.dataCollectionJar.timedTask.CleanLogTask" />
+		<property name="name" value="cleanLogTask" />
+		<!-- 指定job的分组 -->
+		<property name="group" value="EXTJWEB_JOBGROUP_NAME" />
+		<!-- 必须设置为true，如果为false，当没有活动的触发器与之关联时会在调度器中删除该任务 -->
+		<property name="durability" value="true" />
+	</bean>
+
+	<bean id="trigger4cleanLog"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="cleanLogTask"></property>
+		<!-- cron表达式 -->
+		<property name="cronExpression"
+			value="${quartz.cleanLogCron}"></property>
+		<!-- 指定Trigger的名称 -->
+		<property name="name" value="trigger4cleanLog" />
+		<!-- 指定Trigger组的名称 -->
+		<property name="group" value="EXTJWEB_TRIGGERGROUP_NAME" />
+	</bean>
+	<!-- ******************************************************* -->
+	<bean name="refreshCacheTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.synpowertech.dataCollectionJar.timedTask.RefreshCacheTask" />
+		<property name="name" value="refreshCacheTask" />
+		<!-- 指定job的分组 -->
+		<property name="group" value="EXTJWEB_JOBGROUP_NAME" />
+		<!-- 必须设置为true，如果为false，当没有活动的触发器与之关联时会在调度器中删除该任务 -->
+		<property name="durability" value="true" />
+	</bean>
+	<!--定时刷新缓存任务，包括设备列表，设备点位映射关系等 -->
+	<bean id="trigger4refreshCache"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="refreshCacheTask"></property>
+		<!-- cron表达式 -->
+		<property name="cronExpression"
+			value="${quartz.refreshCacheCron}"></property>
+		<!-- 指定Trigger的名称 -->
+		<property name="name" value="trigger4refreshCache" />
+		<!-- 指定Trigger组的名称 -->
+		<property name="group" value="EXTJWEB_TRIGGERGROUP_NAME" />
+	</bean>
+	<!-- ******************************************************* -->
+	<bean name="examplePlantTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.synpowertech.dataCollectionJar.timedTask.ExamplePlantTask" />
+		<property name="name" value="examplePlantTask" />
+		<!-- 指定job的分组 -->
+		<property name="group" value="EXTJWEB_JOBGROUP_NAME" />
+		<!-- 必须设置为true，如果为false，当没有活动的触发器与之关联时会在调度器中删除该任务 -->
+		<property name="durability" value="true" />
+	</bean>
+	<!--示例电站redis数据操作任务 -->
+	<bean id="trigger4examplePlant"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="examplePlantTask"></property>
+		<!-- cron表达式 -->
+		<property name="cronExpression"
+			value="${quartz.dataSaveCron}"></property>
+		<!-- 指定Trigger的名称 -->
+		<property name="name" value="trigger4examplePlant" />
+		<!-- 指定Trigger组的名称 -->
+		<property name="group" value="EXTJWEB_TRIGGERGROUP_NAME" />
+	</bean>
+	<!-- ******************************************************* -->
+	<bean name="fixDataTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.synpowertech.dataCollectionJar.timedTask.FixDataTask" />
+		<property name="name" value="fixDataTask" />
+		<!-- 指定job的分组 -->
+		<property name="group" value="EXTJWEB_JOBGROUP_NAME" />
+		<!-- 必须设置为true，如果为false，当没有活动的触发器与之关联时会在调度器中删除该任务 -->
+		<property name="durability" value="true" />
+	</bean>
+	<!--手动计算使用60ktl点表设备的日发电量 -->
+	<bean id="trigger4fixData"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="fixDataTask"></property>
+		<!-- cron表达式 -->
+		<property name="cronExpression" value="${quartz.fixDataCron}"></property>
+		<!-- 指定Trigger的名称 -->
+		<property name="name" value="trigger4fixData" />
+		<!-- 指定Trigger组的名称 -->
+		<property name="group" value="EXTJWEB_TRIGGERGROUP_NAME" />
+	</bean>
+	<!-- ******************************************************* -->
+	<bean name="activeSubTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.synpowertech.dataCollectionJar.timedTask.MqttClientActiveSubTask" />
+		<property name="name" value="activeSubTask" />
+		<!-- 指定job的分组 -->
+		<property name="group" value="EXTJWEB_JOBGROUP_NAME" />
+		<!-- 必须设置为true，如果为false，当没有活动的触发器与之关联时会在调度器中删除该任务 -->
+		<property name="durability" value="true" />
+	</bean>
+	<!--mqtt连接管理 -->
+	<bean id="trigger4activeSub"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="activeSubTask"></property>
+		<!-- cron表达式 -->
+		<property name="cronExpression"
+			value="${quartz.activeSubCron}"></property>
+		<!-- 指定Trigger的名称 -->
+		<property name="name" value="trigger4activeSub" />
+		<!-- 指定Trigger组的名称 -->
+		<property name="group" value="EXTJWEB_TRIGGERGROUP_NAME" />
+	</bean>
+	<!-- ******************************************************* -->
+	<bean name="judgeConnStatusTask"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.synpowertech.dataCollectionJar.timedTask.JudgeConnStatusTask" />
+		<property name="name" value="judgeConnStatusTask" />
+		<!-- 指定job的分组 -->
+		<property name="group" value="EXTJWEB_JOBGROUP_NAME" />
+		<!-- 必须设置为true，如果为false，当没有活动的触发器与之关联时会在调度器中删除该任务 -->
+		<property name="durability" value="true" />
+	</bean>
+	<!--更新设备通讯状态任务 -->
+	<bean id="trigger4judgeConnStatus"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="judgeConnStatusTask"></property>
+		<!-- cron表达式 -->
+		<property name="cronExpression"
+			value="${quartz.judgeConnStatusCron}"></property>
+		<!-- 指定Trigger的名称 -->
+		<property name="name" value="trigger4judgeConnStatus" />
+		<!-- 指定Trigger组的名称 -->
+		<property name="group" value="EXTJWEB_TRIGGERGROUP_NAME" />
+	</bean>
+
+	<!-- ******************************************************* -->
+	<!-- **************************************************** -->
+
+	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+	<bean id="startQuertz" lazy-init="false" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<!-- 触发器列表 -->
+				<ref bean="trigger4dataSave" />
+				<ref bean="trigger4syncTime" />
+				<ref bean="trigger4cleanLog" />
+				<ref bean="trigger4refreshCache" />
+				<!-- <ref bean="trigger4examplePlant" /> -->
+				<ref bean="trigger4fixData" />
+				<ref bean="trigger4activeSub" />
+				<ref bean="trigger4judgeConnStatus" />
+			</list>
+		</property>
+	</bean>
+
+</beans>  

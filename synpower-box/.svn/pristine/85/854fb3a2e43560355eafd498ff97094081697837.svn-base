@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.AlertorSettingMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.AlertorSetting">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="sound_close_ever" jdbcType="CHAR" property="soundCloseEver" />
+    <result column="device_close_ever" jdbcType="CHAR" property="deviceCloseEver" />
+    <result column="serial_port" jdbcType="VARCHAR" property="serialPort" />
+    <result column="device_detail_id" jdbcType="INTEGER" property="deviceDetailId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, sound_close_ever, device_close_ever, serial_port, device_detail_id
+  </sql>
+  <!-- <include refid="Base_Column_List" /> -->
+  <select id="getAlertorInfoByUserId" parameterType="string" resultMap="BaseResultMap">
+  	select 
+  		<include refid="Base_Column_List" />
+  	from 
+  		alertor_setting 
+  	WHERE 
+  		user_id = #{userId}
+  </select>
+  <update id="updateAlertorInfoByUserId" parameterType="hashmap">
+  	UPDATE 
+  		alertor_setting 
+  	SET 
+  		device_close_ever = #{light},
+  		sound_close_ever = #{ring},
+  		serial_port = #{serial} 
+  	WHERE 
+  		user_id = #{userId}
+  </update>
+  <insert id="insertAlertorInfo" parameterType="hashmap">
+  	insert into alertor_setting(
+  		user_id,
+  		sound_close_ever,
+  		device_close_ever,
+  		device_detail_id) 
+  	VALUES (
+  		#{userId},
+  		#{ring},
+  		#{light},
+  		#{deviceDetailId}
+  	)
+  </insert>
+</mapper>

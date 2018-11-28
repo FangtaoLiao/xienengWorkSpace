@@ -1,0 +1,1028 @@
+package com.synpower.util;
+
+import com.alibaba.fastjson.JSONObject;
+import com.synpower.lang.ServiceException;
+import com.synpower.msg.Msg;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * @author Taylor
+ */
+public class Util {
+	private static DecimalFormat decimalFormat = null;
+
+	/**
+	 * 截取数字字符串中的整数部分
+	 *
+	 * @param str
+	 * @return
+	 */
+	public static String getIntValues(String str) {
+		if (str.indexOf(".") == -1) {
+			return str;
+		} else {
+			return str.substring(0, str.indexOf("."));
+		}
+	}
+
+	/**
+	 * @Title: dateToDateString
+	 * @Description: date类型转换为String类型
+	 * @param: @param data
+	 * @param: @param formatType formatType格式为yyyy-MM-dd HH:mm:ss//yyyy年MM月dd日
+	 *         HH时mm分ss秒
+	 * @param: @return
+	 * @return: String
+	 * @lastEditor: Taylor
+	 * @lastEdit: 2017年7月17日下午3:01:07
+	 */
+	public static String dateToDateString(Date data, String formatType) {
+		return new SimpleDateFormat(formatType).format(data);
+	}
+
+	/**
+	 * @Title: longToDateString
+	 * @Description: long类型转换为String类型
+	 * @param: @param l 要转换的long类型的时间
+	 * @param: @param formatType 要转换的string类型的时间格式
+	 * @param: @return
+	 * @return: String
+	 * @lastEditor: Taylor
+	 * @lastEdit: 2017年7月17日下午3:06:07
+	 */
+	public static String longToDateString(long l, String formatType) {
+		Date date;
+		date = longToDate(l, formatType);
+		String strTime = dateToDateString(date, formatType); // date类型转成String
+		return strTime;
+	}
+
+	/**
+	 * @Title: strDateToDate
+	 * @Description: string类型转换为date类型
+	 * @param: @param strTime 要转换的string类型的时间
+	 * @param: @param formatType 要转换的格式yyyy-MM-dd HH:mm:ss//yyyy年MM月dd日 HH时mm分ss秒
+	 * @param: @return
+	 * @return: Date
+	 * @lastEditor: Taylor
+	 * @lastEdit: 2017年7月17日下午3:04:26
+	 * @note:strTime的时间格式和formatType的时间格式必须相同
+	 */
+	public static Date dateStringToDate(String strTime, String formatType) {
+		SimpleDateFormat formatter = new SimpleDateFormat(formatType);
+		Date date = null;
+		try {
+			date = formatter.parse(strTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+
+	}
+
+	/**
+	 * @Title: longToDate
+	 * @Description: long转换为Date类型
+	 * @param: @param l 要转换的long类型的时间
+	 * @param: @param formatType 要转换的时间格式yyyy-MM-dd HH:mm:ss或yyyy-MM-dd
+	 *         HH:mm:ss.SSS//yyyy年MM月dd日 HH时mm分ss秒
+	 * @param: @return
+	 * @return: Date
+	 * @lastEditor: Taylor
+	 * @lastEdit: 2017年7月17日下午3:07:24
+	 */
+	public static Date longToDate(long l, String formatType) {
+		Date dateOld = new Date(l); // 根据long类型的毫秒数生命一个date类型的时间
+		String sDateTime = dateToDateString(dateOld, formatType); // 把date类型的时间转换为string
+		Date date = dateStringToDate(sDateTime, formatType); // 把String类型转换为Date类型
+		return date;
+	}
+
+	/**
+	 * @Title: stringToLong
+	 * @Description: string类型转换为long类型
+	 * @param: @param strTime 要转换的String类型的时间
+	 * @param: @param formatType 要转换的时间格式yyyy-MM-dd HH:mm:ss//yyyy年MM月dd日 HH时mm分ss秒
+	 * @param: @return
+	 * @return: long
+	 * @lastEditor: Taylor
+	 * @lastEdit: 2017年7月17日下午3:08:59
+	 * @note:strTime的时间格式和formatType的时间格式必须相同
+	 */
+	public static long dateStringToLong(String strTime, String formatType) {
+		Date date = dateStringToDate(strTime, formatType); // String类型转成date类型
+		if (date == null) {
+			return 0;
+		} else {
+			return date.getTime(); // date类型转成long类型
+		}
+	}
+
+	/**
+	 * @Title: getCurrentTime
+	 * @Description: 类型转换为long类型
+	 * @param: formatType 目标格式
+	 * @return: String
+	 * @lastEditor: Taylor
+	 * @lastEdit: 2017年7月17日下午3:11:12
+	 */
+	public static String getCurrentTimeStr(String formatType) {
+		Date date = new Date();
+		return longToDateString(date.getTime(), formatType);
+	}
+
+	/**
+	 * 检查字符串是否是null，是null返回空
+	 *
+	 * @param str
+	 * @return
+	 */
+	public static String null2String(String str) {
+		return str == null ? "" : str;
+	}
+
+	/**
+	 * 检查输入是否是int，不是则返回指定的 i
+	 *
+	 * @param str
+	 * @param i
+	 * @return
+	 */
+	public static int getIntValue(String str, int i) {
+		try {
+			return Integer.parseInt(null2String(str));
+		} catch (Exception localException) {
+
+		}
+		return i;
+	}
+
+	/**
+	 * 数组转换为ArrayList
+	 *
+	 * @param paramArrayOfObject
+	 * @return
+	 */
+	public static ArrayList<Object> arrayToArrayList(Object[] paramArrayOfObject) {
+		ArrayList<Object> localArrayList = new ArrayList<Object>();
+		if (paramArrayOfObject == null) {
+			return localArrayList;
+		}
+		for (int i = 0; i < paramArrayOfObject.length; i++) {
+			localArrayList.add(paramArrayOfObject[i]);
+		}
+		return localArrayList;
+	}
+
+	/**
+	 * 获取当前日期
+	 *
+	 * @param format 返回的日期格式 1表示yyyy-MM-dd，2表示yyyy-MM-dd HH:mm:ss，3表示
+	 * @return
+	 */
+	public static String getCurrentDate(int format) {
+		String str = "";
+		SimpleDateFormat localSimpleDateFormat = null;
+		if (format == 1) {
+			localSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		} else if (format == 2) {
+			localSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		} else if (format == 3) {
+			localSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		}
+		Date localDate = new Date();
+		str = localSimpleDateFormat.format(localDate);
+		return str;
+	}
+
+	/**
+	 * @param f1
+	 * @param f2
+	 * @Title: subFloat
+	 * @Description: float 减法
+	 * @return: float
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年9月15日上午11:36:19
+	 */
+	public static double subFloat(double f1, double f2, int type) {
+		BigDecimal d1 = new BigDecimal(Double.toString(f1));
+		BigDecimal d2 = new BigDecimal(Double.toString(f2));
+		BigDecimal d = d1.subtract(d2);
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	public static double subFloat(String f1, String f2, int type) {
+		BigDecimal d1 = new BigDecimal(f1);
+		BigDecimal d2 = new BigDecimal(f2);
+		BigDecimal d = d1.subtract(d2);
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	public static double subFloat(double f1, String f2, int type) {
+		BigDecimal d1 = new BigDecimal(Double.toString(f1));
+		BigDecimal d2 = new BigDecimal(f2);
+		BigDecimal d = d1.subtract(d2);
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	public static double subFloat(String f1, double f2, int type) {
+		BigDecimal d1 = new BigDecimal(f1);
+		BigDecimal d2 = new BigDecimal(Double.toString(f2));
+		BigDecimal d = d1.subtract(d2);
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	/**
+	 * @param f1
+	 * @param f2
+	 * @Title: multFloat
+	 * @Description: 乘法（type=1时保留2位小数）
+	 * @return: float
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年9月15日上午11:36:19
+	 */
+	public static double multFloat(double f1, double f2, int type) {
+		BigDecimal d1 = new BigDecimal(Double.toString(f1));
+		BigDecimal d2 = new BigDecimal(Double.toString(f2));
+		BigDecimal d = d1.multiply(d2);
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	public static double multDouble(String f1, String f2, int type) {
+		BigDecimal d1 = new BigDecimal(f1);
+		BigDecimal d2 = new BigDecimal(f2);
+		BigDecimal d = d1.multiply(d2);
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	public static double multFloat(double f1, float f2, int type) {
+		BigDecimal d1 = new BigDecimal(Double.toString(f1));
+		BigDecimal d2 = new BigDecimal(f2 + "");
+		BigDecimal d = d1.multiply(d2);
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	public static double multFloat(float f1, float f2, int type) {
+		BigDecimal d1 = new BigDecimal(Double.toString(f1));
+		BigDecimal d2 = new BigDecimal(Double.toString(f2));
+		BigDecimal d = d1.multiply(d2);
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	public static double getPowerPrice(double f1, double f2, double f3) {
+		BigDecimal d1 = new BigDecimal(Double.toString(f1));
+		BigDecimal d2 = new BigDecimal(Double.toString(f2));
+		BigDecimal d3 = new BigDecimal(Double.toString(f3));
+		BigDecimal d = d1.subtract(d2).multiply(d3).setScale(2, BigDecimal.ROUND_HALF_UP);
+		return d.doubleValue();
+	}
+
+	/**
+	 * @param f1
+	 * @param f2
+	 * @Title: divideDouble
+	 * @Description: 除法（默认保留8位，当type=1时保留2位）
+	 * @return: double
+	 * @lastEditor: SP0009
+	 * @lastEdit: 2017年9月29日上午10:49:08
+	 */
+	public static double divideDouble(double f1, double f2, int type) {
+		BigDecimal d1 = new BigDecimal(Double.toString(f1));
+		if (f2 != 0) {
+			BigDecimal d2 = new BigDecimal(Double.toString(f2));
+			BigDecimal d = d1.divide(d2, 8, BigDecimal.ROUND_HALF_UP);
+			if (type == 1) {
+				d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			return d.doubleValue();
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * @param f1
+	 * @param f2
+	 * @param type
+	 * @Title: divideDouble
+	 * @Description: TODO
+	 * @return: double
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年12月7日上午11:15:44
+	 */
+	public static double divideDouble(String f1, double f2, int type) {
+		BigDecimal d1 = new BigDecimal(f1);
+		if (f2 != 0) {
+			BigDecimal d2 = new BigDecimal(Double.toString(f2));
+			BigDecimal d = d1.divide(d2, 8, BigDecimal.ROUND_HALF_UP);
+			if (type == 1) {
+				d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+			}
+			return d.doubleValue();
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * @param f1
+	 * @param f2
+	 * @Title: addFloat
+	 * @Description: 加法（type=1时保留2位小数）
+	 * @return: float
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年9月15日上午11:36:19
+	 */
+	public static double addFloat(double f1, double f2, int type) {
+		BigDecimal d1 = new BigDecimal(Double.toString(f1));
+		BigDecimal d2 = new BigDecimal(Double.toString(f2));
+		BigDecimal d = d1.add(d2);
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	public static double addFloat(float f1, float f2, int type) {
+		BigDecimal d1 = new BigDecimal(Float.toString(f1));
+		BigDecimal d2 = new BigDecimal(Double.toString(f2));
+		BigDecimal d = d1.add(d2);
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	/**
+	 * @param f1
+	 * @Title: addFloats
+	 * @Description: 相加多个（type=1时保留2位小数）
+	 * @return: float
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年9月15日上午11:36:19
+	 */
+	public static double addFloats(int type, double... f1) {
+		BigDecimal d = new BigDecimal(Double.toString(f1[0]));
+		for (int i = 1; i < f1.length; i++) {
+			BigDecimal d1 = new BigDecimal(Double.toString(f1[i])).setScale(8, BigDecimal.ROUND_HALF_UP);
+			d = d.add(d1);
+		}
+		if (type == 1) {
+			d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+		}
+		return d.doubleValue();
+	}
+
+	public static boolean checkTimed(List<Map<String, String>> list) {
+		boolean b = true;
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+		try {
+			for (int i = 0; i < list.size(); i++) {
+				Map<String, String> temp = list.get(i);
+				long timeStart = sdf.parse(temp.get("startTime")).getTime();
+				long timeEnd = sdf.parse(temp.get("endTime")).getTime();
+				// 存放开始间段的切割后的后半时间段
+				if (timeStart > timeEnd) {
+					String tempEnd = "23:59:59";
+					String tempStart = "00:00:00";
+					Map<String, String> temp2 = new HashMap<>();
+					temp2.put("startTime", tempStart);
+					temp2.put("endTime", temp.get("endTime"));
+					list.add(temp2);
+					// 必须放在temp2后面。不然取的值是更新后的值
+					temp.put("endTime", tempEnd);
+				}
+			}
+			for (int i = 0; i < list.size() - 1; i++) {
+				for (int j = i + 1; j < list.size(); j++) {
+					Map<String, String> temp = list.get(i);
+					Map<String, String> temp2 = list.get(j);
+					long timeStart = sdf.parse(temp.get("startTime")).getTime();
+					long timeStart2 = sdf.parse(temp2.get("startTime")).getTime();
+					if (timeStart > timeStart2) {
+						Map<String, String> tempObj = temp;
+						list.remove(i);
+						list.add(i, temp2);
+						list.remove(j);
+						list.add(j, tempObj);
+					}
+				}
+			}
+			for (int i = 0; i < list.size() - 1; i++) {
+				Map<String, String> temp = list.get(i);
+				Map<String, String> temp2 = list.get(i + 1);
+				long timeStart = sdf.parse(temp.get("endTime")).getTime();
+				long timeStart2 = sdf.parse(temp2.get("startTime")).getTime();
+				if (timeStart >= timeStart2) {
+					b = false;
+					break;
+				}
+
+			}
+		} catch (Exception e) {
+			return b;
+		}
+		return b;
+	}
+
+	/**
+	 * @param str
+	 * @throws ServiceException
+	 * @Title: parseURL
+	 * @Description: 解析前台传过来的URL编码
+	 * @return: List<String>
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年10月10日上午11:35:48
+	 */
+	public static Map<String, Object> parseURL(String str) throws ServiceException {
+		try {
+			str = java.net.URLDecoder.decode(str, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		if (str.contains("=")) {
+			str = str.substring(0, str.lastIndexOf("=") + 1);
+		}
+		if (str.contains("}:")) {
+			str = str.substring(0, str.lastIndexOf(":") + 2);
+		}
+		Map<String, Object> map = null;
+		try {
+			ObjectMapper mapper = new ObjectMapper(); // 转换器
+			map = mapper.readValue(str, Map.class);
+		} catch (Exception e) {
+			throw new ServiceException(Msg.TYPE_DATA_ERROR);
+		}
+
+		return map;
+	}
+
+	public static Map<String, Object> parseWEIXINURL(String str) throws ServiceException {
+		try {
+			str = java.net.URLDecoder.decode(str, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		Map<String, Object> map = null;
+		try {
+			ObjectMapper mapper = new ObjectMapper(); // 转换器
+			map = mapper.readValue(str, Map.class);
+		} catch (Exception e) {
+			throw new ServiceException(Msg.TYPE_DATA_ERROR);
+		}
+
+		return map;
+	}
+
+	public static Map<String, String> parseURLCode(String str) throws ServiceException {
+		try {
+			str = java.net.URLDecoder.decode(str, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		if (str.contains("=")) {
+			str = str.substring(0, str.lastIndexOf("=") + 1);
+		}
+		if (str.contains("}:")) {
+			str = str.substring(0, str.lastIndexOf(":") + 2);
+		}
+		Map<String, String> map = null;
+		try {
+			ObjectMapper mapper = new ObjectMapper(); // 转换器
+			map = mapper.readValue(str, Map.class);
+		} catch (Exception e) {
+			throw new ServiceException(Msg.TYPE_DATA_ERROR);
+		}
+
+		return map;
+	}
+
+	public static Map<String, String> stringToMap(String json) throws IOException, ServiceException {
+		Map<String, String> map = null;
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			map = mapper.readValue(json, Map.class);
+		} catch (Exception e) {
+			throw new ServiceException(Msg.TYPE_DATA_ERROR);
+		}
+		return map;
+	}
+
+	public static Map<String, Object> stringToMap1(String json) throws IOException, ServiceException {
+		Map<String, Object> map = null;
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			map = mapper.readValue(json, Map.class);
+		} catch (Exception e) {
+			throw new ServiceException(Msg.TYPE_DATA_ERROR);
+		}
+		return map;
+	}
+
+	/**
+	 * @param str
+	 * @throws ServiceException
+	 * @Title: parseURL
+	 * @Description: 解析前台传过来的URL编码
+	 * @return: List<String>
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年10月25日13:40:29
+	 */
+	public static Object parseURL(String str, String className) throws ServiceException {
+		try {
+			str = java.net.URLDecoder.decode(str, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		if (str.contains("=")) {
+			str = str.substring(0, str.lastIndexOf("=") + 1);
+		}
+		if (str.contains("}:")) {
+			str = str.substring(0, str.lastIndexOf(":") + 2);
+		}
+		// 粗略校验JSON格式
+		// String regex="^\\{[\u4e00-\u9fa5\\w,\":=@.\\]*\\}$";
+		Object object = null;
+		try {
+			ObjectMapper mapper = new ObjectMapper(); // 转换器
+			Class classTmp = Class.forName(className);
+			object = mapper.readValue(str, classTmp);
+		} catch (Exception e) {
+			throw new ServiceException(Msg.TYPE_DATA_ERROR);
+		}
+
+		return object;
+	}
+
+	public static String getIpByRequest(HttpServletRequest request) {
+		String ip = request.getHeader("x-forwarded-for");
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}
+		return "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
+	}
+
+	/**
+	 * @param map
+	 * @param count
+	 * @Title: getPageMaxRange
+	 * @Description: 分页值域
+	 * @return: String
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年11月3日11:41:16
+	 */
+	public static Map<String, Object> getPageMaxRange(Map<String, Object> map, int count) {
+		int pageCount = 0;
+		Map<String, Object> result = new HashMap<String, Object>();
+		if ((!(map.get("limit") == null)) && (!map.get("limit").equals(""))) {
+			// 每页多少个
+			int eachPageNum = Integer.parseInt(map.get("limit") + "");
+			// 第几页
+			int pageNum = Integer.parseInt(map.get("offset") + "");
+			if (count % eachPageNum == 0) {
+				pageCount = count / eachPageNum;
+			} else {
+				pageCount = count / eachPageNum + 1;
+			}
+			if (pageNum > pageCount) {
+				pageNum = pageCount;
+			}
+			int min = (pageNum - 1) * eachPageNum;
+			if (min < 0) {
+				min = 0;
+			}
+			int max = eachPageNum;
+			if (max > count) {
+				max = count;
+			}
+			result.put("min", min);
+			result.put("max", max);
+		}
+		return result;
+	}
+
+	/**
+	 * @param str
+	 * @Title: getBeforDay
+	 * @Description: str
+	 * @return: String
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年11月9日16:33:13
+	 */
+	public static Long getBeforDayMax(int num) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+		Calendar calendar = Calendar.getInstance();
+		long storge_time = 0;
+		try {
+			calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - num);
+			String dateTemp = sdf.format(calendar.getTimeInMillis());
+			storge_time = sdf2.parse(dateTemp + " 23:59:59:999").getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return storge_time;
+	}
+
+	public static String MapToJson(Map map) {
+		Object jsonObject = JSONObject.toJSON(map);
+		return jsonObject.toString();
+	}
+
+	/**
+	 * 得到第二天的1点
+	 *
+	 * @param num 偏离过去天数
+	 * @return
+	 */
+	public static Long getBeforStorageDayMax(int num) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+		Calendar calendar = Calendar.getInstance();
+		long storge_time = 0;
+		try {
+			calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - num + 1);
+			String dateTemp = sdf.format(calendar.getTimeInMillis());
+			storge_time = sdf2.parse(dateTemp + " 01:00:00:000").getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return storge_time;
+	}
+
+	/**
+	 * @param str
+	 * @Title: getBeforDay
+	 * @Description: str
+	 * @return: String
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年11月9日16:33:13
+	 */
+	public static Long getBeforDayMin(int num) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+		Calendar calendar = Calendar.getInstance();
+		long storge_time = 0;
+		try {
+			calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - num);
+			String dateTemp = sdf.format(calendar.getTimeInMillis());
+			storge_time = sdf2.parse(dateTemp + " 00:00:00:000").getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return storge_time;
+	}
+
+	/**
+	 * 得到当天的1点钟
+	 *
+	 * @param num 偏离过去天数
+	 * @return
+	 */
+	public static Long getBeforStorageDayMin(int num) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+		Calendar calendar = Calendar.getInstance();
+		long storge_time = 0;
+		try {
+			calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - num);
+			String dateTemp = sdf.format(calendar.getTimeInMillis());
+			storge_time = sdf2.parse(dateTemp + " 01:00:00:000").getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return storge_time;
+	}
+
+	public static DecimalFormat getDecimalFomat() {
+		if (decimalFormat == null) {
+			decimalFormat = new DecimalFormat("#.0000000000");
+		}
+		return decimalFormat;
+	}
+
+	public static DecimalFormat getDecimalFomat2() {
+		if (decimalFormat == null) {
+			decimalFormat = new DecimalFormat("#.##");
+		}
+		return decimalFormat;
+	}
+
+	public static long subTime(String startTime, String endTime) {
+		long start = Long.parseLong(startTime);
+		long end = Long.parseLong(endTime);
+		return (start - end) / 1000;
+	}
+
+	/**
+	 * @param str
+	 * @return
+	 * @throws ServiceException: Map<String,Object>
+	 * @Title: parseJsonFromStr
+	 * @Description: 解决json数据key没有双引号的情况
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年11月21日下午4:28:25
+	 */
+	public static Map<String, Object> parseJsonFromStr(String str) throws ServiceException {
+		str = str.replaceAll("\\{", "\\{\"").replaceAll("=", "\":\"").replaceAll(",", "\",\"")
+				.replaceAll("\\}", "\"\\}").replaceAll("\"\\{\"", "\\{\"").replaceAll("\\}\"\\}", "\\}\\}")
+				.replaceAll("\\s*", "");
+		System.out.println(str);
+		Map<String, Object> map = null;
+		try {
+			ObjectMapper mapper = new ObjectMapper(); // 转换器
+			map = mapper.readValue(str, Map.class);
+		} catch (Exception e) {
+			throw new ServiceException(Msg.TYPE_DATA_ERROR);
+		}
+		return map;
+	}
+
+	/**
+	 * @param order
+	 * @Title: getParseJsonByOrder
+	 * @Description: 将DateTable的order对象装换成排序的sql语句
+	 * @return: String
+	 * @lastEditor: SP0009
+	 * @lastEdit: 2017年11月29日下午4:29:22
+	 */
+	public static String getParseJsonByOrder(String order) {
+		order = order.replaceAll("\\{", "").replaceAll("\\[", "").replaceAll("\\]", "");
+		order = order.substring(0, order.length() - 1);
+		String[] a = order.split("},");
+		String sql = "order by ";
+		for (int i = 0; i < a.length; i++) {
+			sql += a[i].split(",")[0] + " " + a[i].split(",")[1];
+			if (i != a.length - 1) {
+				sql += ",";
+			}
+		}
+		return sql;
+	}
+
+	public static String timeFormate(String time, String format) {
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		return sdf.format(Long.parseLong(time));
+	}
+
+	public static String timeFormate(long time, String format) {
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		return sdf.format(time);
+	}
+
+	public static long strFormate(String str, String format) throws ServiceException {
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		long time = -1;
+		try {
+			time = sdf.parse(str).getTime();
+		} catch (ParseException e) {
+			throw new ServiceException(Msg.TIME_FORMAT_ERROR);
+		}
+		return time;
+	}
+
+	/**
+	 * @param number
+	 * @Title: getRetainedDecimal
+	 * @Description: 保留两位小数
+	 * @return: double
+	 * @lastEditor: SP0009
+	 * @lastEdit: 2017年11月30日下午5:12:50
+	 */
+	public static double getRetainedDecimal(double number) {
+		BigDecimal bg = new BigDecimal(number);
+		double result = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+		return result;
+	}
+
+	public static double roundDouble(double number) {
+		return new BigDecimal(number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
+
+	public static double roundDouble(double number, int num) {
+		return new BigDecimal(number).setScale(num, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
+
+	public static double roundDouble(Object number, int num) {
+		try {
+			return new BigDecimal(Double.parseDouble(number.toString())).setScale(num, BigDecimal.ROUND_HALF_UP)
+					.doubleValue();
+		} catch (Exception e) {
+			e.getMessage();
+			return 0d;
+		}
+	}
+
+	public static String roundDouble(String number) {
+		return String.valueOf(new BigDecimal(number).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+	}
+
+	/**
+	 * @param month
+	 * @return
+	 * @throws ServiceException: List<String>
+	 * @Title: getEverydayByMonth
+	 * @Description: 根据月生成每日的列表
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年12月7日上午10:33:46
+	 */
+	public static List<String> getEverydayByMonth(String month) throws ServiceException {
+		List<String> resultList = new ArrayList<>();
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(strFormate(month, "yyyy/M"));
+		int day = calendar.getActualMaximum(Calendar.DATE);
+		for (int i = 1; i <= day; i++) {
+			resultList.add(month + "/" + i);
+		}
+		return resultList;
+	}
+
+	/**
+	 * @param year
+	 * @return
+	 * @throws ServiceException: List<String>
+	 * @Title: getEverydayByYear
+	 * @Description: 根据年生成月份的集合
+	 * @lastEditor: SP0011
+	 * @lastEdit: 2017年12月7日上午10:33:30
+	 */
+	public static List<String> getEverydayByYear(String year) throws ServiceException {
+		List<String> resultList = new ArrayList<>();
+		for (int i = 1; i <= 12; i++) {
+			resultList.add(year + "/" + i);
+		}
+		return resultList;
+	}
+
+	public static long getFirstDayOfMonth() {
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date(Util.getBeforDayMin(0)));
+		c.add(Calendar.MONTH, 0);
+		c.set(Calendar.DAY_OF_MONTH, 1);// 设置为1号,当前日期既为本月第一天
+		return c.getTimeInMillis();
+	}
+
+	public static int roundDoubleToInt(double number) {
+		return (int) new BigDecimal(number).setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
+
+	public static boolean isNotBlank(List list) {
+		if (list != null && !list.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isNotBlank(Map map) {
+		if (map != null && !map.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isNotBlank(Object[] obj) {
+		if (obj != null && obj.length != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isNotBlank(String str) {
+		if (str == null || "".equals(str) || "null".equals(str)) {
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean isEmpty(String str) {
+		if (str == null || "".equals(str) || "null".equals(str)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @param str
+	 * @return
+	 * @author ybj, lz
+	 * @date 2018年8月23日下午6:33:46
+	 * @Description 保留小数点后两位，四舍五入
+	 */
+	public static double getDouble(Object str) {
+		double parseDouble = 0;
+		try {
+			parseDouble = Double.parseDouble((str == null ? "0" : str.toString()));
+			return ApproUtil.getRoundDouble(parseDouble);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0d;
+		}
+	}
+
+	/**
+	 * @Author lz
+	 * @Description:
+	 * @param: [str]
+	 * @return: {int}
+	 * @Date: 2018/11/6 14:41
+	 **/
+	public static int getInt(Object str) {
+		int parseInt;
+		try {
+			parseInt = Integer.parseInt((str == null ? "-1" : str.toString()));
+		} catch (NumberFormatException e) {
+			parseInt = -1;
+		}
+		return parseInt;
+	}
+
+	/**
+	 * @param arrays
+	 * @return
+	 * @author ybj
+	 * @date 2018年8月27日下午1:57:22
+	 * @Description -_-得到数组中最大的double值
+	 */
+	public static double getMaxDoubleFromArray(Double[] arrays) {
+		List<Double> asList = Arrays.asList(arrays);
+		Double max = Collections.max(asList);
+		return max;
+	}
+
+	/**
+	 * @return
+	 * @author ybj
+	 * @date 2018年8月27日下午4:46:47
+	 * @Description -_- double数组全部初始化为0;
+	 */
+	public static Double[] doubleInit(Double[] d) {
+		for (int i = 0; i < d.length; i++) {
+			d[i] = 0d;
+		}
+		return d;
+	}
+
+	/**
+	 * @author ybj
+	 * @date 2018年9月6日下午1:51:52
+	 * @Description -_-对象转json字符串
+	 * @param map
+	 * @return
+	 * @throws ServiceException
+	 */
+	public static String object2SJsonString(Map map) throws ServiceException {
+		String result = "";
+		try {
+			ObjectMapper mapper = new ObjectMapper(); // 转换器
+			result = mapper.writeValueAsString(map);
+			return result;
+		} catch (Exception e) {
+			throw new ServiceException(Msg.TYPE_DATA_ERROR);
+		}
+	}
+
+	public static double getDecimalValue(double value, int newScale, int roundingMode) {
+		BigDecimal bg = new BigDecimal(value);
+		return bg.setScale(newScale, roundingMode).doubleValue();
+	}
+
+}

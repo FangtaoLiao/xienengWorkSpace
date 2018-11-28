@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"  
+    xmlns:aop="http://www.springframework.org/schema/aop"  
+    xsi:schemaLocation="  
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">  
+
+	
+	<context:property-placeholder location="classpath:rmi.properties" ignore-unresolvable="true" />
+	<bean id="rmiClientSocketFactory" class="com.synpower.util.RMICustomClientSocketFactory">  
+        <property name="timeout" value="5000"></property>  
+    </bean>  
+	<!-- 客户端访问************ -->
+	<bean id="rmiUserService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean"> 
+	  <property name="serviceUrl" value="${rmi.adress}" /> 
+	  <property name="serviceInterface" value="com.synpower.util.IYkYtService" />
+	  <!-- setting refresh connect -->  
+        <property name="refreshStubOnConnectFailure" value="true"></property>  
+        <property name="lookupStubOnStartup" value="false"></property>  
+        <property name="registryClientSocketFactory" ref="rmiClientSocketFactory"></property>  
+	</bean>
+</beans>

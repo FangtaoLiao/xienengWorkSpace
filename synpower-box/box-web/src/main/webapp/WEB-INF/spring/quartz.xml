@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd  
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd  
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd  
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- 电站历史收益入库并更新 每天00:10执行一次 -->
+	<bean id="taskDetail_1"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 执行的类 -->
+		<property name="targetObject">
+			<ref bean="timedTasks" />
+		</property>
+		<!-- 类中的方法 -->
+		<property name="targetMethod">
+			<value>storageData</value>
+		</property>
+	</bean>
+	<bean id="cronTriggerBean_1"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="taskDetail_1" />
+		</property>
+		<!-- 每天00:10执行一次 0 10 0 * * ? -->
+		<property name="cronExpression">
+			<value>0 10 0 * * ?</value>
+		</property>
+	</bean>
+
+	<!-- 每天刷新一次系统缓存 电表最新历史数据 -->
+	<bean id="taskDetail_2"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 执行的类 -->
+		<property name="targetObject">
+			<ref bean="timedTasks" />
+		</property>
+		<!-- 类中的方法 -->
+		<property name="targetMethod">
+			<value>refreshSystemCacheEveryDay</value>
+		</property>
+	</bean>
+	<bean id="cronTriggerBean_2"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="taskDetail_2" />
+		</property>
+		<!-- 每天00:00执行一次 0 0 0 * * ? -->
+		<property name="cronExpression">
+			<value>0 0 0 * * ?</value>
+		</property>
+	</bean>
+
+	<!-- 每5秒刷新一次系统缓存 电站实时收益 设备状态 -->
+	<bean id="taskDetail_3"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 执行的类 -->
+		<property name="targetObject">
+			<ref bean="timedTasks" />
+		</property>
+		<!-- 类中的方法 -->
+		<property name="targetMethod">
+			<value>refreshSystemCacheCurrent</value>
+		</property>
+	</bean>
+	<bean id="cronTriggerBean_3"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="taskDetail_3" />
+		</property>
+		<!-- 每天5S执行一次 */5 * * * * -->
+		<property name="cronExpression">
+			<value>*/5 * * * * ?</value>
+		</property>
+	</bean>
+
+	<!-- ? -->
+	<bean id="taskDetail_4"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 执行的类 -->
+		<property name="targetObject">
+			<ref bean="timedTasks" />
+		</property>
+		<!-- 类中的方法 -->
+		<property name="targetMethod">
+			<value>refreshSystemCacheEveryHour</value>
+		</property>
+	</bean>
+	<bean id="cronTriggerBean_4"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="taskDetail_4" />
+		</property>
+		<!-- 每15分钟执行一次 -->
+		<property name="cronExpression">
+			<value>0 */1 * * * ?</value>
+		</property>
+	</bean>
+
+	<!-- ?没用 -->
+	<bean id="taskDetail_5"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 执行的类 -->
+		<property name="targetObject">
+			<ref bean="timedTasks" />
+		</property>
+		<!-- 类中的方法 -->
+		<property name="targetMethod">
+			<value>sendDailyReport</value>
+		</property>
+	</bean>
+	<bean id="cronTriggerBean_5"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="taskDetail_5" />
+		</property>
+		<!-- 每早9点执行一次 -->
+		<property name="cronExpression">
+			<value>0 0 9 * * ?</value>
+			<!-- <value>0 18 11 * * ?</value> -->
+		</property>
+	</bean>
+
+	<!-- 更新设备集合、设备类型分类集合、设备guid 、设备按数采分类、更新天气 -->
+	<!-- 每2小时执行一次 -->
+	<bean id="taskDetail_6"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 执行的类 -->
+		<property name="targetObject">
+			<ref bean="timedTasks" />
+		</property>
+		<!-- 类中的方法 -->
+		<property name="targetMethod">
+			<value>refreshWeatherEachTwoHours</value>
+		</property>
+	</bean>
+	<bean id="cronTriggerBean_6"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="taskDetail_6" />
+		</property>
+		<!-- 每2小时执行一次 -->
+		<property name="cronExpression">
+			<value>0 0 0/2 * * ?</value>
+		</property>
+	</bean>
+
+	<!-- 5天更新萤石云token -->
+	<bean id="taskDetail_7"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 执行的类 -->
+		<property name="targetObject">
+			<ref bean="timedTasks" />
+		</property>
+		<!-- 类中的方法 -->
+		<property name="targetMethod">
+			<value>refreshYS7TokenId</value>
+		</property>
+	</bean>
+	<bean id="cronTriggerBean_7"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="taskDetail_7" />
+		</property>
+		<!-- 每5天执行一次 -->
+		<property name="cronExpression">
+			<value>0 0 0 1/5 * ?</value>
+			<!-- <value>0 0/10 * * * ?</value> -->
+		</property>
+	</bean>
+
+	<!-- 每5秒刷新能效电站最大最小值缓存 -->
+	<bean id="taskDetail_8"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 执行的类 -->
+		<property name="targetObject">
+			<ref bean="timedTasks" />
+		</property>
+		<!-- 类中的方法 -->
+		<property name="targetMethod">
+			<value>refreshEEMaxAndMinFactor</value>
+		</property>
+	</bean>
+	<bean id="cronTriggerBean_8"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="taskDetail_8" />
+		</property>
+		<!-- 每5秒执行一次 -->
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+
+
+	<!-- ======================== 调度工厂 ======================== -->
+	<bean id="SpringJobSchedulerFactoryBean"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<!-- 添加触发器 -->
+		<property name="triggers">
+			<list>
+				<ref bean="cronTriggerBean_1" />
+				<ref bean="cronTriggerBean_2" />
+				<ref bean="cronTriggerBean_3" />
+				<ref bean="cronTriggerBean_4" />
+				<!-- <ref bean="cronTriggerBean_5"/> -->
+				<ref bean="cronTriggerBean_6" />
+				<ref bean="cronTriggerBean_7" />
+				<ref bean="cronTriggerBean_8" />
+			</list>
+		</property>
+	</bean>
+
+
+</beans>  

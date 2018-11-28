@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysPowerPriceMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysPowerPrice">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="price_name" jdbcType="VARCHAR" property="priceName" />
+    <result column="start_time" jdbcType="BIGINT" property="startTime" />
+    <result column="end_time" jdbcType="BIGINT" property="endTime" />
+    <result column="plant_type" jdbcType="INTEGER" property="plantType" />
+    <result column="price_valid" jdbcType="CHAR" property="priceValid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, price_name, start_time, end_time, plant_type, price_valid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_power_price
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_power_price
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpower.bean.SysPowerPrice">
+    insert into sys_power_price (id, price_name, start_time, 
+      end_time, plant_type, price_valid
+      )
+    values (#{id,jdbcType=INTEGER}, #{priceName,jdbcType=VARCHAR}, #{startTime,jdbcType=BIGINT}, 
+      #{endTime,jdbcType=BIGINT}, #{plantType,jdbcType=INTEGER}, #{priceValid,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpower.bean.SysPowerPrice">
+    insert into sys_power_price
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="priceName != null">
+        price_name,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="plantType != null">
+        plant_type,
+      </if>
+      <if test="priceValid != null">
+        price_valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="priceName != null">
+        #{priceName,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=BIGINT},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=BIGINT},
+      </if>
+      <if test="plantType != null">
+        #{plantType,jdbcType=INTEGER},
+      </if>
+      <if test="priceValid != null">
+        #{priceValid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpower.bean.SysPowerPrice">
+    update sys_power_price
+    <set>
+      <if test="priceName != null">
+        price_name = #{priceName,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=BIGINT},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=BIGINT},
+      </if>
+      <if test="plantType != null">
+        plant_type = #{plantType,jdbcType=INTEGER},
+      </if>
+      <if test="priceValid != null">
+        price_valid = #{priceValid,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpower.bean.SysPowerPrice">
+    update sys_power_price
+    set price_name = #{priceName,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=BIGINT},
+      end_time = #{endTime,jdbcType=BIGINT},
+      plant_type = #{plantType,jdbcType=INTEGER},
+      price_valid = #{priceValid,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getCnPlantPrice" parameterType="String" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List"/> FROM sys_power_price WHERE plant_type = #{plantType} AND price_valid = 0
+  </select>
+  <select id="getPlantPrice" parameterType="String" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List"/> FROM sys_power_price WHERE id = #{priceId} AND price_valid = 0
+  </select>
+</mapper>

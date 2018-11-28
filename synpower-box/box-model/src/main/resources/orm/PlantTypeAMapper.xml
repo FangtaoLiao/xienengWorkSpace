@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.PlantTypeAMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.PlantTypeA">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="model_detail_table_name" jdbcType="VARCHAR" property="modelDetailTableName" />
+    <result column="type_valid" jdbcType="CHAR" property="typeValid" />
+    <result column="type_status" jdbcType="CHAR" property="typeStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type_name, model_detail_table_name, type_valid, type_status
+  </sql>
+  <select id="getAllPlantType" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/> from plant_type_a where type_valid=0
+  </select>
+</mapper>

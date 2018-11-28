@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-3.0.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<context:component-scan base-package="com.synpower" />
+	<import resource="datasource.xml" />
+<!--	<import resource="mq.xml" />-->
+	<import resource="cache.xml"/>
+	<import resource="rmi.xml"/>
+	
+	<util:properties id="propertyConfigurer4Config" location="classpath:config.properties"/>
+
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+			<bean
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+ 	<!-- AOP配置 -->  
+    <aop:aspectj-autoproxy proxy-target-class="true">  
+	</aop:aspectj-autoproxy>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	    <!-- 上传的最大限制 10M -->
+	    <property name="maxUploadSize" value="10485760" />
+	    <!-- 默认编码 -->
+	    <property name="defaultEncoding" value="UTF-8" />
+	    <!-- 上传文件的解析 -->
+	    <property name="resolveLazily" value="true" />
+    </bean>
+    
+    <!-- 配置数据缓存静态变量注入 必须放在注解驱动的后面 -->
+	<bean id="systemCache" class="com.synpower.util.SystemCache" init-method="init"> 
+		<property name="dataElectricMeterMapper" ref="dataElectricMeterMapper"/>
+		<property name="inventerStorageDataMapper" ref="inventerStorageDataMapper"/>
+		<property name="collDeviceMapper" ref="collDeviceMapper"/>
+		<property name="cacheUtil" ref="cacheUtil"/>
+		<property name="collModelDetailMqttMapper" ref="collModelDetailMqttMapper"/>
+		<property name="collYxExpandMapper" ref="collYxExpandMapper"/>
+		<property name="plantInfoMapper" ref="plantInfoMapper"/>
+		<property name="dataPcsMapper" ref="dataPcsMapper"/>
+		<property name="energyStorageDataMapper" ref="energyStorageDataMapper"/>
+		<property name="elecCapDecMapper" ref="elecCapDecMapper"/>
+		<property name="electricStorageDataMapper" ref="electricStorageDataMapper"/>
+		<property name="sysPowerPriceDetailMapper" ref="sysPowerPriceDetailMapper"/>
+		<property name="collSignalLabelMapper" ref="collSignalLabelMapper"/>
+	</bean>
+	
+	<!--<bean id="updateWeather" class="com.synpower.quartz.UpdateWeather" init-method="updateWeather"/>-->
+	<bean id="updateYSToken" class="com.synpower.quartz.UpdateYSToken" init-method="updateYS7Token"/>
+	<import resource="quartz.xml" />
+</beans>

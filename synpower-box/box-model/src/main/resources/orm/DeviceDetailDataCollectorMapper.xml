@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DeviceDetailDataCollectorMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DeviceDetailDataCollector">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="model_identity" jdbcType="VARCHAR" property="modelIdentity" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="protocol" jdbcType="VARCHAR" property="protocol" />
+    <result column="photo_path" jdbcType="VARCHAR" property="photoPath" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, model_identity, device_type, manufacturer, model, voltage_specification, current_specification, 
+    frequency, accuracy_class, wiring_standard, protocol, photo_path, valid
+  </sql>
+  <select id="getModel" parameterType="integer" resultType="String">
+  	SELECT model FROM device_detail_data_collector where id=#{deviceModelId} and valid=0
+  </select>
+  <select id="getCollModelNames"  resultMap="BaseResultMap">
+  	SELECT id,model FROM device_detail_data_collector where 1=1 and valid=0
+  </select>
+</mapper>

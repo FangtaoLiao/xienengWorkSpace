@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.CollSignalLabelMapper">
+    <resultMap id="BaseResultMap" type="com.synpower.bean.CollSignalLabel">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="tableName" jdbcType="VARCHAR" property="tablename" />
+    <result column="field" jdbcType="VARCHAR" property="field" />
+    <result column="language_id" jdbcType="TINYINT" property="languageId" />
+    <result column="field_label" jdbcType="VARCHAR" property="fieldLabel" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="priority" jdbcType="INTEGER" property="priority" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="compare" jdbcType="CHAR" property="compare" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, tableName, field, language_id, field_label, device_type, priority, unit, compare, 
+    valid
+  </sql>
+  <select id="getFieldByType" parameterType="String" resultMap="BaseResultMap">
+  	select field,field_label,unit,device_type from coll_signal_label where device_type=#{type} and valid=0 and compare=1
+  </select>
+  <select id="getFieldForHistory" parameterType="Map" resultMap="BaseResultMap">
+  	select field,field_label,unit,device_type from coll_signal_label where device_type=#{type} 
+  	<foreach collection="fieldList" item="item" open=" and field IN (" close=") " separator=",">
+				#{item}
+	</foreach>
+  </select>
+    <select id="getFieldLabelByField" parameterType="Map" resultMap="BaseResultMap">
+  	select field,field_label,unit from coll_signal_label where device_type=#{type} and field=#{field}
+  </select>
+   <select id="getImName" parameterType="String" resultType="String">
+  	select field_label from coll_signal_label where valid=0 and id=#{imId}
+  </select>
+  
+   <select id="getField2Guid" parameterType="int" resultType="Map">
+  	select  csl.field,fsgm.signal_guid 
+	from coll_signal_label csl 
+	right join field_signal_guid_mapping fsgm 
+	on csl.id=fsgm.coll_id 
+	where csl.valid=0
+	and fsgm.valid=0
+	and csl.device_type=#{deviceType}
+  </select>
+</mapper>

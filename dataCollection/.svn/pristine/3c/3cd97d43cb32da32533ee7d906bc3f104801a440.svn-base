@@ -1,0 +1,6 @@
+#RMI发布参数
+rmi.registryPort=1099
+rmi.servicePort=458
+
+#RMI调用参数
+rmi.adress=rmi://116.62.60.33:1099/ykYtService

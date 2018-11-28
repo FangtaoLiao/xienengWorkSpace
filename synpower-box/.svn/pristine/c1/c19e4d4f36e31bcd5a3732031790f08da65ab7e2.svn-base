@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysPersonalSetMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysPersonalSet">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="belong_id" jdbcType="INTEGER" property="belongId" />
+    <result column="obeject_id" jdbcType="VARCHAR" property="obejectId" />
+    <result column="person_type" jdbcType="INTEGER" property="personType" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, belong_id, obeject_id, person_type, create_time, create_time
+  </sql>
+  <select id="getPlantForUser" parameterType="String" resultType="String">
+  	select obeject_id from  sys_personal_set where person_type=1 and valid=0 and belong_id=#{uId}
+  </select>
+  <select id="getObjectsByBelong" parameterType="Map" resultType="String">
+      select obeject_id
+      from sys_personal_set
+      where person_type = #{type} and valid = 0 and belong_id = #{belongId}
+  </select>
+   <select id="getObjectsByBelongWX" parameterType="Map" resultType="String">
+ 	 select obeject_id from  sys_personal_set
+     where person_type=#{type} and valid=0 and belong_id=#{belongId} limit #{min},#{max}
+  </select>
+  <delete id="deleteHistoryReportSet" parameterType="Map">
+  	update sys_personal_set set valid=1  where belong_id=#{belongId} and person_type in
+  	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </delete>
+  <delete id="deleteUserRecord" parameterType="Map">
+  	update sys_personal_set set valid=1  where belong_id=#{uId} and person_type=#{type}
+  </delete>
+  <delete id="deleteUserOneRecord" parameterType="Map">
+  	update sys_personal_set set valid=1  where belong_id=#{uId} and person_type=#{type} and obeject_id=#{obejectId}
+  </delete>
+  <insert id="saveUserRecord" parameterType="Map">
+  	insert into sys_personal_set (belong_id,obeject_id,person_type,create_time,valid)values
+	<foreach collection="obejectIds" item="item" index="index" separator="," >  
+        (#{uId},#{item},#{type},#{createTime},0)
+    </foreach> 
+  </insert>
+  <insert id="insertUserRecord" parameterType="Map">
+  	insert into sys_personal_set (belong_id,obeject_id,person_type,create_time,valid)values
+	<foreach collection="orgs" item="item" index="index" separator="," >  
+        (#{item},#{plantId},#{type},#{createTime},0)  
+    </foreach> 
+  </insert>
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DeviceSeriesModuleDetailMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DeviceSeriesModuleDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="module_id" jdbcType="INTEGER" property="moduleId" />
+    <result column="module_num" jdbcType="INTEGER" property="moduleNum" />
+    <result column="series_name" jdbcType="VARCHAR" property="seriesName" />
+    <result column="series_alias" jdbcType="VARCHAR" property="seriesAlias" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, module_id, module_num, series_name, series_alias, valid
+  </sql>
+  <select id="getModuleCountForDevices" parameterType="List" resultType="int">
+  	select IFNULL(sum(module_num),0) from device_series_module_detail where valid=0 and device_id in
+  	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach> 
+  </select>
+  <select id="getOtherModule" parameterType="map" resultMap="BaseResultMap">
+  	select id,device_id,series_name,series_alias from device_series_module_detail where id in
+  	<foreach collection="pList" index="index" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach> 
+  </select>
+  <update id="updateModuleInfo" parameterType="map" >
+  	update device_series_module_detail set module_num=#{count},device_id=#{deviceId},module_id=#{moduleId},module_num=#{count},series_name=#{pvName},series_alias=#{pvName} where id=#{pvId}
+  </update>
+  <update id="delModuleInfo"  parameterType="map" >
+  	update device_series_module_detail set module_id=#{moduleId},module_num=#{moduleNum} where id=#{pid}
+  </update>
+  <update id="delOldModuleInfo"  parameterType="String" >
+  	delete from device_series_module_detail where device_id=#{deviceId1}
+  </update>
+  <insert id="addNewModule" parameterType="map" >
+  	insert into device_series_module_detail (device_id,module_id,module_num,series_name,series_alias,valid) values (#{deviceId},#{moduleId},#{count},#{pvName},#{pvName},0)
+  </insert>
+  <select id="getAllDeviceId"  resultType="String">
+ 		select id from device_series_module_detail  where device_id=#{deviceId}
+  	</select>
+  <select id="getEachModeleInfo" parameterType="String" resultMap="allInfo">
+  	select md.id,md.device_id,md.series_name,md.module_id,md.module_num,dm.model_identity,dm.manufacturer,dm.subassembly_type,dm.power
+  	from device_series_module_detail md join device_detail_module dm 
+  	on md.module_id=dm.id where md.device_id =#{deviceId} 
+  </select>
+  
+  <select id="getTotalCount" parameterType="String" resultType="integer">
+  	select IFNULL(count(*),0) from device_series_module_detail md  where md.device_id =#{deviceId} 
+  </select>
+  <resultMap id="allInfo" type="java.util.HashMap">
+  	<result column="device_id" property="deviceId" jdbcType="VARCHAR"/>
+  	<result column="series_name" property="seriesName" jdbcType="VARCHAR"/>
+  	<result column="module_id" property="moduleId" jdbcType="VARCHAR"/>
+  	<result column="id" property="id" jdbcType="INTEGER"/>
+  	<result column="module_num" property="moduleNum" jdbcType="INTEGER"/>
+  	<result column="model_identity" property="modelIdentity" jdbcType="VARCHAR"/>
+  	<result column="manufacturer" property="manufacturer" jdbcType="VARCHAR"/>
+  	<result column="subassembly_type" property="subassemblyType" jdbcType="VARCHAR"/>
+  	<result column="power" property="power" jdbcType="REAL"/>
+  </resultMap>
+</mapper>

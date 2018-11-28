@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.DataBmsMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.DataBms">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="volt_bus" jdbcType="REAL" property="voltBus" />
+    <result column="curr_bus" jdbcType="REAL" property="currBus" />
+    <result column="life_time" jdbcType="BIGINT" property="lifeTime" />
+    <result column="left_life_time" jdbcType="BIGINT" property="leftLifeTime" />
+    <result column="bms_capacity" jdbcType="REAL" property="bmsCapacity" />
+    <result column="bms_charged_capacity" jdbcType="REAL" property="bmsChargedCapacity" />
+    <result column="bms_left_capacity" jdbcType="REAL" property="bmsLeftCapacity" />
+    <result column="soc_cell_cluster" jdbcType="REAL" property="socCellCluster" />
+    <result column="num_cellvoltmax" jdbcType="INTEGER" property="numCellvoltmax" />
+    <result column="volt_cellmax" jdbcType="REAL" property="voltCellmax" />
+    <result column="num_cellvoltmin" jdbcType="INTEGER" property="numCellvoltmin" />
+    <result column="volt_cellmin" jdbcType="REAL" property="voltCellmin" />
+    <result column="num_tempmax" jdbcType="INTEGER" property="numTempmax" />
+    <result column="temp_cellmax" jdbcType="REAL" property="tempCellmax" />
+    <result column="num_tempmin" jdbcType="INTEGER" property="numTempmin" />
+    <result column="temp_cellmin" jdbcType="REAL" property="tempCellmin" />
+    <result column="cell_total" jdbcType="REAL" property="cellTotal" />
+    <result column="running_status" jdbcType="TINYINT" property="runningStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, plant, data_time, volt_bus, curr_bus, life_time, left_life_time, bms_capacity, 
+    bms_charged_capacity, bms_left_capacity, soc_cell_cluster, num_cellvoltmax, volt_cellmax, 
+    num_cellvoltmin, volt_cellmin, num_tempmax, temp_cellmax, num_tempmin, temp_cellmin, 
+    cell_total, running_status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_bms
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 根据deviceId和dataTime查询 -->
+  <select id="selectByIdAndDataTime"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_bms
+    where device_id = #{deviceId,jdbcType=INTEGER} and data_time = #{dataTime,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from data_bms
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.DataBms">
+    insert into data_bms (id, device_id, plant, 
+      data_time, volt_bus, curr_bus, 
+      life_time, left_life_time, bms_capacity, 
+      bms_charged_capacity, bms_left_capacity, soc_cell_cluster, 
+      num_cellvoltmax, volt_cellmax, num_cellvoltmin, 
+      volt_cellmin, num_tempmax, temp_cellmax, 
+      num_tempmin, temp_cellmin, cell_total, 
+      running_status)
+    values (#{id,jdbcType=BIGINT}, #{deviceId,jdbcType=INTEGER}, #{plant,jdbcType=INTEGER}, 
+      #{dataTime,jdbcType=BIGINT}, #{voltBus,jdbcType=REAL}, #{currBus,jdbcType=REAL}, 
+      #{lifeTime,jdbcType=BIGINT}, #{leftLifeTime,jdbcType=BIGINT}, #{bmsCapacity,jdbcType=REAL}, 
+      #{bmsChargedCapacity,jdbcType=REAL}, #{bmsLeftCapacity,jdbcType=REAL}, #{socCellCluster,jdbcType=REAL}, 
+      #{numCellvoltmax,jdbcType=INTEGER}, #{voltCellmax,jdbcType=REAL}, #{numCellvoltmin,jdbcType=INTEGER}, 
+      #{voltCellmin,jdbcType=REAL}, #{numTempmax,jdbcType=INTEGER}, #{tempCellmax,jdbcType=REAL}, 
+      #{numTempmin,jdbcType=INTEGER}, #{tempCellmin,jdbcType=REAL}, #{cellTotal,jdbcType=REAL}, 
+      #{runningStatus,jdbcType=TINYINT})
+  </insert>
+  
+    <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">  
+    insert into data_bms (id, device_id, plant, 
+      data_time, volt_bus, curr_bus, 
+      life_time, left_life_time, bms_capacity, 
+      bms_charged_capacity, bms_left_capacity, soc_cell_cluster, 
+      num_cellvoltmax, volt_cellmax, num_cellvoltmin, 
+      volt_cellmin, num_tempmax, temp_cellmax, 
+      num_tempmin, temp_cellmin, cell_total, 
+      running_status)
+      values
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id,jdbcType=BIGINT}, #{item.deviceId,jdbcType=INTEGER}, #{item.plant,jdbcType=INTEGER}, 
+      #{item.dataTime,jdbcType=BIGINT}, #{item.voltBus,jdbcType=REAL}, #{item.currBus,jdbcType=REAL}, 
+      #{item.lifeTime,jdbcType=BIGINT}, #{item.leftLifeTime,jdbcType=BIGINT}, #{item.bmsCapacity,jdbcType=REAL}, 
+      #{item.bmsChargedCapacity,jdbcType=REAL}, #{item.bmsLeftCapacity,jdbcType=REAL}, #{item.socCellCluster,jdbcType=REAL}, 
+      #{item.numCellvoltmax,jdbcType=INTEGER}, #{item.voltCellmax,jdbcType=REAL}, #{item.numCellvoltmin,jdbcType=INTEGER}, 
+      #{item.voltCellmin,jdbcType=REAL}, #{item.numTempmax,jdbcType=INTEGER}, #{item.tempCellmax,jdbcType=REAL}, 
+      #{item.numTempmin,jdbcType=INTEGER}, #{item.tempCellmin,jdbcType=REAL}, #{item.cellTotal,jdbcType=REAL}, 
+      #{item.runningStatus,jdbcType=TINYINT})
+    </foreach>  
+  </insert>  
+  
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataBms">
+    insert into data_bms
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="plant != null">
+        plant,
+      </if>
+      <if test="dataTime != null">
+        data_time,
+      </if>
+      <if test="voltBus != null">
+        volt_bus,
+      </if>
+      <if test="currBus != null">
+        curr_bus,
+      </if>
+      <if test="lifeTime != null">
+        life_time,
+      </if>
+      <if test="leftLifeTime != null">
+        left_life_time,
+      </if>
+      <if test="bmsCapacity != null">
+        bms_capacity,
+      </if>
+      <if test="bmsChargedCapacity != null">
+        bms_charged_capacity,
+      </if>
+      <if test="bmsLeftCapacity != null">
+        bms_left_capacity,
+      </if>
+      <if test="socCellCluster != null">
+        soc_cell_cluster,
+      </if>
+      <if test="numCellvoltmax != null">
+        num_cellvoltmax,
+      </if>
+      <if test="voltCellmax != null">
+        volt_cellmax,
+      </if>
+      <if test="numCellvoltmin != null">
+        num_cellvoltmin,
+      </if>
+      <if test="voltCellmin != null">
+        volt_cellmin,
+      </if>
+      <if test="numTempmax != null">
+        num_tempmax,
+      </if>
+      <if test="tempCellmax != null">
+        temp_cellmax,
+      </if>
+      <if test="numTempmin != null">
+        num_tempmin,
+      </if>
+      <if test="tempCellmin != null">
+        temp_cellmin,
+      </if>
+      <if test="cellTotal != null">
+        cell_total,
+      </if>
+      <if test="runningStatus != null">
+        running_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="voltBus != null">
+        #{voltBus,jdbcType=REAL},
+      </if>
+      <if test="currBus != null">
+        #{currBus,jdbcType=REAL},
+      </if>
+      <if test="lifeTime != null">
+        #{lifeTime,jdbcType=BIGINT},
+      </if>
+      <if test="leftLifeTime != null">
+        #{leftLifeTime,jdbcType=BIGINT},
+      </if>
+      <if test="bmsCapacity != null">
+        #{bmsCapacity,jdbcType=REAL},
+      </if>
+      <if test="bmsChargedCapacity != null">
+        #{bmsChargedCapacity,jdbcType=REAL},
+      </if>
+      <if test="bmsLeftCapacity != null">
+        #{bmsLeftCapacity,jdbcType=REAL},
+      </if>
+      <if test="socCellCluster != null">
+        #{socCellCluster,jdbcType=REAL},
+      </if>
+      <if test="numCellvoltmax != null">
+        #{numCellvoltmax,jdbcType=INTEGER},
+      </if>
+      <if test="voltCellmax != null">
+        #{voltCellmax,jdbcType=REAL},
+      </if>
+      <if test="numCellvoltmin != null">
+        #{numCellvoltmin,jdbcType=INTEGER},
+      </if>
+      <if test="voltCellmin != null">
+        #{voltCellmin,jdbcType=REAL},
+      </if>
+      <if test="numTempmax != null">
+        #{numTempmax,jdbcType=INTEGER},
+      </if>
+      <if test="tempCellmax != null">
+        #{tempCellmax,jdbcType=REAL},
+      </if>
+      <if test="numTempmin != null">
+        #{numTempmin,jdbcType=INTEGER},
+      </if>
+      <if test="tempCellmin != null">
+        #{tempCellmin,jdbcType=REAL},
+      </if>
+      <if test="cellTotal != null">
+        #{cellTotal,jdbcType=REAL},
+      </if>
+      <if test="runningStatus != null">
+        #{runningStatus,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataBms">
+    update data_bms
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        plant = #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        data_time = #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="voltBus != null">
+        volt_bus = #{voltBus,jdbcType=REAL},
+      </if>
+      <if test="currBus != null">
+        curr_bus = #{currBus,jdbcType=REAL},
+      </if>
+      <if test="lifeTime != null">
+        life_time = #{lifeTime,jdbcType=BIGINT},
+      </if>
+      <if test="leftLifeTime != null">
+        left_life_time = #{leftLifeTime,jdbcType=BIGINT},
+      </if>
+      <if test="bmsCapacity != null">
+        bms_capacity = #{bmsCapacity,jdbcType=REAL},
+      </if>
+      <if test="bmsChargedCapacity != null">
+        bms_charged_capacity = #{bmsChargedCapacity,jdbcType=REAL},
+      </if>
+      <if test="bmsLeftCapacity != null">
+        bms_left_capacity = #{bmsLeftCapacity,jdbcType=REAL},
+      </if>
+      <if test="socCellCluster != null">
+        soc_cell_cluster = #{socCellCluster,jdbcType=REAL},
+      </if>
+      <if test="numCellvoltmax != null">
+        num_cellvoltmax = #{numCellvoltmax,jdbcType=INTEGER},
+      </if>
+      <if test="voltCellmax != null">
+        volt_cellmax = #{voltCellmax,jdbcType=REAL},
+      </if>
+      <if test="numCellvoltmin != null">
+        num_cellvoltmin = #{numCellvoltmin,jdbcType=INTEGER},
+      </if>
+      <if test="voltCellmin != null">
+        volt_cellmin = #{voltCellmin,jdbcType=REAL},
+      </if>
+      <if test="numTempmax != null">
+        num_tempmax = #{numTempmax,jdbcType=INTEGER},
+      </if>
+      <if test="tempCellmax != null">
+        temp_cellmax = #{tempCellmax,jdbcType=REAL},
+      </if>
+      <if test="numTempmin != null">
+        num_tempmin = #{numTempmin,jdbcType=INTEGER},
+      </if>
+      <if test="tempCellmin != null">
+        temp_cellmin = #{tempCellmin,jdbcType=REAL},
+      </if>
+      <if test="cellTotal != null">
+        cell_total = #{cellTotal,jdbcType=REAL},
+      </if>
+      <if test="runningStatus != null">
+        running_status = #{runningStatus,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.DataBms">
+    update data_bms
+    set device_id = #{deviceId,jdbcType=INTEGER},
+      plant = #{plant,jdbcType=INTEGER},
+      data_time = #{dataTime,jdbcType=BIGINT},
+      volt_bus = #{voltBus,jdbcType=REAL},
+      curr_bus = #{currBus,jdbcType=REAL},
+      life_time = #{lifeTime,jdbcType=BIGINT},
+      left_life_time = #{leftLifeTime,jdbcType=BIGINT},
+      bms_capacity = #{bmsCapacity,jdbcType=REAL},
+      bms_charged_capacity = #{bmsChargedCapacity,jdbcType=REAL},
+      bms_left_capacity = #{bmsLeftCapacity,jdbcType=REAL},
+      soc_cell_cluster = #{socCellCluster,jdbcType=REAL},
+      num_cellvoltmax = #{numCellvoltmax,jdbcType=INTEGER},
+      volt_cellmax = #{voltCellmax,jdbcType=REAL},
+      num_cellvoltmin = #{numCellvoltmin,jdbcType=INTEGER},
+      volt_cellmin = #{voltCellmin,jdbcType=REAL},
+      num_tempmax = #{numTempmax,jdbcType=INTEGER},
+      temp_cellmax = #{tempCellmax,jdbcType=REAL},
+      num_tempmin = #{numTempmin,jdbcType=INTEGER},
+      temp_cellmin = #{tempCellmin,jdbcType=REAL},
+      cell_total = #{cellTotal,jdbcType=REAL},
+      running_status = #{runningStatus,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

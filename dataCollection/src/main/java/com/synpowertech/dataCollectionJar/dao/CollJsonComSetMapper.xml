@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.CollJsonComSetMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.CollJsonComSet">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="coll_id" jdbcType="BIGINT" property="collId" />
+    <result column="com" jdbcType="VARCHAR" property="com" />
+    <result column="rate" jdbcType="VARCHAR" property="rate" />
+    <result column="data_bit" jdbcType="VARCHAR" property="dataBit" />
+    <result column="stop_bit" jdbcType="VARCHAR" property="stopBit" />
+    <result column="parity" jdbcType="VARCHAR" property="parity" />
+    <result column="scan_cycle" jdbcType="VARCHAR" property="scanCycle" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, coll_id, com, rate, data_bit, stop_bit, parity, scan_cycle, valid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_json_com_set
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from coll_json_com_set
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonComSet">
+    insert into coll_json_com_set (id, name, coll_id, 
+      com, rate, data_bit, 
+      stop_bit, parity, scan_cycle, 
+      valid)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{collId,jdbcType=BIGINT}, 
+      #{com,jdbcType=VARCHAR}, #{rate,jdbcType=VARCHAR}, #{dataBit,jdbcType=VARCHAR}, 
+      #{stopBit,jdbcType=VARCHAR}, #{parity,jdbcType=VARCHAR}, #{scanCycle,jdbcType=VARCHAR}, 
+      #{valid,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonComSet">
+    insert into coll_json_com_set
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="collId != null">
+        coll_id,
+      </if>
+      <if test="com != null">
+        com,
+      </if>
+      <if test="rate != null">
+        rate,
+      </if>
+      <if test="dataBit != null">
+        data_bit,
+      </if>
+      <if test="stopBit != null">
+        stop_bit,
+      </if>
+      <if test="parity != null">
+        parity,
+      </if>
+      <if test="scanCycle != null">
+        scan_cycle,
+      </if>
+      <if test="valid != null">
+        valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="collId != null">
+        #{collId,jdbcType=BIGINT},
+      </if>
+      <if test="com != null">
+        #{com,jdbcType=VARCHAR},
+      </if>
+      <if test="rate != null">
+        #{rate,jdbcType=VARCHAR},
+      </if>
+      <if test="dataBit != null">
+        #{dataBit,jdbcType=VARCHAR},
+      </if>
+      <if test="stopBit != null">
+        #{stopBit,jdbcType=VARCHAR},
+      </if>
+      <if test="parity != null">
+        #{parity,jdbcType=VARCHAR},
+      </if>
+      <if test="scanCycle != null">
+        #{scanCycle,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonComSet">
+    update coll_json_com_set
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="collId != null">
+        coll_id = #{collId,jdbcType=BIGINT},
+      </if>
+      <if test="com != null">
+        com = #{com,jdbcType=VARCHAR},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=VARCHAR},
+      </if>
+      <if test="dataBit != null">
+        data_bit = #{dataBit,jdbcType=VARCHAR},
+      </if>
+      <if test="stopBit != null">
+        stop_bit = #{stopBit,jdbcType=VARCHAR},
+      </if>
+      <if test="parity != null">
+        parity = #{parity,jdbcType=VARCHAR},
+      </if>
+      <if test="scanCycle != null">
+        scan_cycle = #{scanCycle,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonComSet">
+    update coll_json_com_set
+    set name = #{name,jdbcType=VARCHAR},
+      coll_id = #{collId,jdbcType=BIGINT},
+      com = #{com,jdbcType=VARCHAR},
+      rate = #{rate,jdbcType=VARCHAR},
+      data_bit = #{dataBit,jdbcType=VARCHAR},
+      stop_bit = #{stopBit,jdbcType=VARCHAR},
+      parity = #{parity,jdbcType=VARCHAR},
+      scan_cycle = #{scanCycle,jdbcType=VARCHAR},
+      valid = #{valid,jdbcType=CHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/box-model" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/box-service" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/box-util" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/box-web" vcs="svn" />
+  </component>
+</project>

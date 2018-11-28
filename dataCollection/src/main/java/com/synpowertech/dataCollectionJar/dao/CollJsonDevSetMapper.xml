@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.CollJsonDevSetMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.CollJsonDevSet">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="coll_id" jdbcType="BIGINT" property="collId" />
+    <result column="com_id" jdbcType="INTEGER" property="comId" />
+    <result column="dev_id" jdbcType="BIGINT" property="devId" />
+    <result column="slave_id" jdbcType="VARCHAR" property="slaveId" />
+    <result column="verify_mode" jdbcType="VARCHAR" property="verifyMode" />
+    <result column="verify_order" jdbcType="VARCHAR" property="verifyOrder" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, coll_id, com_id, dev_id, slave_id, verify_mode, verify_order, valid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_json_dev_set
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 按采集器id分组查询 -->
+  <select id="selectOrderByCollId"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_json_dev_set
+    where valid = '1' order by coll_id
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from coll_json_dev_set
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonDevSet">
+    insert into coll_json_dev_set (id, coll_id, com_id, 
+      dev_id, slave_id, verify_mode, 
+      verify_order, valid)
+    values (#{id,jdbcType=BIGINT}, #{collId,jdbcType=BIGINT}, #{comId,jdbcType=INTEGER}, 
+      #{devId,jdbcType=BIGINT}, #{slaveId,jdbcType=VARCHAR}, #{verifyMode,jdbcType=VARCHAR}, 
+      #{verifyOrder,jdbcType=VARCHAR}, #{valid,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonDevSet">
+    insert into coll_json_dev_set
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="collId != null">
+        coll_id,
+      </if>
+      <if test="comId != null">
+        com_id,
+      </if>
+      <if test="devId != null">
+        dev_id,
+      </if>
+      <if test="slaveId != null">
+        slave_id,
+      </if>
+      <if test="verifyMode != null">
+        verify_mode,
+      </if>
+      <if test="verifyOrder != null">
+        verify_order,
+      </if>
+      <if test="valid != null">
+        valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="collId != null">
+        #{collId,jdbcType=BIGINT},
+      </if>
+      <if test="comId != null">
+        #{comId,jdbcType=INTEGER},
+      </if>
+      <if test="devId != null">
+        #{devId,jdbcType=BIGINT},
+      </if>
+      <if test="slaveId != null">
+        #{slaveId,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyMode != null">
+        #{verifyMode,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyOrder != null">
+        #{verifyOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonDevSet">
+    update coll_json_dev_set
+    <set>
+      <if test="collId != null">
+        coll_id = #{collId,jdbcType=BIGINT},
+      </if>
+      <if test="comId != null">
+        com_id = #{comId,jdbcType=INTEGER},
+      </if>
+      <if test="devId != null">
+        dev_id = #{devId,jdbcType=BIGINT},
+      </if>
+      <if test="slaveId != null">
+        slave_id = #{slaveId,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyMode != null">
+        verify_mode = #{verifyMode,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyOrder != null">
+        verify_order = #{verifyOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonDevSet">
+    update coll_json_dev_set
+    set coll_id = #{collId,jdbcType=BIGINT},
+      com_id = #{comId,jdbcType=INTEGER},
+      dev_id = #{devId,jdbcType=BIGINT},
+      slave_id = #{slaveId,jdbcType=VARCHAR},
+      verify_mode = #{verifyMode,jdbcType=VARCHAR},
+      verify_order = #{verifyOrder,jdbcType=VARCHAR},
+      valid = #{valid,jdbcType=CHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

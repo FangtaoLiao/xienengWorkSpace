@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.EnergyStorageDataMapper">
+	<resultMap id="BaseResultMap"
+		type="com.synpower.bean.EnergyStorageData">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="em_pos_jian_energy" jdbcType="DOUBLE"
+			property="emPosJianEnergy" />
+		<result column="em_pos_jian_price" jdbcType="DOUBLE"
+			property="emPosJianPrice" />
+		<result column="em_neg_jian_energy" jdbcType="DOUBLE"
+			property="emNegJianEnergy" />
+		<result column="em_neg_jian_price" jdbcType="DOUBLE"
+			property="emNegJianPrice" />
+		<result column="em_pos_feng_energy" jdbcType="DOUBLE"
+			property="emPosFengEnergy" />
+		<result column="em_pos_feng_price" jdbcType="DOUBLE"
+			property="emPosFengPrice" />
+		<result column="em_neg_feng_energy" jdbcType="DOUBLE"
+			property="emNegFengEnergy" />
+		<result column="em_neg_feng_price" jdbcType="DOUBLE"
+			property="emNegFengPrice" />
+		<result column="em_pos_ping_energy" jdbcType="DOUBLE"
+			property="emPosPingEnergy" />
+		<result column="em_pos_ping_price" jdbcType="DOUBLE"
+			property="emPosPingPrice" />
+		<result column="em_neg_ping_energy" jdbcType="DOUBLE"
+			property="emNegPingEnergy" />
+		<result column="em_neg_ping_price" jdbcType="DOUBLE"
+			property="emNegPingPrice" />
+		<result column="em_pos_gu_energy" jdbcType="DOUBLE"
+			property="emPosGuEnergy" />
+		<result column="em_pos_gu_price" jdbcType="DOUBLE"
+			property="emPosGuPrice" />
+		<result column="em_neg_gu_energy" jdbcType="DOUBLE"
+			property="emNegGuEnergy" />
+		<result column="em_neg_gu_price" jdbcType="DOUBLE"
+			property="emNegGuPrice" />
+		<result column="daily_pos_energy" jdbcType="DOUBLE"
+			property="dailyPosEnergy" />
+		<result column="daily_pos_price" jdbcType="DOUBLE"
+			property="dailyPosPrice" />
+		<result column="daily_neg_energy" jdbcType="DOUBLE"
+			property="dailyNegEnergy" />
+		<result column="daily_neg_price" jdbcType="DOUBLE"
+			property="dailyNegPrice" />
+		<result column="daily_energy" jdbcType="DOUBLE"
+			property="dailyEnergy" />
+		<result column="daily_price" jdbcType="DOUBLE"
+			property="dailyPrice" />
+		<result column="total_pos_energy" jdbcType="DOUBLE"
+			property="totalPosEnergy" />
+		<result column="total_pos_price" jdbcType="DOUBLE"
+			property="totalPosPrice" />
+		<result column="total_neg_energy" jdbcType="DOUBLE"
+			property="totalNegEnergy" />
+		<result column="total_neg_price" jdbcType="DOUBLE"
+			property="totalNegPrice" />
+		<result column="total_energy" jdbcType="DOUBLE"
+			property="totalEnergy" />
+		<result column="total_price" jdbcType="DOUBLE"
+			property="totalPrice" />
+		<result column="data_time" jdbcType="BIGINT"
+			property="dataTime" />
+		<result column="plant_id" jdbcType="INTEGER" property="plantId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, em_pos_jian_energy, em_pos_jian_price, em_neg_jian_energy,
+		em_neg_jian_price,
+		em_pos_feng_energy, em_pos_feng_price, em_neg_feng_energy, em_neg_feng_price,
+		em_pos_ping_energy,
+		em_pos_ping_price, em_neg_ping_energy, em_neg_ping_price, em_pos_gu_energy,
+		em_pos_gu_price,
+		em_neg_gu_energy, em_neg_gu_price, daily_pos_energy, daily_pos_price, daily_neg_energy,
+		daily_neg_price, daily_energy, daily_price, total_pos_energy,
+		total_pos_price, total_neg_energy,
+		total_neg_price, total_energy, total_price, data_time, plant_id
+	</sql>
+	<select id="selectByPrimaryKey"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from energy_storage_data
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from energy_storage_data
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert"
+		parameterType="com.synpower.bean.EnergyStorageData">
+		insert into energy_storage_data (id, em_pos_jian_energy, em_pos_jian_price,
+		em_neg_jian_energy, em_neg_jian_price, em_pos_feng_energy,
+		em_pos_feng_price, em_neg_feng_energy, em_neg_feng_price,
+		em_pos_ping_energy, em_pos_ping_price, em_neg_ping_energy,
+		em_neg_ping_price, em_pos_gu_energy, em_pos_gu_price,
+		em_neg_gu_energy, em_neg_gu_price, daily_pos_energy,
+		daily_pos_price, daily_neg_energy, daily_neg_price,
+		daily_energy, daily_price, total_pos_energy,
+		total_pos_price, total_neg_energy, total_neg_price,
+		total_energy, total_price, data_time,
+		plant_id)
+		values (#{id,jdbcType=INTEGER}, #{emPosJianEnergy,jdbcType=DOUBLE},
+		#{emPosJianPrice,jdbcType=DOUBLE},
+		#{emNegJianEnergy,jdbcType=DOUBLE}, #{emNegJianPrice,jdbcType=DOUBLE},
+		#{emPosFengEnergy,jdbcType=DOUBLE},
+		#{emPosFengPrice,jdbcType=DOUBLE}, #{emNegFengEnergy,jdbcType=DOUBLE},
+		#{emNegFengPrice,jdbcType=DOUBLE},
+		#{emPosPingEnergy,jdbcType=DOUBLE}, #{emPosPingPrice,jdbcType=DOUBLE},
+		#{emNegPingEnergy,jdbcType=DOUBLE},
+		#{emNegPingPrice,jdbcType=DOUBLE}, #{emPosGuEnergy,jdbcType=DOUBLE}, #{emPosGuPrice,jdbcType=DOUBLE},
+		#{emNegGuEnergy,jdbcType=DOUBLE}, #{emNegGuPrice,jdbcType=DOUBLE},
+		#{dailyPosEnergy,jdbcType=DOUBLE},
+		#{dailyPosPrice,jdbcType=DOUBLE}, #{dailyNegEnergy,jdbcType=DOUBLE}, #{dailyNegPrice,jdbcType=DOUBLE},
+		#{dailyEnergy,jdbcType=DOUBLE}, #{dailyPrice,jdbcType=DOUBLE},
+		#{totalPosEnergy,jdbcType=DOUBLE},
+		#{totalPosPrice,jdbcType=DOUBLE}, #{totalNegEnergy,jdbcType=DOUBLE}, #{totalNegPrice,jdbcType=DOUBLE},
+		#{totalEnergy,jdbcType=DOUBLE}, #{totalPrice,jdbcType=DOUBLE},
+		#{dataTime,jdbcType=BIGINT},
+		#{plantId,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.synpower.bean.EnergyStorageData">
+		insert into energy_storage_data
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="emPosJianEnergy != null">
+				em_pos_jian_energy,
+			</if>
+			<if test="emPosJianPrice != null">
+				em_pos_jian_price,
+			</if>
+			<if test="emNegJianEnergy != null">
+				em_neg_jian_energy,
+			</if>
+			<if test="emNegJianPrice != null">
+				em_neg_jian_price,
+			</if>
+			<if test="emPosFengEnergy != null">
+				em_pos_feng_energy,
+			</if>
+			<if test="emPosFengPrice != null">
+				em_pos_feng_price,
+			</if>
+			<if test="emNegFengEnergy != null">
+				em_neg_feng_energy,
+			</if>
+			<if test="emNegFengPrice != null">
+				em_neg_feng_price,
+			</if>
+			<if test="emPosPingEnergy != null">
+				em_pos_ping_energy,
+			</if>
+			<if test="emPosPingPrice != null">
+				em_pos_ping_price,
+			</if>
+			<if test="emNegPingEnergy != null">
+				em_neg_ping_energy,
+			</if>
+			<if test="emNegPingPrice != null">
+				em_neg_ping_price,
+			</if>
+			<if test="emPosGuEnergy != null">
+				em_pos_gu_energy,
+			</if>
+			<if test="emPosGuPrice != null">
+				em_pos_gu_price,
+			</if>
+			<if test="emNegGuEnergy != null">
+				em_neg_gu_energy,
+			</if>
+			<if test="emNegGuPrice != null">
+				em_neg_gu_price,
+			</if>
+			<if test="dailyPosEnergy != null">
+				daily_pos_energy,
+			</if>
+			<if test="dailyPosPrice != null">
+				daily_pos_price,
+			</if>
+			<if test="dailyNegEnergy != null">
+				daily_neg_energy,
+			</if>
+			<if test="dailyNegPrice != null">
+				daily_neg_price,
+			</if>
+			<if test="dailyEnergy != null">
+				daily_energy,
+			</if>
+			<if test="dailyPrice != null">
+				daily_price,
+			</if>
+			<if test="totalPosEnergy != null">
+				total_pos_energy,
+			</if>
+			<if test="totalPosPrice != null">
+				total_pos_price,
+			</if>
+			<if test="totalNegEnergy != null">
+				total_neg_energy,
+			</if>
+			<if test="totalNegPrice != null">
+				total_neg_price,
+			</if>
+			<if test="totalEnergy != null">
+				total_energy,
+			</if>
+			<if test="totalPrice != null">
+				total_price,
+			</if>
+			<if test="dataTime != null">
+				data_time,
+			</if>
+			<if test="plantId != null">
+				plant_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="emPosJianEnergy != null">
+				#{emPosJianEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosJianPrice != null">
+				#{emPosJianPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegJianEnergy != null">
+				#{emNegJianEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegJianPrice != null">
+				#{emNegJianPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosFengEnergy != null">
+				#{emPosFengEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosFengPrice != null">
+				#{emPosFengPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegFengEnergy != null">
+				#{emNegFengEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegFengPrice != null">
+				#{emNegFengPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosPingEnergy != null">
+				#{emPosPingEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosPingPrice != null">
+				#{emPosPingPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegPingEnergy != null">
+				#{emNegPingEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegPingPrice != null">
+				#{emNegPingPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosGuEnergy != null">
+				#{emPosGuEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosGuPrice != null">
+				#{emPosGuPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegGuEnergy != null">
+				#{emNegGuEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegGuPrice != null">
+				#{emNegGuPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyPosEnergy != null">
+				#{dailyPosEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyPosPrice != null">
+				#{dailyPosPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyNegEnergy != null">
+				#{dailyNegEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyNegPrice != null">
+				#{dailyNegPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyEnergy != null">
+				#{dailyEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyPrice != null">
+				#{dailyPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="totalPosEnergy != null">
+				#{totalPosEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="totalPosPrice != null">
+				#{totalPosPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="totalNegEnergy != null">
+				#{totalNegEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="totalNegPrice != null">
+				#{totalNegPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="totalEnergy != null">
+				#{totalEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="totalPrice != null">
+				#{totalPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="dataTime != null">
+				#{dataTime,jdbcType=BIGINT},
+			</if>
+			<if test="plantId != null">
+				#{plantId,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.synpower.bean.EnergyStorageData">
+		update energy_storage_data
+		<set>
+			<if test="emPosJianEnergy != null">
+				em_pos_jian_energy = #{emPosJianEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosJianPrice != null">
+				em_pos_jian_price = #{emPosJianPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegJianEnergy != null">
+				em_neg_jian_energy = #{emNegJianEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegJianPrice != null">
+				em_neg_jian_price = #{emNegJianPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosFengEnergy != null">
+				em_pos_feng_energy = #{emPosFengEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosFengPrice != null">
+				em_pos_feng_price = #{emPosFengPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegFengEnergy != null">
+				em_neg_feng_energy = #{emNegFengEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegFengPrice != null">
+				em_neg_feng_price = #{emNegFengPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosPingEnergy != null">
+				em_pos_ping_energy = #{emPosPingEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosPingPrice != null">
+				em_pos_ping_price = #{emPosPingPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegPingEnergy != null">
+				em_neg_ping_energy = #{emNegPingEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegPingPrice != null">
+				em_neg_ping_price = #{emNegPingPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosGuEnergy != null">
+				em_pos_gu_energy = #{emPosGuEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emPosGuPrice != null">
+				em_pos_gu_price = #{emPosGuPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegGuEnergy != null">
+				em_neg_gu_energy = #{emNegGuEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="emNegGuPrice != null">
+				em_neg_gu_price = #{emNegGuPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyPosEnergy != null">
+				daily_pos_energy = #{dailyPosEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyPosPrice != null">
+				daily_pos_price = #{dailyPosPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyNegEnergy != null">
+				daily_neg_energy = #{dailyNegEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyNegPrice != null">
+				daily_neg_price = #{dailyNegPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyEnergy != null">
+				daily_energy = #{dailyEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="dailyPrice != null">
+				daily_price = #{dailyPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="totalPosEnergy != null">
+				total_pos_energy = #{totalPosEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="totalPosPrice != null">
+				total_pos_price = #{totalPosPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="totalNegEnergy != null">
+				total_neg_energy = #{totalNegEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="totalNegPrice != null">
+				total_neg_price = #{totalNegPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="totalEnergy != null">
+				total_energy = #{totalEnergy,jdbcType=DOUBLE},
+			</if>
+			<if test="totalPrice != null">
+				total_price = #{totalPrice,jdbcType=DOUBLE},
+			</if>
+			<if test="dataTime != null">
+				data_time = #{dataTime,jdbcType=BIGINT},
+			</if>
+			<if test="plantId != null">
+				plant_id = #{plantId,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.synpower.bean.EnergyStorageData">
+		update energy_storage_data
+		set em_pos_jian_energy = #{emPosJianEnergy,jdbcType=DOUBLE},
+		em_pos_jian_price = #{emPosJianPrice,jdbcType=DOUBLE},
+		em_neg_jian_energy = #{emNegJianEnergy,jdbcType=DOUBLE},
+		em_neg_jian_price = #{emNegJianPrice,jdbcType=DOUBLE},
+		em_pos_feng_energy = #{emPosFengEnergy,jdbcType=DOUBLE},
+		em_pos_feng_price = #{emPosFengPrice,jdbcType=DOUBLE},
+		em_neg_feng_energy = #{emNegFengEnergy,jdbcType=DOUBLE},
+		em_neg_feng_price = #{emNegFengPrice,jdbcType=DOUBLE},
+		em_pos_ping_energy = #{emPosPingEnergy,jdbcType=DOUBLE},
+		em_pos_ping_price = #{emPosPingPrice,jdbcType=DOUBLE},
+		em_neg_ping_energy = #{emNegPingEnergy,jdbcType=DOUBLE},
+		em_neg_ping_price = #{emNegPingPrice,jdbcType=DOUBLE},
+		em_pos_gu_energy = #{emPosGuEnergy,jdbcType=DOUBLE},
+		em_pos_gu_price = #{emPosGuPrice,jdbcType=DOUBLE},
+		em_neg_gu_energy = #{emNegGuEnergy,jdbcType=DOUBLE},
+		em_neg_gu_price = #{emNegGuPrice,jdbcType=DOUBLE},
+		daily_pos_energy = #{dailyPosEnergy,jdbcType=DOUBLE},
+		daily_pos_price = #{dailyPosPrice,jdbcType=DOUBLE},
+		daily_neg_energy = #{dailyNegEnergy,jdbcType=DOUBLE},
+		daily_neg_price = #{dailyNegPrice,jdbcType=DOUBLE},
+		daily_energy = #{dailyEnergy,jdbcType=DOUBLE},
+		daily_price = #{dailyPrice,jdbcType=DOUBLE},
+		total_pos_energy = #{totalPosEnergy,jdbcType=DOUBLE},
+		total_pos_price = #{totalPosPrice,jdbcType=DOUBLE},
+		total_neg_energy = #{totalNegEnergy,jdbcType=DOUBLE},
+		total_neg_price = #{totalNegPrice,jdbcType=DOUBLE},
+		total_energy = #{totalEnergy,jdbcType=DOUBLE},
+		total_price = #{totalPrice,jdbcType=DOUBLE},
+		data_time = #{dataTime,jdbcType=BIGINT},
+		plant_id = #{plantId,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="getStoragePlantRunReport" parameterType="hashmap"
+		resultMap="storagePlantRunReportMap">
+		SELECT
+		esd.daily_neg_energy engEnergy,
+		esd.daily_pos_energy posEnergy,
+		esd.daily_price price,
+		FROM_UNIXTIME(esd.data_time/1000,#{formatGroup})data_time,
+		plant_id
+		from energy_storage_data esd
+		where plant_id=#{plantId} and
+		FROM_UNIXTIME(esd.data_time/1000,#{formatCondit})=#{range}
+	</select>
+	<resultMap id="storagePlantRunReportMap"
+		type="java.util.HashMap">
+		<result column="engEnergy" property="engEnergy"
+			jdbcType="DOUBLE" />
+		<result column="posEnergy" property="posEnergy"
+			jdbcType="DOUBLE" />
+		<result column="data_time" property="dataTime"
+			jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="DOUBLE" />
+	</resultMap>
+	<select id="getPlantLastRecord" parameterType="map"
+		resultMap="BaseResultMap">
+		select total_pos_energy, total_pos_price, total_neg_energy,total_neg_price,
+		total_energy, total_price
+		from energy_storage_data where plant_id = #{plantId} and
+		#{dataTime}>=data_time order by data_time DESC limit 0,1
+	</select>
+	<insert id="insertDataForStotage" parameterType="list">
+		insert into energy_storage_data ( em_pos_jian_energy,
+		em_pos_jian_price,
+		em_neg_jian_energy, em_neg_jian_price, em_pos_feng_energy,
+		em_pos_feng_price, em_neg_feng_energy, em_neg_feng_price,
+		em_pos_ping_energy, em_pos_ping_price, em_neg_ping_energy,
+		em_neg_ping_price, em_pos_gu_energy, em_pos_gu_price,
+		em_neg_gu_energy, em_neg_gu_price, daily_pos_energy,
+		daily_pos_price, daily_neg_energy, daily_neg_price,
+		daily_energy, daily_price, total_pos_energy,
+		total_pos_price, total_neg_energy, total_neg_price,
+		total_energy, total_price, data_time,
+		plant_id)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			( #{item.emPosJianEnergy,jdbcType=DOUBLE},
+			#{item.emPosJianPrice,jdbcType=DOUBLE},
+			#{item.emNegJianEnergy,jdbcType=DOUBLE},
+			#{item.emNegJianPrice,jdbcType=DOUBLE},
+			#{item.emPosFengEnergy,jdbcType=DOUBLE},
+			#{item.emPosFengPrice,jdbcType=DOUBLE},
+			#{item.emNegFengEnergy,jdbcType=DOUBLE},
+			#{item.emNegFengPrice,jdbcType=DOUBLE},
+			#{item.emPosPingEnergy,jdbcType=DOUBLE},
+			#{item.emPosPingPrice,jdbcType=DOUBLE},
+			#{item.emNegPingEnergy,jdbcType=DOUBLE},
+			#{item.emNegPingPrice,jdbcType=DOUBLE},
+			#{item.emPosGuEnergy,jdbcType=DOUBLE},
+			#{item.emPosGuPrice,jdbcType=DOUBLE},
+			#{item.emNegGuEnergy,jdbcType=DOUBLE},
+			#{item.emNegGuPrice,jdbcType=DOUBLE},
+			#{item.dailyPosEnergy,jdbcType=DOUBLE},
+			#{item.dailyPosPrice,jdbcType=DOUBLE},
+			#{item.dailyNegEnergy,jdbcType=DOUBLE},
+			#{item.dailyNegPrice,jdbcType=DOUBLE},
+			#{item.dailyEnergy,jdbcType=DOUBLE},
+			#{item.dailyPrice,jdbcType=DOUBLE},
+			#{item.totalPosEnergy,jdbcType=DOUBLE},
+			#{item.totalPosPrice,jdbcType=DOUBLE},
+			#{item.totalNegEnergy,jdbcType=DOUBLE},
+			#{item.totalNegPrice,jdbcType=DOUBLE},
+			#{item.totalEnergy,jdbcType=DOUBLE},
+			#{item.totalPrice,jdbcType=DOUBLE}, #{item.dataTime,jdbcType=BIGINT},
+			#{item.plantId,jdbcType=INTEGER})
+		</foreach>
+	</insert>
+	<delete id="deteleDataForStotage" parameterType="Map">
+		delete from energy_storage_data where data_time>=#{minTime} and
+		#{maxTime}>=data_time
+		<foreach collection="plants" item="plantId"
+			open=" and plant_id IN (" close=")" separator=",">
+			#{plantId}
+		</foreach>
+	</delete>
+	<select id="getInOutEnergyAndIncome" parameterType="hashmap"
+		resultMap="inOutPowerAndPriceByDayMap">
+		SELECT SUM(outEnergy),SUM(inEnergy),SUM(ROUND(price,4)) price,temp.data_time
+		data_time from(
+		SELECT
+		isd.daily_pos_energy outEnergy,
+		isd.daily_neg_energy inEnergy,
+		isd.daily_price price,
+		FROM_UNIXTIME(isd.data_time/1000,#{date}) data_time
+		from energy_storage_data isd
+		where isd.plant_id =#{plantId}
+		) temp
+		WHERE temp.data_time BETWEEN #{startTime} AND #{endTime}
+		GROUP BY temp.data_time
+	</select>
+	<resultMap id="inOutPowerAndPriceByDayMap"
+		type="java.util.HashMap">
+		<result column="SUM(outEnergy)" property="outEnergy"
+			jdbcType="DOUBLE" />
+		<result column="SUM(inEnergy)" property="inEnergy"
+			jdbcType="DOUBLE" />
+		<result column="price" property="sumPrice" jdbcType="DOUBLE" />
+		<result column="data_time" property="time" jdbcType="BIGINT" />
+	</resultMap>
+	<select id="getInOutEnergyForMulti" parameterType="hashmap"
+		resultMap="inOutPowerForMulti">
+		SELECT SUM(outEnergy),SUM(inEnergy) from(
+		SELECT
+		isd.daily_pos_energy outEnergy,
+		isd.daily_neg_energy inEnergy,
+		from energy_storage_data isd
+		where isd.plant_id =#{plantId}
+		) temp
+		WHERE temp.data_time = #{startTime}
+	</select>
+	<resultMap id="inOutPowerForMulti" type="java.util.HashMap">
+		<result column="SUM(outEnergy)" property="outEnergy"
+			jdbcType="DOUBLE" />
+		<result column="SUM(inEnergy)" property="inEnergy"
+			jdbcType="DOUBLE" />
+	</resultMap>
+	<select id="getElectriRunReportLine" parameterType="hashmap"
+		resultMap="electriLineMap">
+		SELECT
+		CONVERT(SUM(temp.upEnergy),DECIMAL(10,4))upEnergy,CONVERT(SUM(temp.upPrice),DECIMAL(10,4))upPrice,
+		CONVERT(SUM(temp.downEnergy),DECIMAL(10,4))downEnergy,CONVERT(SUM(temp.downPrice),DECIMAL(10,4))downPrice,FROM_UNIXTIME(temp.data_time/1000,#{formatGroup})data_time
+		from (
+		SELECT
+		isd.total_pos_energy upEnergy,
+		isd.total_pos_price upPrice,
+		isd.total_neg_energy downEnergy,
+		isd.total_neg_price downPrice,
+		data_time,
+		plant_id
+		from energy_storage_data isd
+		where plant_id=#{plantId} and
+		FROM_UNIXTIME(isd.data_time/1000,#{formatCondit})=#{range}
+		) temp
+		GROUP BY FROM_UNIXTIME(temp.data_time/1000,#{formatGroup})
+	</select>
+	<select id="getPlantRunReportLine" parameterType="Map"
+		resultMap="runPeportMap">
+		SELECT
+		CONVERT(SUM(temp.posEnergy),DECIMAL(10,4))posEnergy,CONVERT(SUM(temp.negEnergy),DECIMAL(10,4))negEnergy,
+		CONVERT(SUM(temp.price),DECIMAL(10,4))price,FROM_UNIXTIME(temp.data_time/1000,#{formatGroup})data_time
+		from (
+		SELECT
+		isd.daily_pos_energy posEnergy,
+		isd.daily_neg_energy negEnergy,
+		isd.daily_price price,
+		data_time,
+		plant_id
+		from energy_storage_data isd
+		where plant_id=#{plantId} and
+		FROM_UNIXTIME(isd.data_time/1000,#{formatCondit})=#{range}
+		) temp
+		GROUP BY FROM_UNIXTIME(temp.data_time/1000,#{formatGroup})
+	</select>
+	<resultMap id="runPeportMap" type="java.util.HashMap">
+		<result column="posEnergy" property="posEnergy"
+			jdbcType="DOUBLE" />
+		<result column="negEnergy" property="negEnergy"
+			jdbcType="DOUBLE" />
+		<result column="data_time" property="dataTime"
+			jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="plant_id" property="plantId" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="getPowerPriceByDay" parameterType="hashmap"
+		resultMap="powerPriceByDayMap">
+		SELECT SUM(energy),SUM(ROUND(price,4)) price,temp.data_time data_time from(
+		SELECT
+		isd.daily_energy energy,
+		isd.daily_price price,
+		FROM_UNIXTIME(isd.data_time/1000,#{date}) data_time
+		from energy_storage_data isd
+		where isd.plant_id =#{plantId}
+		) temp
+		WHERE temp.data_time BETWEEN #{startTime} AND #{endTime}
+		GROUP BY temp.data_time
+	</select>
+	<resultMap id="powerPriceByDayMap" type="java.util.HashMap">
+		<result column="SUM(energy)" property="sum" jdbcType="VARCHAR" />
+		<result column="price" property="sumPrice" jdbcType="VARCHAR" />
+		<result column="data_time" property="time" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="electriLineMap" type="java.util.HashMap">
+		<result column="upEnergy" property="upEnergy" jdbcType="DOUBLE" />
+		<result column="upPrice" property="upPrice" jdbcType="DOUBLE" />
+		<result column="downEnergy" property="downEnergy"
+			jdbcType="DOUBLE" />
+		<result column="downPrice" property="downPrice"
+			jdbcType="DOUBLE" />
+		<result column="data_time" property="dataTime"
+			jdbcType="VARCHAR" />
+		<result column="plant_id" property="plantId" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="getStorageNegPosPrice" parameterType="hashmap"
+		resultMap="storageNegPosPriceMap">
+		SELECT
+		SUM(ROUND(neg,4)) neg,
+		SUM(ROUND(pos,4)) pos,
+		SUM(ROUND(price,4)) price,
+		temp.data_time data_time
+		FROM(
+		SELECT
+		esd.daily_neg_energy neg,
+		esd.daily_pos_energy pos,
+		esd.daily_price price,
+		FROM_UNIXTIME(esd.data_time/1000,#{date}) data_time
+		FROM
+		energy_storage_data esd
+		WHERE
+		esd.plant_id = #{plantId}
+		) temp WHERE temp.data_time BETWEEN #{startTime} AND #{endTime}
+		GROUP BY temp.data_time
+	</select>
+	<resultMap id="storageNegPosPriceMap"
+		type="java.util.HashMap">
+		<result column="neg" property="neg" jdbcType="VARCHAR" />
+		<result column="pos" property="pos" jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="VARCHAR" />
+		<result column="data_time" property="time" jdbcType="VARCHAR" />
+	</resultMap>
+</mapper>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.DataBoxChangeMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.DataBoxChange">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="running_status" jdbcType="TINYINT" property="runningStatus" />
+    <result column="inner_temperature" jdbcType="REAL" property="innerTemperature" />
+    <result column="u_ac_a" jdbcType="REAL" property="uAcA" />
+    <result column="u_ac_b" jdbcType="REAL" property="uAcB" />
+    <result column="u_ac_c" jdbcType="REAL" property="uAcC" />
+    <result column="u_line_ab" jdbcType="REAL" property="uLineAb" />
+    <result column="u_line_bc" jdbcType="REAL" property="uLineBc" />
+    <result column="u_line_ca" jdbcType="REAL" property="uLineCa" />
+    <result column="i_ac_a" jdbcType="REAL" property="iAcA" />
+    <result column="i_ac_b" jdbcType="REAL" property="iAcB" />
+    <result column="i_ac_c" jdbcType="REAL" property="iAcC" />
+    <result column="active_power" jdbcType="REAL" property="activePower" />
+    <result column="reactive_power" jdbcType="REAL" property="reactivePower" />
+    <result column="power_factor" jdbcType="REAL" property="powerFactor" />
+    <result column="frequency" jdbcType="REAL" property="frequency" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, plant, data_time, running_status, inner_temperature, u_ac_a, u_ac_b, 
+    u_ac_c, u_line_ab, u_line_bc, u_line_ca, i_ac_a, i_ac_b, i_ac_c, active_power, reactive_power, 
+    power_factor, frequency
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_box_change
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+   <!-- 根据deviceId和dataTime查询 -->
+  <select id="selectByIdAndDataTime"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_box_change
+    where device_id = #{deviceId,jdbcType=INTEGER} and data_time = #{dataTime,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from data_box_change
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.DataBoxChange">
+    insert into data_box_change (id, device_id, plant, 
+      data_time, running_status, inner_temperature, 
+      u_ac_a, u_ac_b, u_ac_c, u_line_ab, 
+      u_line_bc, u_line_ca, i_ac_a, i_ac_b, 
+      i_ac_c, active_power, reactive_power, 
+      power_factor, frequency)
+    values (#{id,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER}, #{plant,jdbcType=INTEGER}, 
+      #{dataTime,jdbcType=BIGINT}, #{runningStatus,jdbcType=TINYINT}, #{innerTemperature,jdbcType=REAL}, 
+      #{uAcA,jdbcType=REAL}, #{uAcB,jdbcType=REAL}, #{uAcC,jdbcType=REAL}, #{uLineAb,jdbcType=REAL}, 
+      #{uLineBc,jdbcType=REAL}, #{uLineCa,jdbcType=REAL}, #{iAcA,jdbcType=REAL}, #{iAcB,jdbcType=REAL}, 
+      #{iAcC,jdbcType=REAL}, #{activePower,jdbcType=REAL}, #{reactivePower,jdbcType=REAL}, 
+      #{powerFactor,jdbcType=REAL}, #{frequency,jdbcType=REAL})
+  </insert>
+  
+    <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">  
+   insert into data_box_change (id, device_id, plant, 
+      data_time, running_status, inner_temperature, 
+      u_ac_a, u_ac_b, u_ac_c, u_line_ab, 
+      u_line_bc, u_line_ca, i_ac_a, i_ac_b, 
+      i_ac_c, active_power, reactive_power, 
+      power_factor, frequency)
+      values
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id,jdbcType=INTEGER}, #{item.deviceId,jdbcType=INTEGER}, #{item.plant,jdbcType=INTEGER}, 
+      #{item.dataTime,jdbcType=BIGINT}, #{item.runningStatus,jdbcType=TINYINT}, #{item.innerTemperature,jdbcType=REAL}, 
+      #{item.uAcA,jdbcType=REAL}, #{item.uAcB,jdbcType=REAL}, #{item.uAcC,jdbcType=REAL}, #{item.uLineAb,jdbcType=REAL}, 
+      #{item.uLineBc,jdbcType=REAL}, #{item.uLineCa,jdbcType=REAL}, #{item.iAcA,jdbcType=REAL}, #{item.iAcB,jdbcType=REAL}, 
+      #{item.iAcC,jdbcType=REAL}, #{item.activePower,jdbcType=REAL}, #{item.reactivePower,jdbcType=REAL}, 
+      #{item.powerFactor,jdbcType=REAL}, #{item.frequency,jdbcType=REAL})
+    </foreach>  
+  </insert>  
+  
+  
+  
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataBoxChange">
+    insert into data_box_change
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="plant != null">
+        plant,
+      </if>
+      <if test="dataTime != null">
+        data_time,
+      </if>
+      <if test="runningStatus != null">
+        running_status,
+      </if>
+      <if test="innerTemperature != null">
+        inner_temperature,
+      </if>
+      <if test="uAcA != null">
+        u_ac_a,
+      </if>
+      <if test="uAcB != null">
+        u_ac_b,
+      </if>
+      <if test="uAcC != null">
+        u_ac_c,
+      </if>
+      <if test="uLineAb != null">
+        u_line_ab,
+      </if>
+      <if test="uLineBc != null">
+        u_line_bc,
+      </if>
+      <if test="uLineCa != null">
+        u_line_ca,
+      </if>
+      <if test="iAcA != null">
+        i_ac_a,
+      </if>
+      <if test="iAcB != null">
+        i_ac_b,
+      </if>
+      <if test="iAcC != null">
+        i_ac_c,
+      </if>
+      <if test="activePower != null">
+        active_power,
+      </if>
+      <if test="reactivePower != null">
+        reactive_power,
+      </if>
+      <if test="powerFactor != null">
+        power_factor,
+      </if>
+      <if test="frequency != null">
+        frequency,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="runningStatus != null">
+        #{runningStatus,jdbcType=TINYINT},
+      </if>
+      <if test="innerTemperature != null">
+        #{innerTemperature,jdbcType=REAL},
+      </if>
+      <if test="uAcA != null">
+        #{uAcA,jdbcType=REAL},
+      </if>
+      <if test="uAcB != null">
+        #{uAcB,jdbcType=REAL},
+      </if>
+      <if test="uAcC != null">
+        #{uAcC,jdbcType=REAL},
+      </if>
+      <if test="uLineAb != null">
+        #{uLineAb,jdbcType=REAL},
+      </if>
+      <if test="uLineBc != null">
+        #{uLineBc,jdbcType=REAL},
+      </if>
+      <if test="uLineCa != null">
+        #{uLineCa,jdbcType=REAL},
+      </if>
+      <if test="iAcA != null">
+        #{iAcA,jdbcType=REAL},
+      </if>
+      <if test="iAcB != null">
+        #{iAcB,jdbcType=REAL},
+      </if>
+      <if test="iAcC != null">
+        #{iAcC,jdbcType=REAL},
+      </if>
+      <if test="activePower != null">
+        #{activePower,jdbcType=REAL},
+      </if>
+      <if test="reactivePower != null">
+        #{reactivePower,jdbcType=REAL},
+      </if>
+      <if test="powerFactor != null">
+        #{powerFactor,jdbcType=REAL},
+      </if>
+      <if test="frequency != null">
+        #{frequency,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataBoxChange">
+    update data_box_change
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        plant = #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        data_time = #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="runningStatus != null">
+        running_status = #{runningStatus,jdbcType=TINYINT},
+      </if>
+      <if test="innerTemperature != null">
+        inner_temperature = #{innerTemperature,jdbcType=REAL},
+      </if>
+      <if test="uAcA != null">
+        u_ac_a = #{uAcA,jdbcType=REAL},
+      </if>
+      <if test="uAcB != null">
+        u_ac_b = #{uAcB,jdbcType=REAL},
+      </if>
+      <if test="uAcC != null">
+        u_ac_c = #{uAcC,jdbcType=REAL},
+      </if>
+      <if test="uLineAb != null">
+        u_line_ab = #{uLineAb,jdbcType=REAL},
+      </if>
+      <if test="uLineBc != null">
+        u_line_bc = #{uLineBc,jdbcType=REAL},
+      </if>
+      <if test="uLineCa != null">
+        u_line_ca = #{uLineCa,jdbcType=REAL},
+      </if>
+      <if test="iAcA != null">
+        i_ac_a = #{iAcA,jdbcType=REAL},
+      </if>
+      <if test="iAcB != null">
+        i_ac_b = #{iAcB,jdbcType=REAL},
+      </if>
+      <if test="iAcC != null">
+        i_ac_c = #{iAcC,jdbcType=REAL},
+      </if>
+      <if test="activePower != null">
+        active_power = #{activePower,jdbcType=REAL},
+      </if>
+      <if test="reactivePower != null">
+        reactive_power = #{reactivePower,jdbcType=REAL},
+      </if>
+      <if test="powerFactor != null">
+        power_factor = #{powerFactor,jdbcType=REAL},
+      </if>
+      <if test="frequency != null">
+        frequency = #{frequency,jdbcType=REAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.DataBoxChange">
+    update data_box_change
+    set device_id = #{deviceId,jdbcType=INTEGER},
+      plant = #{plant,jdbcType=INTEGER},
+      data_time = #{dataTime,jdbcType=BIGINT},
+      running_status = #{runningStatus,jdbcType=TINYINT},
+      inner_temperature = #{innerTemperature,jdbcType=REAL},
+      u_ac_a = #{uAcA,jdbcType=REAL},
+      u_ac_b = #{uAcB,jdbcType=REAL},
+      u_ac_c = #{uAcC,jdbcType=REAL},
+      u_line_ab = #{uLineAb,jdbcType=REAL},
+      u_line_bc = #{uLineBc,jdbcType=REAL},
+      u_line_ca = #{uLineCa,jdbcType=REAL},
+      i_ac_a = #{iAcA,jdbcType=REAL},
+      i_ac_b = #{iAcB,jdbcType=REAL},
+      i_ac_c = #{iAcC,jdbcType=REAL},
+      active_power = #{activePower,jdbcType=REAL},
+      reactive_power = #{reactivePower,jdbcType=REAL},
+      power_factor = #{powerFactor,jdbcType=REAL},
+      frequency = #{frequency,jdbcType=REAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

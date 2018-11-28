@@ -1,0 +1,7 @@
+#RMI port
+rmi.registryPort=1099
+rmi.servicePort=458
+
+#RMIURL
+rmi.adress=rmi://127.0.0.1:1099/ykYtService
+#rmi.adress=rmi://192.168.1.109:1099/ykYtService

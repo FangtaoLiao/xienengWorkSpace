@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.DataElectricMeterMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.DataElectricMeter">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="em_ua" jdbcType="REAL" property="emUa" />
+    <result column="em_ub" jdbcType="REAL" property="emUb" />
+    <result column="em_uc" jdbcType="REAL" property="emUc" />
+    <result column="em_uab" jdbcType="REAL" property="emUab" />
+    <result column="em_ubc" jdbcType="REAL" property="emUbc" />
+    <result column="em_uca" jdbcType="REAL" property="emUca" />
+    <result column="em_ia" jdbcType="REAL" property="emIa" />
+    <result column="em_ib" jdbcType="REAL" property="emIb" />
+    <result column="em_ic" jdbcType="REAL" property="emIc" />
+    <result column="em_frequency" jdbcType="REAL" property="emFrequency" />
+    <result column="em_active_power" jdbcType="REAL" property="emActivePower" />
+    <result column="em_reactive_power" jdbcType="REAL" property="emReactivePower" />
+    <result column="em_power_factor" jdbcType="REAL" property="emPowerFactor" />
+    <result column="em_pos_active_energy" jdbcType="REAL" property="emPosActiveEnergy" />
+    <result column="em_neg_active_energy" jdbcType="REAL" property="emNegActiveEnergy" />
+    <result column="em_pos_jian_active_energy" jdbcType="REAL" property="emPosJianActiveEnergy" />
+    <result column="em_pos_feng_active_energy" jdbcType="REAL" property="emPosFengActiveEnergy" />
+    <result column="em_pos_ping_active_energy" jdbcType="REAL" property="emPosPingActiveEnergy" />
+    <result column="em_pos_gu_active_energy" jdbcType="REAL" property="emPosGuActiveEnergy" />
+    <result column="em_neg_jian_active_energy" jdbcType="REAL" property="emNegJianActiveEnergy" />
+    <result column="em_neg_feng_active_energy" jdbcType="REAL" property="emNegFengActiveEnergy" />
+    <result column="em_neg_ping_active_energy" jdbcType="REAL" property="emNegPingActiveEnergy" />
+    <result column="em_neg_gu_active_energy" jdbcType="REAL" property="emNegGuActiveEnergy" />
+    <result column="em_pos_reactive_energy" jdbcType="REAL" property="emPosReactiveEnergy" />
+    <result column="em_neg_reactive_energy" jdbcType="REAL" property="emNegReactiveEnergy" />
+    <result column="em_pos_jian_reactive_energy" jdbcType="REAL" property="emPosJianReactiveEnergy" />
+    <result column="em_pos_feng_reactive_energy" jdbcType="REAL" property="emPosFengReactiveEnergy" />
+    <result column="em_pos_ping_reactive_energy" jdbcType="REAL" property="emPosPingReactiveEnergy" />
+    <result column="em_pos_gu_reactive_energy" jdbcType="REAL" property="emPosGuReactiveEnergy" />
+    <result column="em_neg_jian_reactive_energy" jdbcType="REAL" property="emNegJianReactiveEnergy" />
+    <result column="em_neg_feng_reactive_energy" jdbcType="REAL" property="emNegFengReactiveEnergy" />
+    <result column="em_neg_ping_reactive_energy" jdbcType="REAL" property="emNegPingReactiveEnergy" />
+    <result column="em_neg_gu_reactive_energy" jdbcType="REAL" property="emNegGuReactiveEnergy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, plant, data_time, em_ua, em_ub, em_uc, em_uab, em_ubc, em_uca, em_ia, 
+    em_ib, em_ic, em_frequency, em_active_power, em_reactive_power, em_power_factor, 
+    em_pos_active_energy, em_neg_active_energy, em_pos_jian_active_energy, em_pos_feng_active_energy, 
+    em_pos_ping_active_energy, em_pos_gu_active_energy, em_neg_jian_active_energy, em_neg_feng_active_energy, 
+    em_neg_ping_active_energy, em_neg_gu_active_energy, em_pos_reactive_energy, em_neg_reactive_energy, 
+    em_pos_jian_reactive_energy, em_pos_feng_reactive_energy, em_pos_ping_reactive_energy, 
+    em_pos_gu_reactive_energy, em_neg_jian_reactive_energy, em_neg_feng_reactive_energy, 
+    em_neg_ping_reactive_energy, em_neg_gu_reactive_energy
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_electric_meter
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 根据deviceId和dataTime查询 -->
+  <select id="selectByIdAndDataTime"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_electric_meter
+    where device_id = #{deviceId,jdbcType=INTEGER} and data_time = #{dataTime,jdbcType=BIGINT} ORDER BY em_active_power DESC
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from data_electric_meter
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.DataElectricMeter">
+    insert into data_electric_meter (id, device_id, plant, 
+      data_time, em_ua, em_ub, em_uc, 
+      em_uab, em_ubc, em_uca, em_ia, 
+      em_ib, em_ic, em_frequency, em_active_power, 
+      em_reactive_power, em_power_factor, em_pos_active_energy, 
+      em_neg_active_energy, em_pos_jian_active_energy, em_pos_feng_active_energy, 
+      em_pos_ping_active_energy, em_pos_gu_active_energy, em_neg_jian_active_energy, 
+      em_neg_feng_active_energy, em_neg_ping_active_energy, 
+      em_neg_gu_active_energy, em_pos_reactive_energy, em_neg_reactive_energy, 
+      em_pos_jian_reactive_energy, em_pos_feng_reactive_energy, 
+      em_pos_ping_reactive_energy, em_pos_gu_reactive_energy, 
+      em_neg_jian_reactive_energy, em_neg_feng_reactive_energy, 
+      em_neg_ping_reactive_energy, em_neg_gu_reactive_energy
+      )
+    values (#{id,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER}, #{plant,jdbcType=INTEGER}, 
+      #{dataTime,jdbcType=BIGINT}, #{emUa,jdbcType=REAL}, #{emUb,jdbcType=REAL}, #{emUc,jdbcType=REAL}, 
+      #{emUab,jdbcType=REAL}, #{emUbc,jdbcType=REAL}, #{emUca,jdbcType=REAL}, #{emIa,jdbcType=REAL}, 
+      #{emIb,jdbcType=REAL}, #{emIc,jdbcType=REAL}, #{emFrequency,jdbcType=REAL}, #{emActivePower,jdbcType=REAL}, 
+      #{emReactivePower,jdbcType=REAL}, #{emPowerFactor,jdbcType=REAL}, #{emPosActiveEnergy,jdbcType=REAL}, 
+      #{emNegActiveEnergy,jdbcType=REAL}, #{emPosJianActiveEnergy,jdbcType=REAL}, #{emPosFengActiveEnergy,jdbcType=REAL}, 
+      #{emPosPingActiveEnergy,jdbcType=REAL}, #{emPosGuActiveEnergy,jdbcType=REAL}, #{emNegJianActiveEnergy,jdbcType=REAL}, 
+      #{emNegFengActiveEnergy,jdbcType=REAL}, #{emNegPingActiveEnergy,jdbcType=REAL}, 
+      #{emNegGuActiveEnergy,jdbcType=REAL}, #{emPosReactiveEnergy,jdbcType=REAL}, #{emNegReactiveEnergy,jdbcType=REAL}, 
+      #{emPosJianReactiveEnergy,jdbcType=REAL}, #{emPosFengReactiveEnergy,jdbcType=REAL}, 
+      #{emPosPingReactiveEnergy,jdbcType=REAL}, #{emPosGuReactiveEnergy,jdbcType=REAL}, 
+      #{emNegJianReactiveEnergy,jdbcType=REAL}, #{emNegFengReactiveEnergy,jdbcType=REAL}, 
+      #{emNegPingReactiveEnergy,jdbcType=REAL}, #{emNegGuReactiveEnergy,jdbcType=REAL}
+      )
+  </insert>
+  
+    <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">  
+    insert into data_electric_meter (id, device_id, plant, 
+      data_time, em_ua, em_ub, em_uc, 
+      em_uab, em_ubc, em_uca, em_ia, 
+      em_ib, em_ic, em_frequency, em_active_power, 
+      em_reactive_power, em_power_factor, em_pos_active_energy, 
+      em_neg_active_energy, em_pos_jian_active_energy, em_pos_feng_active_energy, 
+      em_pos_ping_active_energy, em_pos_gu_active_energy, em_neg_jian_active_energy, 
+      em_neg_feng_active_energy, em_neg_ping_active_energy, 
+      em_neg_gu_active_energy, em_pos_reactive_energy, em_neg_reactive_energy, 
+      em_pos_jian_reactive_energy, em_pos_feng_reactive_energy, 
+      em_pos_ping_reactive_energy, em_pos_gu_reactive_energy, 
+      em_neg_jian_reactive_energy, em_neg_feng_reactive_energy, 
+      em_neg_ping_reactive_energy, em_neg_gu_reactive_energy
+      )
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id,jdbcType=INTEGER}, #{item.deviceId,jdbcType=INTEGER}, #{item.plant,jdbcType=INTEGER}, 
+      #{item.dataTime,jdbcType=BIGINT}, #{item.emUa,jdbcType=REAL}, #{item.emUb,jdbcType=REAL}, #{item.emUc,jdbcType=REAL}, 
+      #{item.emUab,jdbcType=REAL}, #{item.emUbc,jdbcType=REAL}, #{item.emUca,jdbcType=REAL}, #{item.emIa,jdbcType=REAL}, 
+      #{item.emIb,jdbcType=REAL}, #{item.emIc,jdbcType=REAL}, #{item.emFrequency,jdbcType=REAL}, #{item.emActivePower,jdbcType=REAL}, 
+      #{item.emReactivePower,jdbcType=REAL}, #{item.emPowerFactor,jdbcType=REAL}, #{item.emPosActiveEnergy,jdbcType=REAL}, 
+      #{item.emNegActiveEnergy,jdbcType=REAL}, #{item.emPosJianActiveEnergy,jdbcType=REAL}, #{item.emPosFengActiveEnergy,jdbcType=REAL}, 
+      #{item.emPosPingActiveEnergy,jdbcType=REAL}, #{item.emPosGuActiveEnergy,jdbcType=REAL}, #{item.emNegJianActiveEnergy,jdbcType=REAL}, 
+      #{item.emNegFengActiveEnergy,jdbcType=REAL}, #{item.emNegPingActiveEnergy,jdbcType=REAL}, 
+      #{item.emNegGuActiveEnergy,jdbcType=REAL}, #{item.emPosReactiveEnergy,jdbcType=REAL}, #{item.emNegReactiveEnergy,jdbcType=REAL}, 
+      #{item.emPosJianReactiveEnergy,jdbcType=REAL}, #{item.emPosFengReactiveEnergy,jdbcType=REAL}, 
+      #{item.emPosPingReactiveEnergy,jdbcType=REAL}, #{item.emPosGuReactiveEnergy,jdbcType=REAL}, 
+      #{item.emNegJianReactiveEnergy,jdbcType=REAL}, #{item.emNegFengReactiveEnergy,jdbcType=REAL}, 
+      #{item.emNegPingReactiveEnergy,jdbcType=REAL}, #{item.emNegGuReactiveEnergy,jdbcType=REAL}
+      ) 
+    </foreach>  
+  </insert>  
+  
+  
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataElectricMeter">
+    insert into data_electric_meter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="plant != null">
+        plant,
+      </if>
+      <if test="dataTime != null">
+        data_time,
+      </if>
+      <if test="emUa != null">
+        em_ua,
+      </if>
+      <if test="emUb != null">
+        em_ub,
+      </if>
+      <if test="emUc != null">
+        em_uc,
+      </if>
+      <if test="emUab != null">
+        em_uab,
+      </if>
+      <if test="emUbc != null">
+        em_ubc,
+      </if>
+      <if test="emUca != null">
+        em_uca,
+      </if>
+      <if test="emIa != null">
+        em_ia,
+      </if>
+      <if test="emIb != null">
+        em_ib,
+      </if>
+      <if test="emIc != null">
+        em_ic,
+      </if>
+      <if test="emFrequency != null">
+        em_frequency,
+      </if>
+      <if test="emActivePower != null">
+        em_active_power,
+      </if>
+      <if test="emReactivePower != null">
+        em_reactive_power,
+      </if>
+      <if test="emPowerFactor != null">
+        em_power_factor,
+      </if>
+      <if test="emPosActiveEnergy != null">
+        em_pos_active_energy,
+      </if>
+      <if test="emNegActiveEnergy != null">
+        em_neg_active_energy,
+      </if>
+      <if test="emPosJianActiveEnergy != null">
+        em_pos_jian_active_energy,
+      </if>
+      <if test="emPosFengActiveEnergy != null">
+        em_pos_feng_active_energy,
+      </if>
+      <if test="emPosPingActiveEnergy != null">
+        em_pos_ping_active_energy,
+      </if>
+      <if test="emPosGuActiveEnergy != null">
+        em_pos_gu_active_energy,
+      </if>
+      <if test="emNegJianActiveEnergy != null">
+        em_neg_jian_active_energy,
+      </if>
+      <if test="emNegFengActiveEnergy != null">
+        em_neg_feng_active_energy,
+      </if>
+      <if test="emNegPingActiveEnergy != null">
+        em_neg_ping_active_energy,
+      </if>
+      <if test="emNegGuActiveEnergy != null">
+        em_neg_gu_active_energy,
+      </if>
+      <if test="emPosReactiveEnergy != null">
+        em_pos_reactive_energy,
+      </if>
+      <if test="emNegReactiveEnergy != null">
+        em_neg_reactive_energy,
+      </if>
+      <if test="emPosJianReactiveEnergy != null">
+        em_pos_jian_reactive_energy,
+      </if>
+      <if test="emPosFengReactiveEnergy != null">
+        em_pos_feng_reactive_energy,
+      </if>
+      <if test="emPosPingReactiveEnergy != null">
+        em_pos_ping_reactive_energy,
+      </if>
+      <if test="emPosGuReactiveEnergy != null">
+        em_pos_gu_reactive_energy,
+      </if>
+      <if test="emNegJianReactiveEnergy != null">
+        em_neg_jian_reactive_energy,
+      </if>
+      <if test="emNegFengReactiveEnergy != null">
+        em_neg_feng_reactive_energy,
+      </if>
+      <if test="emNegPingReactiveEnergy != null">
+        em_neg_ping_reactive_energy,
+      </if>
+      <if test="emNegGuReactiveEnergy != null">
+        em_neg_gu_reactive_energy,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="emUa != null">
+        #{emUa,jdbcType=REAL},
+      </if>
+      <if test="emUb != null">
+        #{emUb,jdbcType=REAL},
+      </if>
+      <if test="emUc != null">
+        #{emUc,jdbcType=REAL},
+      </if>
+      <if test="emUab != null">
+        #{emUab,jdbcType=REAL},
+      </if>
+      <if test="emUbc != null">
+        #{emUbc,jdbcType=REAL},
+      </if>
+      <if test="emUca != null">
+        #{emUca,jdbcType=REAL},
+      </if>
+      <if test="emIa != null">
+        #{emIa,jdbcType=REAL},
+      </if>
+      <if test="emIb != null">
+        #{emIb,jdbcType=REAL},
+      </if>
+      <if test="emIc != null">
+        #{emIc,jdbcType=REAL},
+      </if>
+      <if test="emFrequency != null">
+        #{emFrequency,jdbcType=REAL},
+      </if>
+      <if test="emActivePower != null">
+        #{emActivePower,jdbcType=REAL},
+      </if>
+      <if test="emReactivePower != null">
+        #{emReactivePower,jdbcType=REAL},
+      </if>
+      <if test="emPowerFactor != null">
+        #{emPowerFactor,jdbcType=REAL},
+      </if>
+      <if test="emPosActiveEnergy != null">
+        #{emPosActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegActiveEnergy != null">
+        #{emNegActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosJianActiveEnergy != null">
+        #{emPosJianActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosFengActiveEnergy != null">
+        #{emPosFengActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosPingActiveEnergy != null">
+        #{emPosPingActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosGuActiveEnergy != null">
+        #{emPosGuActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegJianActiveEnergy != null">
+        #{emNegJianActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegFengActiveEnergy != null">
+        #{emNegFengActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegPingActiveEnergy != null">
+        #{emNegPingActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegGuActiveEnergy != null">
+        #{emNegGuActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosReactiveEnergy != null">
+        #{emPosReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegReactiveEnergy != null">
+        #{emNegReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosJianReactiveEnergy != null">
+        #{emPosJianReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosFengReactiveEnergy != null">
+        #{emPosFengReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosPingReactiveEnergy != null">
+        #{emPosPingReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosGuReactiveEnergy != null">
+        #{emPosGuReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegJianReactiveEnergy != null">
+        #{emNegJianReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegFengReactiveEnergy != null">
+        #{emNegFengReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegPingReactiveEnergy != null">
+        #{emNegPingReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegGuReactiveEnergy != null">
+        #{emNegGuReactiveEnergy,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataElectricMeter">
+    update data_electric_meter
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        plant = #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        data_time = #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="emUa != null">
+        em_ua = #{emUa,jdbcType=REAL},
+      </if>
+      <if test="emUb != null">
+        em_ub = #{emUb,jdbcType=REAL},
+      </if>
+      <if test="emUc != null">
+        em_uc = #{emUc,jdbcType=REAL},
+      </if>
+      <if test="emUab != null">
+        em_uab = #{emUab,jdbcType=REAL},
+      </if>
+      <if test="emUbc != null">
+        em_ubc = #{emUbc,jdbcType=REAL},
+      </if>
+      <if test="emUca != null">
+        em_uca = #{emUca,jdbcType=REAL},
+      </if>
+      <if test="emIa != null">
+        em_ia = #{emIa,jdbcType=REAL},
+      </if>
+      <if test="emIb != null">
+        em_ib = #{emIb,jdbcType=REAL},
+      </if>
+      <if test="emIc != null">
+        em_ic = #{emIc,jdbcType=REAL},
+      </if>
+      <if test="emFrequency != null">
+        em_frequency = #{emFrequency,jdbcType=REAL},
+      </if>
+      <if test="emActivePower != null">
+        em_active_power = #{emActivePower,jdbcType=REAL},
+      </if>
+      <if test="emReactivePower != null">
+        em_reactive_power = #{emReactivePower,jdbcType=REAL},
+      </if>
+      <if test="emPowerFactor != null">
+        em_power_factor = #{emPowerFactor,jdbcType=REAL},
+      </if>
+      <if test="emPosActiveEnergy != null">
+        em_pos_active_energy = #{emPosActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegActiveEnergy != null">
+        em_neg_active_energy = #{emNegActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosJianActiveEnergy != null">
+        em_pos_jian_active_energy = #{emPosJianActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosFengActiveEnergy != null">
+        em_pos_feng_active_energy = #{emPosFengActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosPingActiveEnergy != null">
+        em_pos_ping_active_energy = #{emPosPingActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosGuActiveEnergy != null">
+        em_pos_gu_active_energy = #{emPosGuActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegJianActiveEnergy != null">
+        em_neg_jian_active_energy = #{emNegJianActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegFengActiveEnergy != null">
+        em_neg_feng_active_energy = #{emNegFengActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegPingActiveEnergy != null">
+        em_neg_ping_active_energy = #{emNegPingActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegGuActiveEnergy != null">
+        em_neg_gu_active_energy = #{emNegGuActiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosReactiveEnergy != null">
+        em_pos_reactive_energy = #{emPosReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegReactiveEnergy != null">
+        em_neg_reactive_energy = #{emNegReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosJianReactiveEnergy != null">
+        em_pos_jian_reactive_energy = #{emPosJianReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosFengReactiveEnergy != null">
+        em_pos_feng_reactive_energy = #{emPosFengReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosPingReactiveEnergy != null">
+        em_pos_ping_reactive_energy = #{emPosPingReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emPosGuReactiveEnergy != null">
+        em_pos_gu_reactive_energy = #{emPosGuReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegJianReactiveEnergy != null">
+        em_neg_jian_reactive_energy = #{emNegJianReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegFengReactiveEnergy != null">
+        em_neg_feng_reactive_energy = #{emNegFengReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegPingReactiveEnergy != null">
+        em_neg_ping_reactive_energy = #{emNegPingReactiveEnergy,jdbcType=REAL},
+      </if>
+      <if test="emNegGuReactiveEnergy != null">
+        em_neg_gu_reactive_energy = #{emNegGuReactiveEnergy,jdbcType=REAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.DataElectricMeter">
+    update data_electric_meter
+    set device_id = #{deviceId,jdbcType=INTEGER},
+      plant = #{plant,jdbcType=INTEGER},
+      data_time = #{dataTime,jdbcType=BIGINT},
+      em_ua = #{emUa,jdbcType=REAL},
+      em_ub = #{emUb,jdbcType=REAL},
+      em_uc = #{emUc,jdbcType=REAL},
+      em_uab = #{emUab,jdbcType=REAL},
+      em_ubc = #{emUbc,jdbcType=REAL},
+      em_uca = #{emUca,jdbcType=REAL},
+      em_ia = #{emIa,jdbcType=REAL},
+      em_ib = #{emIb,jdbcType=REAL},
+      em_ic = #{emIc,jdbcType=REAL},
+      em_frequency = #{emFrequency,jdbcType=REAL},
+      em_active_power = #{emActivePower,jdbcType=REAL},
+      em_reactive_power = #{emReactivePower,jdbcType=REAL},
+      em_power_factor = #{emPowerFactor,jdbcType=REAL},
+      em_pos_active_energy = #{emPosActiveEnergy,jdbcType=REAL},
+      em_neg_active_energy = #{emNegActiveEnergy,jdbcType=REAL},
+      em_pos_jian_active_energy = #{emPosJianActiveEnergy,jdbcType=REAL},
+      em_pos_feng_active_energy = #{emPosFengActiveEnergy,jdbcType=REAL},
+      em_pos_ping_active_energy = #{emPosPingActiveEnergy,jdbcType=REAL},
+      em_pos_gu_active_energy = #{emPosGuActiveEnergy,jdbcType=REAL},
+      em_neg_jian_active_energy = #{emNegJianActiveEnergy,jdbcType=REAL},
+      em_neg_feng_active_energy = #{emNegFengActiveEnergy,jdbcType=REAL},
+      em_neg_ping_active_energy = #{emNegPingActiveEnergy,jdbcType=REAL},
+      em_neg_gu_active_energy = #{emNegGuActiveEnergy,jdbcType=REAL},
+      em_pos_reactive_energy = #{emPosReactiveEnergy,jdbcType=REAL},
+      em_neg_reactive_energy = #{emNegReactiveEnergy,jdbcType=REAL},
+      em_pos_jian_reactive_energy = #{emPosJianReactiveEnergy,jdbcType=REAL},
+      em_pos_feng_reactive_energy = #{emPosFengReactiveEnergy,jdbcType=REAL},
+      em_pos_ping_reactive_energy = #{emPosPingReactiveEnergy,jdbcType=REAL},
+      em_pos_gu_reactive_energy = #{emPosGuReactiveEnergy,jdbcType=REAL},
+      em_neg_jian_reactive_energy = #{emNegJianReactiveEnergy,jdbcType=REAL},
+      em_neg_feng_reactive_energy = #{emNegFengReactiveEnergy,jdbcType=REAL},
+      em_neg_ping_reactive_energy = #{emNegPingReactiveEnergy,jdbcType=REAL},
+      em_neg_gu_reactive_energy = #{emNegGuReactiveEnergy,jdbcType=REAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

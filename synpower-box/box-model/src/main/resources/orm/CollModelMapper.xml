@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.CollModelMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.CollModel">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_model_id" jdbcType="INTEGER" property="deviceModelId" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="mode_name" jdbcType="VARCHAR" property="modeName" />
+    <result column="table_name" jdbcType="VARCHAR" property="tableName" />
+    <result column="apply_to" jdbcType="VARCHAR" property="applyTo" />
+    <result column="protocol_type" jdbcType="TINYINT" property="protocolType" />
+    <result column="last_modify_user" jdbcType="INTEGER" property="lastModifyUser" />
+    <result column="last_modify_time" jdbcType="BIGINT" property="lastModifyTime" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_model_id, mode_name, apply_to, protocol_type, last_modify_user, last_modify_time, valid
+  </sql>
+ 	<select id="getModelName" parameterType="Integer" resultMap="BaseResultMap">
+  	select id,mode_name,table_name from coll_model where valid=0 and id=#{dataMode}
+  </select>
+ 	<select id="getModel4Choice" parameterType="map" resultMap="BaseResultMap">
+  	select id,mode_name from coll_model where valid=0 and device_model_id=#{id} and device_type=#{typeId}
+  </select>
+  <select id="getDateModelId" parameterType="map" resultType="int">
+  	select id from coll_model where valid=0 and device_model_id=#{deviceModelId} and device_type=#{typeId} limit 0,1
+  </select>
+ 	<select id="getModeByModelId" parameterType="map" resultMap="BaseResultMap">
+  	select * from coll_model where valid=0 and device_model_id=#{modelId} and device_type=#{typeId}
+  </select>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysSerialPortMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysSerialPort">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="com_name" jdbcType="VARCHAR" property="comName" />
+    <result column="max_num" jdbcType="INTEGER" property="maxNum" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, com_name, max_num
+  </sql>
+  <!-- <include refid="Base_Column_List" /> -->
+  <select id="getPortBycollId" parameterType="Integer" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List" /> FROM sys_serial_port WHERE id in (
+		SELECT id FROM coll_json_dev_set WHERE coll_id = #{collId}
+	)
+  </select>
+</mapper>

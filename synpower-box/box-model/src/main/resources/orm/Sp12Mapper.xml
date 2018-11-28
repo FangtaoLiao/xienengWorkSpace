@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.Sp12Mapper">
+<resultMap id="plantInfoRe" type="com.synpower.bean.SysOrg">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+    <result column="org_logo" jdbcType="VARCHAR" property="orgLogo" />
+    <result column="org_desc" jdbcType="VARCHAR" property="orgDesc" />
+    <result column="org_type" jdbcType="CHAR" property="orgType" />
+    <result column="father_id" jdbcType="INTEGER" property="fatherId" />
+    <result column="last_modify_time" jdbcType="BIGINT" property="lastModifyTime" />
+    <result column="last_modify_user" jdbcType="INTEGER" property="lastModifyUser" />
+    <result column="org_code" jdbcType="VARCHAR" property="orgCode" />
+    <result column="org_vali_code" jdbcType="VARCHAR" property="orgValiCode" />
+    <result column="org_agentor_name" jdbcType="VARCHAR" property="orgAgentorName" />
+    <result column="org_angetor_id" jdbcType="INTEGER" property="orgAngetorId" />
+    <result column="org_angetor_tel" jdbcType="VARCHAR" property="orgAngetorTel" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="org_status" jdbcType="CHAR" property="orgStatus" />
+    <result column="org_valid" jdbcType="CHAR" property="orgValid" />
+    <result column="control_num" jdbcType="VARCHAR" property="controlNum" />
+    <result column="business_num" jdbcType="VARCHAR" property="businessNum" />
+    <result column="service_num" jdbcType="VARCHAR" property="serviceNum" />
+    <result column="role_num" jdbcType="VARCHAR" property="roleNum" />
+  </resultMap>
+  
+    
+</mapper>

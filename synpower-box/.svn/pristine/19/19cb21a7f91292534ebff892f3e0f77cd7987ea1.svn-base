@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysPhotoMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysPhoto">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="plant_id" jdbcType="INTEGER" property="plantId" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+  </resultMap>
+  <insert id="insertPlantPhoto" parameterType="hashmap">
+  	INSERT INTO sys_photo(
+  		plant_id,
+  		url,
+  		create_time,
+  		create_user
+  	) VALUES(
+  		#{plantId},
+  		#{url},
+  		#{createTime},
+  		#{createUser}
+  	)
+  </insert>
+  <delete id="deletePlantPhoto" parameterType="hashmap">
+  	DELETE  FROM sys_photo WHERE id IN 
+  	<foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </delete>
+  <select id="listPlantPhoto" parameterType="String" resultMap="BaseResultMap">
+  	SELECT 
+  		ssp.id,
+  		ssp.url 
+  	FROM sys_photo ssp 
+  	WHERE ssp.plant_id =#{plantId}
+  </select>
+  <select id="getOnePhoto" parameterType="String" resultMap="BaseResultMap">
+  	SELECT * FROM sys_photo WHERE plant_id = #{plantId} LIMIT 0,1
+  </select>
+</mapper>

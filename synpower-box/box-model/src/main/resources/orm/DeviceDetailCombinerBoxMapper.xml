@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DeviceDetailCombinerBoxMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DeviceDetailCombinerBox">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="model_identity" jdbcType="VARCHAR" property="modelIdentity" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="input_channels" jdbcType="INTEGER" property="inputChannels" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="altitude" jdbcType="INTEGER" property="altitude" />
+    <result column="insulation_resistance" jdbcType="INTEGER" property="insulationResistance" />
+    <result column="auxiliary_power_supply" jdbcType="VARCHAR" property="auxiliaryPowerSupply" />
+    <result column="shell_waterproof_grade" jdbcType="VARCHAR" property="shellWaterproofGrade" />
+    <result column="weight" jdbcType="INTEGER" property="weight" />
+    <result column="volume" jdbcType="VARCHAR" property="volume" />
+    <result column="photo_path" jdbcType="VARCHAR" property="photoPath" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, model_identity, device_type, manufacturer, model, input_channels, temperature, 
+    altitude, insulation_resistance, auxiliary_power_supply, shell_waterproof_grade, 
+    weight, volume, photo_path, valid
+  </sql>
+  <!-- <include refid="Base_Column_List" /> -->
+  <select id="getAllmodelInfoStr" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List" /> from device_detail_combiner_box si where si.valid=1
+  </select>
+</mapper>

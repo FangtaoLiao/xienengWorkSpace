@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysAddressMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysAddress">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="plant_id" jdbcType="INTEGER" property="plantId" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="location_x" jdbcType="VARCHAR" property="locationX" />
+    <result column="location_y" jdbcType="VARCHAR" property="locationY" />
+    <result column="father_id" jdbcType="INTEGER" property="fatherId" />
+    <result column="area_path" jdbcType="VARCHAR" property="areaPath" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="count" javaType="INTEGER" property="count"/>
+    <result column="father_name" jdbcType="VARCHAR" property="fatherName" />
+  </resultMap>
+  
+  <select id="getBackInfo" resultMap="BaseResultMap">
+  	SELECT sd.area_name,sd.location_x,sd.location_y,sd.level from sys_address sd where sd.father_id=0 limit 0,1
+  </select>
+  <select id="getNextInfo" parameterType="String"  resultMap="BaseResultMap">
+  	SELECT sd.id,sd.area_name,sd.location_x,sd.location_y from sys_address sd where sd.father_id=#{dId}
+  </select>
+  <select id="getAdrForScreen" parameterType="List" resultMap="BaseResultMap">
+  	SELECT sa1.plant_id,sa1.area_name,sa1.location_x,sa1.location_y,sa1.level ,CONCAT(sa1.location_x,sa1.location_y,sa1.level)name ,
+	case sa1.father_id
+		when 0 then '0'
+		ELSE
+	CONCAT(sa2.location_x,sa2.location_y,sa2.level)
+	  end as father_name
+	from sys_address  sa1 
+	left join sys_address sa2 on sa1.father_id=sa2.id 
+	where 1=1 
+	<foreach collection="list" item="plantId" open=" and sa1.plant_id IN (" close=")" separator=",">
+				#{plantId}
+	</foreach>
+	</select>
+  <select id="getPlantId" parameterType="String"  resultMap="BaseResultMap">
+  	SELECT sd.plant_id from sys_address sd where sd.id=#{dId}
+  </select>
+  
+  <select id="getPids" parameterType="map"  resultType="integer">
+  	SELECT sd.plant_id from sys_address sd 
+  	join plant_info pi on pi.id=sd.plant_id 
+  	join sys_org o on pi.org_id=o.id where sd.area_name=#{fname}
+  	<foreach collection="reList" item="orgId" open=" and o.id IN (" close=")" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <select id="getAreaNames" parameterType="map"  resultType="String">
+  	SELECT distinct sd.area_name from sys_address sd 
+  	join plant_info pi on pi.id=sd.plant_id 
+  	join sys_org o on pi.org_id=o.id where 
+  	<foreach collection="reList" item="orgId" open=" o.id IN (" close=")" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <select id="getChildPids" parameterType="map"  resultType="integer">
+  	SELECT sd.plant_id from sys_address sd 
+  	join plant_info pi on pi.id=sd.plant_id 
+  	join sys_org o on pi.org_id=o.id where area_name=#{fname}
+  	<foreach collection="reList" item="orgId" open=" and o.id IN (" close=")" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <select id="getChildPids2" parameterType="map"  resultType="integer">
+  	SELECT sd.plant_id from sys_address sd 
+  	join plant_info pi on pi.id=sd.plant_id where area_name=#{fname}
+  	<foreach collection="reList" item="plantId" open=" and pi.id IN (" close=")" separator=",">
+				#{plantId}
+	</foreach>
+	ORDER BY pi.id
+  </select>
+
+	<select id="getChildPids3" parameterType="map" resultType="integer">
+		SELECT sd.plant_id from sys_address sd
+		join plant_info pi on pi.id=sd.plant_id where area_name=#{fname} AND pi.plant_type_a =1
+		<foreach collection="reList" item="plantId" open=" and pi.id IN (" close=")" separator=",">
+			#{plantId}
+		</foreach>
+		<if test=" condition != null and condition != ''">
+			AND (pi.plant_name LIKE CONCAT('%', #{condition}, '%')
+			OR pi.plant_addr LIKE CONCAT('%', #{condition}, '%'))
+		</if>
+		<if test=" sr != null and sr != ''">
+			AND pi.capacity_base <![CDATA[>=]]> #{sr}
+		</if>
+		<if test=" er != null and er != ''">
+			AND pi.capacity_base <![CDATA[<=]]> #{er}
+		</if>
+		<if test=" orderName != null and orderName != '' and orderName == 'capacity'">
+			ORDER BY pi.capacity_base ${order},pi.id
+		</if>
+	</select>
+
+	<select id="getChildPidsws" parameterType="map" resultType="integer">
+  	SELECT distinct sd.plant_id from sys_address sd 
+  	join plant_info pi on pi.id=sd.plant_id 
+  	join sys_org o on pi.org_id=o.id where 
+  	<foreach collection="reList" item="orgId" open=" o.id IN (" close=")" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <select id="getSubPlants2" parameterType="map"  resultMap="com.synpower.dao.PlantInfoMapper.plantInfoMap">
+  	SELECT distinct pi.id,pi.plant_name,pi.capacity,pi.plant_type,pi.grid_connected_date from plant_info pi 
+  	join sys_address sd on pi.id=sd.plant_id 
+  	join sys_org o on pi.org_id=o.id where 
+  	<if test=" searchCon != null and searchCon != ''">
+		pi.plant_name LIKE CONCAT('%',#{searchCon},'%') or pi.plant_type LIKE CONCAT('%',#{searchCon},'%') and
+	</if>
+	<foreach collection="plantArea" item="areaName" open=" sd.id IN (" close=")" separator=",">
+				#{areaName}
+	</foreach>
+	<foreach collection="reList" item="orgId" open=" and o.id IN (" close=")" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <select id="getDetailByName" parameterType="String"  resultType="String">
+  	SELECT distinct CONCAT(sd.location_x,sd.location_y,sd.level) from sys_address sd  where sd.area_name=#{fname} limit 0,1
+  </select>
+  <select id="getDetailById" parameterType="map"  resultType="String">
+  	SELECT CONCAT(sd.location_x,sd.location_y,sd.level) from sys_address sd JOIN plant_info p ON sd.plant_id=p.id where sd.id=#{aId} and p.plant_type_a=#{plantTypeA} and p.plant_valid=0
+  </select>
+  <select id="getpidss" parameterType="String"  resultType="integer">
+  	SELECT sd.plant_id from sys_address sd where sd.area_name=#{areaName}
+  </select>
+  
+  <select id="getPcount" parameterType="map"  resultMap="eachC">
+  	SELECT sd.area_name,count(area_name) from sys_address sd 
+  	join plant_info pi on pi.id=sd.plant_id 
+  	join sys_org o on pi.org_id=o.id where sd.area_name=#{fname}
+  	<foreach collection="reList" item="orgId" open=" and o.id IN (" close=")" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <select id="getSubPlants" parameterType="map"  resultMap="eachC">
+  	SELECT sd.area_name,count(area_name) from sys_address sd 
+  	join plant_info pi on pi.id=sd.plant_id 
+  	join sys_org o on pi.org_id=o.id where sd.area_name=#{fname}
+  	<foreach collection="reList" item="orgId" open=" and o.id IN (" close=")" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <resultMap id="eachC" type="java.util.HashMap">
+  	<result column="count(area_name)" property="count" jdbcType="VARCHAR"/>
+  	<result column="area_name" property="name" jdbcType="VARCHAR"/>
+  </resultMap>
+  
+  <select id="getFid" parameterType="String"  resultType="Integer">
+  	SELECT DISTINCT sd.father_id from sys_address sd where CONCAT(sd.location_x,sd.location_y,sd.level)=#{areaId}
+  </select>
+  <select id="getFid2" parameterType="map"  resultType="Integer">
+  	SELECT sd.plant_id from sys_address sd JOIN plant_info p ON sd.plant_id=p.id where CONCAT(sd.location_x,sd.location_y,sd.level)=#{areaId} and p.plant_type_a=#{plantTypeA} and p.plant_valid=0
+  </select>
+  <select id="getFnameById" parameterType="integer"  resultType="String">
+  	SELECT sd.area_name from sys_address sd where sd.id=#{fatherId} and p.plant_valid=0
+  </select>
+  <select id="getFidByLocation" parameterType="String"  resultType="String">
+  	SELECT DISTINCT sd.id from sys_address sd where CONCAT(sd.location_x,sd.location_y,sd.level)=#{kid}
+  </select>
+  <select id="getFidByDetail" parameterType="map"  resultType="Integer">
+  	SELECT DISTINCT sd.father_id from sys_address sd JOIN plant_info p ON sd.plant_id=p.id where CONCAT(sd.location_x,sd.location_y,sd.level)=#{areaId} and p.plant_type_a=#{plantTypeA} and p.plant_valid=0
+  </select>
+  <select id="getCurrId" parameterType="String"  resultType="integer">
+  	SELECT sd.id from sys_address sd JOIN plant_info p ON sd.plant_id=p.id where sd.area_name=#{fname} and p.plant_valid=0
+  </select>
+  <select id="getCurrId2" parameterType="map"  resultType="String">
+  	SELECT distinct CONCAT(sd.location_x,sd.location_y,sd.level) from sys_address sd where sd.area_name=#{name}
+	
+  </select>
+  <select id="getCurrId3" parameterType="map"  resultType="String">
+  	SELECT distinct CONCAT(sd.location_x,sd.location_y,sd.level) from sys_address sd where sd.area_name=#{name}
+	
+  </select>
+  
+  <resultMap id="kidAreaMap" type="java.util.HashMap">
+  	<result column="count(area_name)" property="count" jdbcType="VARCHAR"/>
+  	<result column="area_name" property="name" jdbcType="VARCHAR"/>
+  	<result column="location" property="location" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="getEachCount" parameterType="map"  resultMap="kidAreaMap"> 
+  	SELECT CONCAT(sd.location_x,sd.location_y,sd.level) location,sd.area_name,count(area_name) from sys_address sd JOIN plant_info p ON sd.plant_id=p.id where
+  	p.plant_valid=0 and p.plant_type_a=#{plantTypeA} and
+  	<foreach collection="list" item="pid" open=" plant_id in (" close=")" separator=",">
+				#{pid}
+	</foreach>
+  	<foreach collection="fids" item="orgId" open=" and sd.father_id in (" close=") group by location,area_name" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <select id="getLastArea" parameterType="map"  resultMap="eachC"> 
+  	SELECT sd.area_name,count(area_name) from sys_address sd where
+  	<foreach collection="list" item="pid" open=" plant_id in (" close=")" separator=",">
+				#{pid}
+	</foreach>
+  	<foreach collection="fids" item="orgId" open=" and sd.id in (" close=") group by area_name" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <select id="getFname" parameterType="list"  resultType="String">
+  	SELECT distinct sd.area_name from sys_address sd where sd.id in
+  	<foreach collection="list" item="oId" open=" (" close=") " separator=",">
+				#{oId}
+	</foreach>
+  </select>
+  <select id="getPnames" parameterType="map"  resultType="String">
+	  SELECT distinct sd.area_name
+	  from sys_address sd
+		  JOIN plant_info p ON sd.plant_id = p.id
+	  where CONCAT(sd.location_x, sd.location_y, sd.level) = #{areaId}
+			and p.plant_type_a = #{plantTypeA}
+			and p.plant_valid = 0
+  </select>
+  <select id="getHasChile" parameterType="map"  resultType="String">
+  	SELECT distinct sd.id from sys_address sd JOIN plant_info p ON sd.plant_id=p.id where CONCAT(sd.location_x,sd.location_y,sd.level)=#{areaId} and p.plant_type_a=#{plantTypeA} and p.plant_valid=0
+  </select>
+  <select id="getJugeHasChild" parameterType="map"  resultType="String">
+  	SELECT distinct sd.id from sys_address sd JOIN plant_info p ON sd.plant_id=p.id where sd.father_id=#{areaFid} and p.plant_type_a=#{plantTypeA} and p.plant_valid=0
+  </select>
+  <select id="getUniqueS" parameterType="String"  resultMap="BaseResultMap">
+  	SELECT sd.location_x,sd.location_y,sd.level from sys_address sd where sd.area_name=#{fname}
+  </select>
+  <select id="getRoot" parameterType="String"  resultType="String">
+  	SELECT sd.area_name from sys_address sd where sd.father_id=0 limit 0,1
+  </select>
+  <select id="getFix" parameterType="String"  resultType="String">
+  	SELECT sd.location_x from sys_address sd where sd.father_id=#{aid}
+  </select>
+  <select id="getFatherPlants" parameterType="integer"  resultType="integer">
+  	SELECT sd.plant_id from sys_address sd where sd.father_id=#{fatherId}
+  </select>
+  <select id="getActualids" parameterType="map"  resultType="integer">
+  	SELECT sd.id from sys_address sd 
+  	join plant_info pi on pi.id=sd.plant_id 
+  	join sys_org o on pi.org_id=o.id where sd.area_name=#{fname}
+  	<foreach collection="reList" item="orgId" open=" and o.id IN (" close=")" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <select id="getNextcount" parameterType="map"  resultMap="nextC">
+  	SELECT sd.area_name,sd.plant_id,count(area_name) from sys_address sd 
+  	join plant_info pi on pi.id=sd.plant_id 
+  	join sys_org o on pi.org_id=o.id where sd.id
+  	<foreach collection="acids" item="aid" open=" IN (" close=")" separator=",">
+				#{aid}
+	</foreach>
+  	<foreach collection="reList" item="orgId" open=" and o.id IN (" close=")" separator=",">
+				#{orgId}
+	</foreach>
+  </select>
+  <select id="getTopArea" parameterType="String"  resultType="integer">
+  	SELECT sd.area_name,count(area_name) from sys_address sd where CONCAT(sd.location_x,sd.location_y,sd.level)=#{areaId} group by area_name 
+  </select>
+  <resultMap id="nextC" type="java.util.HashMap">
+  	<result column="count(area_name)" property="count" jdbcType="VARCHAR"/>
+  	<result column="area_name" property="name" jdbcType="VARCHAR"/>
+  	<result column="plant_id"  property="plantId" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="getNextCount" parameterType="map" resultMap="BaseResultMap">
+  	SELECT DISTINCT(a.name),count,b.area_name from (SELECT count(*)count,name from (SELECT sa1.plant_id,sa1.area_name,sa1.location_x,sa1.location_y,sa1.level ,CONCAT(sa1.location_x,sa1.location_y,sa1.level)name ,
+	case sa1.father_id
+		when 0 then '0'
+		ELSE
+	CONCAT(sa2.location_x,sa2.location_y,sa2.level)
+	  end as father_name
+	from sys_address  sa1 
+	left join sys_address sa2 on sa1.father_id=sa2.id 
+	where 1=1 and sa2.plant_id in 
+	<foreach collection="plants" item="plantId" open=" (" close=")" separator=",">
+				#{plantId}
+	</foreach>
+	) temp where  father_name=#{str} group by name  )a join 
+	(SELECT sa1.plant_id,sa1.area_name,sa1.location_x,sa1.location_y,sa1.level ,CONCAT(sa1.location_x,sa1.location_y,sa1.level)name ,
+	case sa1.father_id
+		when 0 then '0'
+		ELSE
+	CONCAT(sa2.location_x,sa2.location_y,sa2.level)
+	  end as father_name
+	from sys_address  sa1 
+	left join sys_address sa2 on sa1.id=sa2.father_id )b on a.name=b.name
+	</select>
+  <select id="getAreaDetail" parameterType="map" resultMap="BaseResultMap">
+  	SELECT DISTINCT count(area_name),sd.area_name,sd.location_x,sd.location_y,sd.level from sys_address sd
+	where sd.area_name in 
+	<foreach collection="adrs" item="areaName" open=" (" close=")" separator=",">
+				#{areaName}
+	</foreach>
+  </select>
+	
+  <select id="getNext2Count" parameterType="map" resultMap="BaseResultMap">
+  	SELECT DISTINCT(a.name),count,b.area_name,b.location_x,b.location_y,b.level from (SELECT count(*)count,name from (SELECT sa1.plant_id,sa1.area_name,sa1.location_x,sa1.location_y,sa1.level ,CONCAT(sa1.location_x,sa1.location_y,sa1.level)name ,
+	case sa1.father_id
+		when 0 then '0'
+		ELSE
+	CONCAT(sa2.location_x,sa2.location_y,sa2.level)
+	  end as father_name
+	from sys_address  sa1 
+	left join sys_address sa2 on sa1.father_id=sa2.id 
+	where 1=1 and sa2.plant_id in 
+	<foreach collection="plants" item="plantId" open=" (" close=")" separator=",">
+				#{plantId}
+	</foreach>
+	) temp where  father_name=#{str} group by name  )a join 
+	(SELECT sa1.plant_id,sa1.area_name,sa1.location_x,sa1.location_y,sa1.level ,CONCAT(sa1.location_x,sa1.location_y,sa1.level)name ,
+	case sa1.father_id
+		when 0 then '0'
+		ELSE
+	CONCAT(sa2.location_x,sa2.location_y,sa2.level)
+	  end as father_name
+	from sys_address  sa1 
+	left join sys_address sa2 on sa1.id=sa2.father_id )b on a.name=b.name
+	</select>
+	
+	<select id="getAreaByName" parameterType="String" resultMap="BaseResultMap">
+  	SELECT DISTINCT father_name,temp.name,temp.location_x,temp.location_y ,temp.area_name
+	from(
+		SELECT sa1.plant_id,sa1.area_name,sa1.location_x,sa1.location_y,sa1.level ,CONCAT(sa1.location_x,sa1.location_y,sa1.level)name ,
+		case sa1.father_id
+			when 0 then '0'
+			ELSE
+				CONCAT(sa2.location_x,sa2.location_y,sa2.level)
+			end as father_name
+	from sys_address  sa1 
+		left join 
+			sys_address sa2 on sa1.father_id=sa2.id )temp
+		where name=#{name} limit 0,1
+	</select>
+	
+	<select id="getPlantsByArea" parameterType="Map" resultMap="com.synpower.dao.PlantInfoMapper.plantInfoMap">
+		select * from plant_info where id in(
+			SELECT  plant_id 
+		from(
+			SELECT sa1.plant_id,sa1.area_name,sa1.location_x,sa1.location_y,sa1.level ,CONCAT(sa1.location_x,sa1.location_y,sa1.level)name ,
+			case sa1.father_id
+				when 0 then '0'
+				ELSE
+					CONCAT(sa2.location_x,sa2.location_y,sa2.level)
+				end as father_name
+		from sys_address  sa1 
+			left join 
+				sys_address sa2 on sa1.father_id=sa2.id )temp
+			where temp.name=#{name}
+		<foreach collection="plants" item="plantId" open=" and temp.plant_id in (" close=")" separator=",">
+					#{plantId}
+		</foreach>
+		)
+	</select>
+	<select id="getPlantsIdByArea" parameterType="Map" resultType="int">
+			SELECT  plant_id 
+		from(
+			SELECT sa1.plant_id,sa1.area_name,sa1.location_x,sa1.location_y,sa1.level ,CONCAT(sa1.location_x,sa1.location_y,sa1.level)name ,
+			case sa1.father_id
+				when 0 then '0'
+				ELSE
+					CONCAT(sa2.location_x,sa2.location_y,sa2.level)
+				end as father_name
+		from sys_address  sa1 
+			left join 
+				sys_address sa2 on sa1.father_id=sa2.id )temp
+			where temp.name=#{name}
+		<foreach collection="plants" item="plantId" open=" and temp.plant_id in (" close=")" separator=",">
+					#{plantId}
+		</foreach>
+	</select>
+	<select id="getAllAreas"  resultMap="BaseResultMap">
+ 		select * from sys_address
+ 	</select>
+	<select id="getActualid" parameterType="String" resultType="integer">
+ 		select sd.id from sys_address sd where sd.area_name=#{plantArea}
+ 	</select>
+ 	<select id="getAreaByPlantId" parameterType="List" resultMap="BaseResultMap">
+	SELECT DISTINCT 
+		father_name,
+		temp.name,
+		temp.location_x,
+		temp.location_y,
+		temp.area_name,
+		level 
+	from(
+		SELECT 
+			sa1.plant_id,
+			sa1.area_name,
+			sa1.location_x,
+			sa1.location_y,
+			sa1.level,
+			CONCAT(sa1.location_x,sa1.location_y,sa1.level)name ,
+			case 
+				sa1.father_id 
+			when 0 then '0'
+			ELSE
+				CONCAT(sa2.location_x,sa2.location_y,sa2.level)
+			end 
+				as father_name
+		from 
+			sys_address sa1
+		left join
+			sys_address sa2 on sa1.father_id=sa2.id 
+		WHERE 1 = 1 
+		<foreach collection="list" item="item" open="and sa1.plant_id IN (" close=")" separator=",">
+			#{item}
+		</foreach>
+	)temp
+ 	</select>
+ 	<select id="getPlantsByAreaName" parameterType="String" resultMap="com.synpower.dao.PlantInfoMapper.plantInfoMap">
+		select 
+			* 
+		from 
+			plant_info 
+		where 
+			id in(
+				SELECT  
+					plant_id 
+				from(
+					SELECT 
+						sa1.plant_id,
+						sa1.area_name,
+						sa1.location_x,
+						sa1.location_y,
+						sa1.level ,
+						CONCAT(sa1.location_x,sa1.location_y,sa1.level)name ,
+						case 
+							sa1.father_id
+						when 
+							0 
+						then 
+							'0'
+						ELSE
+							CONCAT(sa2.location_x,sa2.location_y,sa2.level)
+						end 
+							as father_name
+					from 
+						sys_address  sa1 
+					left join 
+						sys_address sa2 
+					on 
+						sa1.father_id=sa2.id 
+				)temp
+			where temp.name=#{name}
+		)
+	</select>
+	<select id="getPlantArea" parameterType="int" resultMap="BaseResultMap">
+		select * from sys_address where plant_id=#{plantId}
+	</select>
+	<delete id="delPlantAddr" parameterType="int">
+		delete from sys_address where plant_id=#{plantId}
+	</delete>
+	<insert id="insertPlantAddr" useGeneratedKeys="true" keyProperty="id" parameterType="com.synpower.bean.SysAddress">
+    insert into sys_address (plant_id,area_name,  location_x, location_y, father_id, level)
+    values ( #{plantId}, #{areaName},#{locationX}, #{locationY}, #{fatherId}, #{level})
+  </insert>
+</mapper>

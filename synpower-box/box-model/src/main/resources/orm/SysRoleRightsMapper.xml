@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysRoleRightsMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysRoleRights">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="rights_id" jdbcType="INTEGER" property="rightsId" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, role_id, rights_id, create_time, create_user
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role_rights
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_role_rights
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpower.bean.SysRoleRights">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_role_rights (role_id, rights_id, create_time, 
+      create_user)
+    values (#{roleId,jdbcType=INTEGER}, #{rightsId,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, 
+      #{createUser,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpower.bean.SysRoleRights">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_role_rights
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="rightsId != null">
+        rights_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="rightsId != null">
+        #{rightsId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpower.bean.SysRoleRights">
+    update sys_role_rights
+    <set>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="rightsId != null">
+        rights_id = #{rightsId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpower.bean.SysRoleRights">
+    update sys_role_rights
+    set role_id = #{roleId,jdbcType=INTEGER},
+      rights_id = #{rightsId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=BIGINT},
+      create_user = #{createUser,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="listRoleRights" resultType="integer">
+  	SELECT rights_id FROM sys_role_rights WHERE role_id = 1
+  </select>
+  <insert id="insertRoleRights" parameterType="list">
+  	insert into sys_role_rights (role_id, rights_id, create_time, create_user) values 
+  	<foreach collection="list" item="item" index="index" separator=",">
+  		(#{item.roleId},#{item.rightsId},#{item.createTime},#{item.createUser})
+  	</foreach>
+  </insert>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DataBmsMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DataBms">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="volt_bus" jdbcType="REAL" property="voltBus" />
+    <result column="curr_bus" jdbcType="REAL" property="currBus" />
+    <result column="life_time" jdbcType="BIGINT" property="lifeTime" />
+    <result column="left_life_time" jdbcType="BIGINT" property="leftLifeTime" />
+    <result column="bms_capacity" jdbcType="REAL" property="bmsCapacity" />
+    <result column="bms_charged_capacity" jdbcType="REAL" property="bmsChargedCapacity" />
+    <result column="bms_left_capacity" jdbcType="REAL" property="bmsLeftCapacity" />
+    <result column="soc_cell_cluster" jdbcType="REAL" property="socCellCluster" />
+    <result column="num_cellvoltmax" jdbcType="INTEGER" property="numCellvoltmax" />
+    <result column="volt_cellmax" jdbcType="REAL" property="voltCellmax" />
+    <result column="num_cellvoltmin" jdbcType="INTEGER" property="numCellvoltmin" />
+    <result column="volt_cellmin" jdbcType="REAL" property="voltCellmin" />
+    <result column="num_tempmax" jdbcType="INTEGER" property="numTempmax" />
+    <result column="temp_cellmax" jdbcType="REAL" property="tempCellmax" />
+    <result column="num_tempmin" jdbcType="INTEGER" property="numTempmin" />
+    <result column="temp_cellmin" jdbcType="REAL" property="tempCellmin" />
+    <result column="cell_total" jdbcType="REAL" property="cellTotal" />
+    <result column="running_status" jdbcType="TINYINT" property="runningStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, plant, data_time, volt_bus, curr_bus, life_time, left_life_time, bms_capacity, 
+    bms_charged_capacity, bms_left_capacity, soc_cell_cluster, num_cellvoltmax, volt_cellmax, 
+    num_cellvoltmin, volt_cellmin, num_tempmax, temp_cellmax, num_tempmin, temp_cellmin, 
+    cell_total, running_status
+  </sql>
+  <select id="getDischargeCurrent" parameterType="hashmap" resultMap="BaseResultMap">
+  	SELECT curr_bus,bms_left_capacity,data_time FROM data_bms WHERE device_id = #{deviceId} AND FROM_UNIXTIME(data_time/1000,'%Y-%m-%d') =#{dataTime} order by data_time
+  </select>
+  
+  <select id="getCapacityPercent" parameterType="String" resultMap="capacityPercentMap">
+  	SELECT SUM(bms_capacity),SUM(bms_left_capacity) from data_bms where plant =#{plantId}
+  </select>
+  <resultMap id="capacityPercentMap" type="java.util.HashMap">
+  	<result column="SUM(bms_capacity)" property="totalCapa" jdbcType="VARCHAR"/>
+  	<result column="SUM(bms_left_capacity)" property="leftCapa" jdbcType="VARCHAR"/>
+  </resultMap>
+</mapper>

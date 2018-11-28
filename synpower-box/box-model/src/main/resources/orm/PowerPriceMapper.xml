@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.PowerPriceMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.PowerPrice">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="jian_price" jdbcType="REAL" property="jianPrice" />
+    <result column="feng_price" jdbcType="REAL" property="fengPrice" />
+    <result column="ping_price" jdbcType="REAL" property="pingPrice" />
+    <result column="gu_price" jdbcType="REAL" property="guPrice" />
+    <result column="plant_id" jdbcType="INTEGER" property="plantId" />
+    <result column="price_valid" jdbcType="CHAR" property="priceValid" />
+    <result column="price_status" jdbcType="CHAR" property="priceStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, jian_price, feng_price, ping_price, gu_price, plant_id, price_valid, price_status
+  </sql>
+  <select id="getPriceOfPlant" parameterType="int" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/> from power_price where plant_id=#{plantId} 
+  </select>
+  <update id="updatePrice" parameterType="map">
+  	update power_price pp set pp.jian_price=#{powerPrice}, pp.feng_price=#{powerPrice}, 
+  	pp.ping_price=#{powerPrice}, pp.gu_price=#{powerPrice} where price_valid=0 and price_status=1 and plant_id=#{pid} 
+  </update>
+  <select id="getPriceByPlant" parameterType="String" resultType="String">
+  	select jian_price from power_price where price_valid=0 and price_status=1 and plant_id=#{plantId} 
+  </select>
+  <insert id="insertPrice" parameterType="hashmap">
+  	insert into power_price(
+  		jian_price,
+  		feng_price,
+  		ping_price,
+  		gu_price,
+  		plant_id,
+  		price_valid,
+  		price_status
+  	) values (
+  		#{value},
+  		#{value},
+  		#{value},
+  		#{value},
+  		#{plantId},
+  		#{valid},
+  		#{status}
+  	)
+  </insert>
+  <select id="getPowerTotal" parameterType="hashmap" resultMap="powerTotal">
+  	SELECT SUM(power) from(
+		SELECT SUM(daily_energy)power from inventer_storage_data where plant_id IN 
+		<foreach collection="reList" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach> 
+		UNION ALL 
+		SELECT sum(pos_pow)power from electric_storage_data where plant_id IN 
+		<foreach collection="reList" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		)temp
+  </select>
+  <resultMap id="powerTotal" type="java.util.HashMap">
+  	<result column="SUM(power)" property="power" jdbcType="DOUBLE"/>
+  </resultMap>
+  <select id="getPowerPriceTotal" parameterType="hashmap" resultMap="powerPriceTotal">
+  	SELECT 
+  		SUM(power),
+  		SUM(ROUND(price,4)) price 
+  	from(
+		SELECT 
+			daily_energy power,
+			daily_price price 
+		from inventer_storage_data where plant_id IN 
+		<foreach collection="reList" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach> 
+		UNION ALL 
+		SELECT 
+			pos_pow power,
+			pos_price price 
+		from electric_storage_data where plant_id IN 
+		<foreach collection="reList" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach> 
+	)temp
+  </select>
+  <resultMap id="powerPriceTotal" type="java.util.HashMap">
+  	<result column="SUM(power)" property="power" jdbcType="DOUBLE"/>
+  	<result column="price" property="price" jdbcType="DOUBLE"/>
+  </resultMap>
+   <update id="updatePowerPrice" parameterType="com.synpower.bean.PowerPrice">
+    update power_price
+    set jian_price = #{jianPrice},
+      feng_price = #{fengPrice},
+      ping_price = #{pingPrice},
+      gu_price = #{guPrice}
+    where plant_id = #{plantId} and price_valid='0'
+  </update>
+</mapper>

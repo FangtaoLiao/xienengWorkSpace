@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysPoorEventMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysPoorEvent">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="time" jdbcType="BIGINT" property="time" />
+    <result column="photos" jdbcType="VARCHAR" property="photos" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, introduction, time, photos
+  </sql>
+  <select id="getEvent" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from sys_poor_event ORDER BY time
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from sys_poor_event 
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+</mapper>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"  
+    xmlns:aop="http://www.springframework.org/schema/aop"  
+    xsi:schemaLocation="  
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">  
+
+    <context:property-placeholder location="classpath:spring-redis.properties" ignore-unresolvable="true"/>  
+    
+    <context:component-scan base-package="com.synpowertech.dataCollectionJar.redis"></context:component-scan>
+    
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="minIdle" value="${redis.minIdle}" />
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxTotal" value="${redis.maxTotal}" />
+		<property name="maxWaitMillis" value="${redis.maxWait}"/>
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+		<property name="testOnReturn" value="${redis.testOnReturn}" />
+		 <!-- <property name="testWhileIdle" value="true"/> -->
+	</bean>
+
+	<bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool"
+		scope="singleton">
+		<constructor-arg index="0" ref="jedisPoolConfig" />
+		<constructor-arg index="1">
+			<list>
+				<!-- list里面可以配置多个，集群实现 -->
+			 	<!-- <bean class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg index="0" value="${redis.host}" />
+					<constructor-arg index="1" value="${redis.port}" type="int" />
+
+					<constructor-arg index="2" value="${redis.timeout}" />
+					对应权重weight
+					<constructor-arg index="3" value="1" />
+					<property name="password" value="${redis.password}"></property>
+				</bean> -->
+				<bean class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg index="0" value="${redis.uri.1}" />
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+    
+	<bean id="jedisUtil" class="com.synpowertech.dataCollectionJar.initialization.JedisUtil" init-method="initMethod">
+		<property name="shardedJedisPool" ref="shardedJedisPool"></property>
+	</bean>
+	
+	<!-- 用作遥信变位对比缓存 -->
+	<bean id="shardedJedisPool2Fix60ktl" class="redis.clients.jedis.ShardedJedisPool"
+		scope="singleton">
+		<constructor-arg index="0" ref="jedisPoolConfig" />
+		<constructor-arg index="1">
+			<list>
+				<!-- list里面可以配置多个，集群实现 -->
+			 	<!-- <bean class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg index="0" value="${redis.host}" />
+					<constructor-arg index="1" value="${redis.port}" type="int" />
+
+					<constructor-arg index="2" value="${redis.timeout}" />
+					对应权重weight
+					<constructor-arg index="3" value="1" />
+					<property name="password" value="${redis.password}"></property>
+				</bean> -->
+				<bean class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg index="0" value="${redis.uri.3}" />
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="jedisUtil2Fix60ktl" class="com.synpowertech.dataCollectionJar.initialization.JedisUtil2Fix60ktl" init-method="initMethod">
+		<property name="shardedJedisPool" ref="shardedJedisPool2Fix60ktl"></property>
+	</bean>
+	
+	<bean id="shardedJedisPool4signal" class="redis.clients.jedis.ShardedJedisPool" scope="singleton">
+		<constructor-arg index="0" ref="jedisPoolConfig" />
+		<constructor-arg index="1">
+			<list>
+				<bean class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg index="0" value="${redis.uri.5}" />
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+    
+	<bean id="jedisUtil4signal" class="com.synpowertech.dataCollectionJar.initialization.JedisUtil4signal" init-method="initMethod">
+		<property name="shardedJedisPool" ref="shardedJedisPool4signal"></property>
+	</bean>
+	
+	<bean id="shardedJedisPool4plantStatus" class="redis.clients.jedis.ShardedJedisPool" scope="singleton">
+		<constructor-arg index="0" ref="jedisPoolConfig" />
+		<constructor-arg index="1">
+			<list>
+				<bean class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg index="0" value="${redis.uri.7}" />
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+    
+	<bean id="jedisUtil4plantStatus" class="com.synpowertech.dataCollectionJar.initialization.JedisUtil4plantStatus" init-method="initMethod">
+		<property name="shardedJedisPool" ref="shardedJedisPool4plantStatus"></property>
+	</bean>
+</beans>

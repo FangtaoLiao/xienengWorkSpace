@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysUserFormIdMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysUserFormId">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="time" jdbcType="BIGINT" property="time" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, value, time, user_id
+  </sql>
+  <!-- <include refid="Base_Column_List" /> -->
+  <insert id="insertUserFormId" parameterType="list">
+  	insert into sys_user_formId(value,time,user_id) values
+  	<foreach collection="list" item="item" separator=",">
+  		(#{item.formId},#{item.time},#{item.userId})
+  	</foreach>
+  </insert>
+  <select id="getFormIdInfo" parameterType="String" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List" /> FROM sys_user_formId WHERE user_id = #{userId} LIMIT 0,1
+  </select>
+  <delete id="deleteFormIdInfo" parameterType="int">
+  	DELETE FROM sys_user_formId WHERE id = #{formId}
+  </delete>
+  <select id="getCount" parameterType="String" resultType="int">
+  	select count(*) from sys_user_formId where user_id = #{userId}
+  </select>
+</mapper>

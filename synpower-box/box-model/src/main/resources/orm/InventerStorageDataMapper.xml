@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.InventerStorageDataMapper">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="BaseResultMap"
+		type="com.synpower.bean.InventerStorageData">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="daily_energy" jdbcType="DOUBLE"
+			property="dailyEnergy" />
+		<result column="total_energy" jdbcType="DOUBLE"
+			property="totalEnergy" />
+		<result column="daily_price" jdbcType="DOUBLE"
+			property="dailyPrice" />
+		<result column="data_time" jdbcType="BIGINT"
+			property="dataTime" />
+		<result column="plant_id" jdbcType="INTEGER" property="plantId" />
+		<result column="total_price" jdbcType="DOUBLE"
+			property="totalPrice" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, daily_energy, total_energy, daily_price, data_time,
+		plant_id
+	</sql>
+	<resultMap id="runPeportMap" type="java.util.HashMap">
+		<result column="energy" property="energy" jdbcType="DOUBLE" />
+		<result column="data_time" property="dataTime"
+			jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="DOUBLE" />
+		<result column="plant_id" property="plantId" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="getDataCentralForStorage" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT
+		sum(dt.daily_energy) AS daily_energy,
+		sum(dt.total_energy) AS
+		total_energy
+		FROM
+		(
+		SELECT
+		max(dci.daily_energy) AS daily_energy,
+		max(dci.total_energy) AS total_energy
+		FROM
+		data_central_inverter dci
+		WHERE
+		dci.data_time >= #{minTime}
+		AND #{maxTime} >= dci.data_time
+		<foreach collection="devices" item="deviceId"
+			open=" and dci.device_id IN (" close=")" separator=",">
+			#{deviceId}
+		</foreach>
+		GROUP BY
+		dci.device_id
+		) AS dt
+
+	</select>
+	<select id="getDataStringForStorage" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT
+		ifnull(sum(dt.daily_energy),0) AS daily_energy,
+		ifnull(sum(dt.total_energy),0) AS
+		total_energy
+		FROM
+		(
+		SELECT
+		max(dsi.daily_energy) AS daily_energy,
+		max(dsi.total_energy) AS total_energy
+		FROM
+		data_string_inverter dsi
+		WHERE
+		dsi.data_time >= #{minTime}
+		AND #{maxTime} >= dsi.data_time
+		<foreach collection="devices" item="deviceId"
+			open=" and dsi.device_id IN (" close=")" separator=",">
+			#{deviceId}
+		</foreach>
+		GROUP BY
+		dsi.device_id
+		) AS dt
+	</select>
+	<insert id="insertDataForStotage" parameterType="Map">
+		insert into
+		inventer_storage_data(data_time,daily_energy,daily_price,total_energy,total_price,plant_id)values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.dataTime},#{item.dailyEnergy},#{item.dailyPrice},#{item.totalEnergy},#{item.totalPrice},#{item.plantId})
+		</foreach>
+	</insert>
+	<delete id="deteleDataForStotage" parameterType="Map">
+		delete from inventer_storage_data where data_time>=#{minTime} and
+		#{maxTime}>=data_time
+		<foreach collection="plants" item="plantId"
+			open=" and plant_id IN (" close=")" separator=",">
+			#{plantId}
+		</foreach>
+	</delete>
+	<select id="getEnergy" parameterType="String"
+		resultMap="energyMap">
+		SELECT
+		SUM(isd.daily_energy),
+		SUM(isd.daily_price),
+		FROM_UNIXTIME(isd.data_time/1000,'%m') data_time
+		FROM
+		inventer_storage_data isd
+		WHERE isd.plant_id = #{plantId}
+		GROUP BY
+		FROM_UNIXTIME(isd.data_time/1000,'%m')
+	</select>
+	<resultMap id="energyMap" type="java.util.HashMap">
+		<result column="SUM(isd.daily_energy)" property="sum"
+			jdbcType="VARCHAR" />
+		<result column="SUM(isd.daily_price)" property="sumPrice"
+			jdbcType="VARCHAR" />
+		<result column="data_time" property="time" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getEnergyPrice" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT
+		d.total_price,
+		d.total_energy
+		FROM inventer_storage_data
+		d
+		WHERE
+		d.plant_id = #{plantId}
+		ORDER BY d.id DESC
+		LIMIT 0,1
+	</select>
+	<select id="getEnergyPriceByMon" parameterType="hashmap"
+		resultMap="energyMap">
+		SELECT
+		SUM(isd.daily_energy),
+		SUM(isd.daily_price),
+		FROM_UNIXTIME(isd.data_time/1000,'%Y-%m') data_time
+		FROM
+		inventer_storage_data isd
+		WHERE isd.plant_id = #{plantId}
+		AND
+		FROM_UNIXTIME(isd.data_time/1000,'%Y-%m') BETWEEN #{startTime} AND
+		#{endTime}
+		GROUP BY FROM_UNIXTIME(isd.data_time/1000,'%Y-%m')
+	</select>
+	<select id="getEnergyPriceByYear" parameterType="hashmap"
+		resultMap="energyMap">
+		SELECT
+		SUM(isd.daily_energy),
+		SUM(isd.daily_price),
+		FROM_UNIXTIME(isd.data_time/1000,'%Y') data_time
+		FROM
+		inventer_storage_data isd
+		WHERE isd.plant_id = #{plantId}
+		AND
+		FROM_UNIXTIME(isd.data_time/1000,'%Y') BETWEEN #{startTime} AND
+		#{endTime}
+		GROUP BY FROM_UNIXTIME(isd.data_time/1000,'%Y')
+	</select>
+	<select id="getPowerByYear" parameterType="hashmap"
+		resultType="int">
+		SELECT
+		SUM(isd.daily_energy)
+		FROM inventer_storage_data isd
+		WHERE isd.plant_id = #{plantId}
+		AND
+		FROM_UNIXTIME(isd.data_time/1000,'%Y')=#{year}
+	</select>
+	<select id="getPowerByMonth" parameterType="hashmap"
+		resultType="int">
+		SELECT
+		SUM(isd.daily_energy)
+		FROM inventer_storage_data isd
+		WHERE isd.plant_id = #{plantId}
+		AND
+		FROM_UNIXTIME(isd.data_time/1000,'%m')=#{month}
+	</select>
+	<select id="getSinglePowerByMon" parameterType="hashmap"
+		resultMap="singlePowerMap">
+		SELECT
+		SUM(isd.daily_energy),
+		FROM_UNIXTIME(isd.data_time/1000,'%Y-%m') data_time
+		FROM
+		inventer_storage_data isd
+		WHERE isd.plant_id = #{plantId} AND
+		FROM_UNIXTIME(isd.data_time/1000,'%Y-%m') = #{date}
+		GROUP BY
+		FROM_UNIXTIME(isd.data_time/1000,'%Y-%m')
+	</select>
+	<select id="getHistoryIncome" parameterType="String"
+		resultMap="incomeMap">
+		SELECT total_energy power,total_price price
+		from
+		inventer_storage_data where plant_id=#{pId} ORDER BY data_time DESC
+		limit 0,1
+	</select>
+	<select id="getPlantRunReportLine" parameterType="Map"
+		resultMap="runPeportMap">
+		SELECT
+		CONVERT(SUM(temp.energy),DECIMAL(10,4))energy,CONVERT(SUM(temp.price),DECIMAL(10,4))price,FROM_UNIXTIME(temp.data_time/1000,#{formatGroup})data_time
+		from (
+		SELECT
+		isd.daily_energy energy,
+		isd.daily_price price,
+		data_time,
+		plant_id
+		from inventer_storage_data isd
+		where plant_id=#{plantId} and
+		FROM_UNIXTIME(isd.data_time/1000,#{formatCondit})=#{range}
+		) temp
+		GROUP
+		BY FROM_UNIXTIME(temp.data_time/1000,#{formatGroup})
+	</select>
+	<select id="getPlantRunReports" parameterType="Map"
+		resultMap="runPeportMap">
+		SELECT
+		CONVERT(SUM(temp.energy),DECIMAL(10,4))energy,CONVERT(SUM(temp.price),DECIMAL(10,4))price
+		,plant_id from (
+		SELECT
+		isd.daily_energy energy,
+		isd.daily_price price,
+		data_time,
+		plant_id
+		from inventer_storage_data isd
+		where plant_id
+		<foreach collection="plants" index="index" item="item"
+			open=" in (" separator="," close=")">
+			#{item}
+		</foreach>
+		and FROM_UNIXTIME(isd.data_time/1000,#{formatCondit})=#{range})temp
+		GROUP BY plant_id
+
+	</select>
+	<select id="getPowerByYear2" parameterType="hashmap"
+		resultType="String">
+		SELECT SUM(energy) from(
+		SELECT
+		isd.daily_energy energy,
+		FROM_UNIXTIME(isd.data_time/1000,#{date}) data_time
+		from
+		inventer_storage_data isd
+		where isd.plant_id =#{plantId}
+		) temp
+		WHERE
+		temp.data_time = #{time}
+		GROUP BY temp.data_time
+	</select>
+	<select id="getPowerPriceByDay" parameterType="hashmap"
+		resultMap="powerPriceByDayMap">
+		SELECT SUM(ROUND(energy,4)) energy,SUM(ROUND(price,4))
+		price,temp.data_time
+		data_time from(
+		SELECT
+		isd.daily_energy energy,
+		isd.daily_price price,
+		FROM_UNIXTIME(isd.data_time/1000,#{date})
+		data_time
+		from inventer_storage_data isd
+		where isd.plant_id =#{plantId}
+		) temp
+		WHERE temp.data_time BETWEEN #{startTime} AND #{endTime}
+		GROUP BY
+		temp.data_time
+	</select>
+	<select id="getSinglePowerByMon2" parameterType="hashmap"
+		resultMap="singlePowerMap">
+		SELECT SUM(energy),temp.data_time data_time from(
+		SELECT
+		isd.daily_energy energy,
+		FROM_UNIXTIME(isd.data_time/1000,'%Y-%m')
+		data_time
+		from inventer_storage_data isd
+		where isd.plant_id =#{plantId}
+		) temp
+		WHERE temp.data_time =#{date}
+		GROUP BY temp.data_time
+	</select>
+	<resultMap id="powerPriceByDayMap" type="java.util.HashMap">
+		<result column="energy" property="sum" jdbcType="VARCHAR" />
+		<result column="price" property="sumPrice" jdbcType="VARCHAR" />
+		<result column="data_time" property="time" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="singlePowerMap" type="java.util.HashMap">
+		<result column="SUM(isd.daily_energy)" property="sum"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap type="Map" id="incomeMap">
+		<result column="power" jdbcType="REAL" property="power" />
+		<result column="price" jdbcType="REAL" property="price" />
+	</resultMap>
+</mapper>

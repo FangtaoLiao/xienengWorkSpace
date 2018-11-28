@@ -1,0 +1,1410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.CollDeviceMapper">
+    <sql id="orderSql">
+        <if test="sort != null and sort != ''">
+            <choose>
+                <when test="order != null and order != ''">
+                    order by #{sort} #{order}
+                </when>
+                <otherwise>
+                    order by conn_time DESC
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
+    <resultMap id="BaseResultMap"
+               type="com.synpower.bean.CollDevice">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="device_name" jdbcType="VARCHAR"
+                property="deviceName"/>
+        <result column="device_type" jdbcType="INTEGER"
+                property="deviceType"/>
+        <result column="conn_addr" jdbcType="VARCHAR"
+                property="connAddr"/>
+        <result column="conn_port" jdbcType="INTEGER"
+                property="connPort"/>
+        <result column="plant_id" jdbcType="INTEGER" property="plantId"/>
+        <result column="org_id" jdbcType="INTEGER" property="orgId"/>
+        <result column="conn_time" jdbcType="BIGINT"
+                property="connTime"/>
+        <result column="conn_protocol" jdbcType="INTEGER"
+                property="connProtocol"/>
+        <result column="data_mode" jdbcType="INTEGER"
+                property="dataMode"/>
+        <result column="manufacture" jdbcType="VARCHAR"
+                property="manufacture"/>
+        <result column="power" jdbcType="REAL" property="power"/>
+        <result column="supId" jdbcType="INTEGER" property="supid"/>
+        <result column="device_valid" jdbcType="CHAR"
+                property="deviceValid"/>
+        <result column="device_status" jdbcType="CHAR"
+                property="deviceStatus"/>
+        <result column="join_plant" jdbcType="CHAR"
+                property="joinPlant"/>
+        <result column="join_device" jdbcType="CHAR"
+                property="joinDevice"/>
+        <result column="device_sn" jdbcType="VARCHAR"
+                property="deviceSn"/>
+        <result column="device_model_id" jdbcType="INTEGER"
+                property="deviceModelId"/>
+        <result column="max_num" jdbcType="INTEGER" property="maxNum"/>
+        <association property="deviceDetailStringInverter"
+                     javaType="DeviceDetailStringInverter" select="getModeForDevice"
+                     column="{deviceType=device_type,modeId=device_model_id}">
+        </association>
+    </resultMap>
+    <resultMap type="Map" id="plantAndDeviceName">
+        <result column="device_name" jdbcType="VARCHAR"
+                property="deviceName"/>
+        <result column="plant_name" jdbcType="VARCHAR"
+                property="plantName"/>
+    </resultMap>
+    <select id="getModeForDevice" parameterType="Map"
+            resultMap="com.synpower.dao.DeviceDetailStringInverterMapper.BaseResultMap">
+        <choose>
+            <when test="deviceType==1">
+                select * from device_detail_central_inverter where
+                id=#{modeId}
+            </when>
+            <when test="deviceType==2">
+                select * from device_detail_string_inverter where
+                id=#{modeId}
+            </when>
+            <when test="deviceType==3">
+                select * from device_detail_electric_meter where
+                id=#{modeId}
+            </when>
+            <when test="deviceType==5">
+                select * from device_detail_data_collector where
+                id=#{modeId}
+            </when>
+            <when test="deviceType==9">
+                select * from device_detail_pcs where id=#{modeId}
+            </when>
+            <when test="deviceType==10">
+                select * from device_detail_bms where id=#{modeId}
+            </when>
+            <when test="deviceType==11">
+                select * from device_detail_combiner_box where
+                id=#{modeId}
+            </when>
+            <when test="deviceType==12">
+                select * from device_detail_box_change where
+                id=#{modeId}
+            </when>
+             <when test="deviceType==13">
+                select * from device_detail_env_monitor where
+                id=#{modeId}
+            </when>
+            <otherwise>
+                select null from dual
+            </otherwise>
+        </choose>
+
+    </select>
+
+    <select id="countDeviceByPid" resultType="int">
+        SELECT IFNULL(count(*), 0)
+        FROM coll_device
+        WHERE plant_id = #{pId} AND
+              device_valid = 0
+    </select>
+
+    <select id="getDevicesByPid" parameterType="map"
+            resultMap="BaseResultMap">
+        select * from coll_device where plant_id=#{pId} and device_valid=0
+        <include refid="orderSql"/>
+        limit #{min},#{max}
+    </select>
+    <select id="getDeviceDetails" parameterType="map"
+            resultMap="BaseResultMap">
+        select * from coll_device where device_valid<![CDATA[!= ]]>1
+        and device_type in(1,2,11,13) and id IN
+        <foreach collection="reList" item="dId" open=" (" close=")"
+                 separator=",">
+            #{dId}
+        </foreach>
+        <!-- limit #{offset},#{length} -->
+    </select>
+    <select id="getDeviceDetailsPageCount" parameterType="map"
+            resultType="integer">
+        select IFNULL(count(*),0) from coll_device where device_valid<![CDATA[!= ]]>1
+        and device_type in(1,2) and id IN
+        <foreach collection="reList" item="dId" open=" (" close=")"
+                 separator=",">
+            #{dId}
+        </foreach>
+    </select>
+    <select id="getDeviceListByPid" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device
+        WHERE plant_id = #{pId} AND
+              device_valid = 0
+    </select>
+    <select id="getPower" parameterType="List" resultType="String">
+        SELECT sum(power) from coll_device where device_valid=0
+        <foreach collection="list" item="plantId"
+                 open=" and plant_id IN (" close=")" separator=",">
+            #{plantId}
+        </foreach>
+    </select>
+
+    <select id="getInverterCount" parameterType="String"
+            resultType="Integer">
+        select COUNT(*) from coll_device cd
+        join plant_info pi on
+        pi.id=cd.plant_id
+        join sys_org o on o.id=pi.org_id
+        where o.org_valid=0
+        and pi.plant_valid=0 and cd.device_valid=0 AND
+        cd.device_type in (1,2)
+        and o.id in
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getInverterList" parameterType="map"
+            resultMap="BaseResultMap">
+        select * from coll_device
+        where
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="manufacturer != null and manufacturer != ''">
+            manufacture LIKE CONCAT('%',#{manufacturer},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid<![CDATA[!= ]]>1
+        AND device_type in (1,2) and plant_id=#{plantId} limit
+        #{offset},#{length}
+    </select>
+
+    <select id="getInverterListByPidNoCondition" parameterType="map"
+            resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device
+        WHERE device_valid<![CDATA[ != ]]>1
+              AND device_type IN (1, 2) AND plant_id = #{plantId}
+        LIMIT
+            #{offset}, #{length}
+    </select>
+    <select id="getAllDeviceInfoDefault" resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device
+        WHERE device_valid<![CDATA[ != ]]>1
+              AND device_type IN (1, 2)
+        GROUP BY device_type
+    </select>
+    <select id="getInverterListByPidNoConditionCount"
+            parameterType="map" resultType="integer">
+        SELECT IFNULL(count(*), 0)
+        FROM coll_device
+        WHERE device_valid<![CDATA[ != ]]>1
+              AND device_type IN (1, 2) AND plant_id = #{plantId}
+    </select>
+
+    <select id="getInverterPagePid" parameterType="map"
+            resultType="integer">
+        select IFNULL(count(*),0) from coll_device
+        where
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="manufacturer != null and manufacturer != ''">
+            manufacture LIKE CONCAT('%',#{manufacturer},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid<![CDATA[!= ]]>1
+        AND device_type in (1,2) and plant_id=#{plantId}
+    </select>
+    <select id="getInverterListByOid" parameterType="map"
+            resultMap="BaseResultMap">
+        SELECT * from(
+        SELECT * from coll_device where
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="manufacturer != null and manufacturer != ''">
+            manufacture LIKE CONCAT('%',#{manufacturer},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid=2 and device_type in (1,2) AND org_id IN
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        UNION
+        SELECT * from coll_device WHERE
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="manufacturer != null and manufacturer != ''">
+            manufacture LIKE CONCAT('%',#{manufacturer},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid=0 and device_type in (1,2) AND org_id IN
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )temp ORDER BY id LIMIT #{offset},#{length}
+    </select>
+    <select id="getInverterListByOidNoCondition" parameterType="map"
+            resultMap="BaseResultMap">
+        select * from coll_device
+        where device_valid<![CDATA[!= ]]>1
+        AND device_type in (1,2) and org_id IN
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        limit #{offset},#{length}
+    </select>
+    <select id="getInverterListByOidNoConditionCount"
+            parameterType="map" resultType="integer">
+        select IFNULL(count(*),0) from coll_device
+        where device_valid<![CDATA[!= ]]>1
+        AND device_type in (1,2) and org_id IN
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getInverterPageOid" parameterType="map"
+            resultType="integer">
+        select IFNULL(count(*),0) from(
+        SELECT * from coll_device where
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="manufacturer != null and manufacturer != ''">
+            manufacture LIKE CONCAT('%',#{manufacturer},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid=2 and device_type in (1,2) AND org_id IN
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        UNION
+        SELECT * from coll_device WHERE
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="manufacturer != null and manufacturer != ''">
+            manufacture LIKE CONCAT('%',#{manufacturer},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid=0 and device_type in (1,2) AND org_id IN
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )temp
+    </select>
+    <select id="getInverterCount4P" parameterType="String"
+            resultType="Integer">
+        select IFNULL(COUNT(*),0) from coll_device cd
+        join plant_info pi on
+        pi.id=cd.plant_id
+        where pi.plant_valid=0 and
+        cd.device_valid=0 AND
+        cd.device_type in (1,2) and pi.id in
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <insert id="saveShuCai" parameterType="List"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into coll_device
+        (device_name,device_type,conn_addr,plant_id,conn_time,conn_protocol,manufacture,supId,device_valid,device_status)
+        values
+        <foreach collection="deviceList" item="item" index="index"
+                 separator=",">
+            (#{item.deviceName},#{item.deviceType},#{item.connAddr},#{item.plantId},#{item.connTime},#{item.connProtocol},#{item.manufacture},#{item.supid},#{item.deviceValid},#{item.deviceStatus})
+        </foreach>
+    </insert>
+
+    <insert id="saveShuCai2"
+            parameterType="com.synpower.bean.CollDevice" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO coll_device
+        (device_name, device_type, conn_addr, plant_id, conn_time, conn_protocol, manufacture, supId, device_valid, device_status)
+        VALUES
+            (#{deviceName}, #{deviceType}, #{connAddr}, #{plantId}, #{connTime}, #{connProtocol}, #{manufacture},
+             #{supid}, #{deviceValid}, #{deviceStatus})
+    </insert>
+    <select id="getCollDevicesForStorage" resultMap="BaseResultMap">
+        SELECT *
+        FROM
+            coll_device
+        WHERE device_valid = 0 AND plant_id IS NOT NULL
+    </select>
+    <select id="listDevicesByPlantId" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND
+              cd.device_valid = 0 AND cd.device_status = 1
+    </select>
+    <select id="listDevicesSort" parameterType="hashmap"
+            resultMap="BaseResultMap">
+        SELECT
+        cd.id,
+        cd.device_name,
+        cd.device_type,
+        cd.device_model_id
+        FROM
+        coll_device cd
+        WHERE cd.plant_id = #{plantId}
+        AND cd.device_valid =0
+        AND
+        cd.device_status = 1
+        And cd.device_type in (1,2,3,5)
+        ORDER BY
+        <choose>
+            <when test="order != null and order != ''">
+                #{order}
+            </when>
+            <otherwise>
+                cd.device_type DESC
+            </otherwise>
+        </choose>
+        <if test="min!=null">
+            limit #{min},#{max}
+        </if>
+    </select>
+    <select id="listDevicesSortWX" parameterType="hashmap"
+            resultMap="BaseResultMap">
+        SELECT
+        cd.id,
+        cd.device_name,
+        cd.device_type,
+        cd.device_model_id
+        FROM
+        coll_device cd
+        WHERE
+        <foreach collection="plants" item="plantId"
+                 open=" cd.plant_id IN (" close=")" separator=",">
+            #{plantId}
+        </foreach>
+        AND cd.device_valid =0
+        AND cd.device_status = 1
+        And cd.device_type in
+        (1,2,3,5)
+        ORDER BY
+        <choose>
+            <when test="order != null and order != ''">
+                #{order}
+            </when>
+            <otherwise>
+                cd.device_type DESC
+            </otherwise>
+        </choose>
+        <if test="min!=null">
+            limit #{min},#{max}
+        </if>
+    </select>
+    <select id="listDevicesWX" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT
+            cd.id,
+            cd.device_name,
+            cd.device_type,
+            cd.device_model_id
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND cd.device_valid = 0
+              AND cd.device_status = 1
+              AND cd.device_type IN
+                  (1, 2, 3, 5, 9, 10, 11, 12, 13)
+    </select>
+    <select id="getTotalPowerForPlant" parameterType="List"
+            resultType="double">
+        SELECT sum(power) from coll_device where device_valid=0
+        <foreach collection="list" item="deviceId" open=" and id IN ("
+                 close=")" separator=",">
+            #{deviceId}
+        </foreach>
+    </select>
+    <select id="getDevices" parameterType="map"
+            resultMap="BaseResultMap">
+        SELECT
+        dv.id,dv.device_name,dv.manufacture,dv.device_sn,dv.device_model_id,dv.conn_time,dv.power,dv.device_type
+        from coll_device dv
+        join plant_info pi on pi.id=dv.plant_id where
+        dv.device_type=1 or
+        dv.device_type=2 and device_valid=#{deviceStatus}
+        <if test=" deviceFactory != null and deviceFactory != ''">
+            and dv.manufacture LIKE CONCAT('%',#{deviceFactory},'%')
+        </if>
+        <if test=" deviceName != null and deviceName != ''">
+            and dv.device_name LIKE CONCAT('%',#{deviceName},'%')
+        </if>
+        <foreach collection="pidsList" item="plantId"
+                 open=" and dv.plant_id IN (" close=")" separator=",">
+            #{plantId}
+        </foreach>
+    </select>
+    <select id="getCollectors" parameterType="map"
+            resultMap="BaseResultMap">
+        SELECT
+        dv.id,dv.device_name,dv.manufacture,dv.device_sn,dv.device_model_id,dv.conn_time,dv.power,dv.device_type
+        from coll_device dv
+        join plant_info pi on pi.id=dv.plant_id where
+        dv.device_type=5 and
+        device_valid=#{deviceStatus}
+        <if test=" deviceFactory != null and deviceFactory != ''">
+            and dv.manufacture LIKE CONCAT('%',#{deviceFactory},'%')
+        </if>
+        <if test=" deviceName != null and deviceName != ''">
+            and dv.device_name LIKE CONCAT('%',#{deviceName},'%')
+        </if>
+        <foreach collection="pidsList" item="plantId"
+                 open=" and dv.plant_id IN (" close=")" separator=",">
+            #{plantId}
+        </foreach>
+    </select>
+
+    <select id="getEachPower" parameterType="List"
+            resultType="double">
+        SELECT sum(power) from coll_device cd where cd.device_valid=0
+        <foreach collection="list" item="plantId"
+                 open=" and cd.plant_id IN (" close=") GROUP BY cd.plant_id"
+                 separator=",">
+            #{plantId}
+        </foreach>
+    </select>
+    <select id="getDevCount" parameterType="String"
+            resultType="integer">
+        SELECT count(*)
+        FROM coll_device cd
+        WHERE cd.device_valid = 0
+              AND
+              cd.device_status = 1 AND cd.plant_id = #{plantId}
+    </select>
+    <select id="getDeviceById" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device
+        WHERE id = #{deviceId}
+    </select>
+    <select id="getPidAndOid" parameterType="integer"
+            resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device
+        WHERE id = #{id}
+    </select>
+    <select id="getDeviceType" parameterType="String"
+            resultType="integer">
+        SELECT cd.device_type
+        FROM coll_device cd
+        WHERE
+            cd.device_valid = 0 AND
+            cd.id = #{deviceId}
+    </select>
+    <select id="getDid" resultType="integer">
+        SELECT cd.id
+        FROM coll_device cd
+        WHERE cd.device_valid = 0 AND
+              cd.device_name = #{0} AND cd.device_type = #{1}
+    </select>
+    <select id="getDeviceIdByPlants" parameterType="Map"
+            resultType="int">
+        select id from coll_device where device_valid=0
+        <foreach collection="plants" item="plantId"
+                 open=" and plant_id IN (" close=")" separator=",">
+            #{plantId}
+        </foreach>
+        <foreach collection="types" item="type"
+                 open=" and device_type IN (" close=") " separator=",">
+            #{type}
+        </foreach>
+    </select>
+
+    <select id="getDeviceTypeByIds" parameterType="list"
+            resultType="int">
+        select device_type from coll_device where device_valid=0
+        <foreach collection="list" item="item" open=" and id IN ("
+                 close=") " separator=",">
+            #{item}
+        </foreach>
+        group by device_type
+    </select>
+    <select id="getDataModel" parameterType="String"
+            resultType="String">
+        SELECT data_mode
+        FROM coll_device
+        WHERE device_valid = 0 AND
+              id = #{deviceId}
+        GROUP BY device_type
+    </select>
+    <insert id="addDevice"
+            parameterType="com.synpower.bean.CollDevice" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+        insert into coll_device
+        (device_name,device_model_id,device_sn,device_type,conn_time,org_id,plant_id,supId,device_valid,device_status,conn_protocol,data_mode,max_num)
+        values
+        (#{deviceName},#{deviceModelId},#{deviceSn},#{deviceType},#{connTime},#{orgId},#{plantId},#{supid},#{deviceValid},#{deviceStatus},#{connProtocol},#{dataMode},#{maxNum})
+    </insert>
+    <insert id="addSubDevice"
+            parameterType="com.synpower.bean.CollDevice" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+        insert into coll_device
+        (device_name,device_model_id,device_sn,device_type,conn_time,org_id,plant_id,supId,device_valid,device_status,data_mode,conn_protocol)
+        values
+        (#{deviceName},#{modelId},#{subDeviceSN},#{typeId},#{connTime},#{orgId},#{plantId},#{collId},#{valid},#{status},#{modeId},2)
+    </insert>
+    <insert id="addSubDevice4Update"
+            parameterType="com.synpower.bean.CollDevice" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+        insert into coll_device
+        (device_name,device_model_id,device_sn,device_type,conn_time,org_id,plant_id,supId,device_valid,device_status,conn_protocol,data_mode)
+        values
+        (#{deviceName},#{deviceModelId},#{deviceSn},#{deviceType},#{connTime},#{orgId},#{plantId},#{supid},#{deviceValid},#{deviceStatus},#{connProtocol},#{dataMode})
+    </insert>
+    <insert id="addSubDevice4UpdateOutPid"
+            parameterType="com.synpower.bean.CollDevice" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+        insert into coll_device
+        (device_name,device_model_id,device_sn,device_type,conn_time,org_id,supId,device_valid,device_status,conn_protocol,data_mode)
+        values
+        (#{deviceName},#{deviceModelId},#{deviceSn},#{deviceType},#{connTime},#{orgId},#{supid},#{deviceValid},#{deviceStatus},#{connProtocol},#{dataMode})
+    </insert>
+    <update id="updateSubDevice" parameterType="map">
+        UPDATE coll_device
+        SET
+            device_name  = #{deviceName}, device_model_id = #{modelId}, device_sn = #{deviceSN},
+            device_type  = #{typeId},
+            conn_time    = #{connTime}, org_id = #{orgId}, plant_id = #{plantId}, supId = #{collId},
+            device_valid = #{valid}, device_status = #{status}, data_mode = #{modeId}, conn_protocol = 2
+        WHERE id = #{deviceId}
+    </update>
+    <update id="updateSomeSubDevice" parameterType="map">
+        UPDATE
+            coll_device
+        SET
+            device_name     = #{deviceName},
+            device_model_id = #{deviceModelId},
+            device_sn       = #{deviceSn},
+            device_type     = #{deviceType}
+        WHERE id = #{deviceId}
+    </update>
+    <update id="updateSubDeviceOutPid" parameterType="map">
+        UPDATE
+            coll_device
+        SET
+            device_name   = #{deviceName}, device_model_id = #{modelId}, device_sn = #{deviceSN},
+            device_type   = #{typeId},
+            conn_time     = #{connTime}, org_id = #{orgId}, plant_id = NULL, supId = #{collId}, device_valid = #{valid},
+            device_status = #{status}, data_mode = #{modeId}, conn_protocol = 2
+        WHERE id = #{deviceId}
+    </update>
+    <update id="updateSubDeviceforUpdate"
+            parameterType="com.synpower.bean.CollDevice">
+        UPDATE coll_device
+        SET
+            device_name  = #{deviceName}, device_model_id = #{deviceModelId}, device_sn = #{deviceSn},
+            device_type  = #{deviceType},
+            conn_time    = #{connTime}, org_id = #{orgId}, plant_id = #{plantId}, supId = #{supid},
+            device_valid = #{deviceValid}, device_status = #{deviceStatus}, data_mode = #{dataMode}, conn_protocol = 2
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateCollectorInfo" parameterType="map">
+        UPDATE
+            coll_device
+        SET
+            device_name  = #{collName}, device_model_id = #{modelId}, device_sn = #{collSN},
+            conn_time    = #{connTime}, org_id = #{orgId}, plant_id = #{plantId}, max_num = #{maxNum}, supId = 0,
+            device_valid = 0
+        WHERE id = #{collId}
+    </update>
+    <update id="updateCollectorInfoOutPid" parameterType="map">
+        UPDATE
+            coll_device
+        SET
+            device_name  = #{collName}, device_model_id = #{modelId}, device_sn = #{collSN},
+            conn_time    = #{connTime}, org_id = #{orgId}, plant_id = #{plantId}, max_num = #{maxNum}, supId = 0,
+            device_valid = 2
+        WHERE id = #{collId}
+    </update>
+
+    <update id="updateInverterInfo" parameterType="map">
+        UPDATE coll_device
+        SET
+            device_name = #{deviceName}, conn_time = #{connTime}, device_model_id = #{modelId}
+        WHERE id = #{deviceId}
+    </update>
+    <select id="getDeviceByCon" parameterType="map"
+            resultMap="BaseResultMap">
+        SELECT
+        dv.id,dv.device_name,dv.device_sn,dv.supId,dv.device_type,dv.device_model_id
+        from coll_device dv
+        join plant_info pi on pi.id=dv.plant_id
+        join sys_org
+        o on pi.org_id=o.id where dv.device_valid=0 and
+        dv.device_status=1
+        <if test=" deviceName != null and deviceName != ''">
+            and dv.device_name LIKE CONCAT('%',#{deviceName},'%')
+        </if>
+        <foreach collection="reList" item="oId" open=" and o.id IN ("
+                 close=")" separator=",">
+            #{oId}
+        </foreach>
+    </select>
+    <select id="getTopDeviceName" parameterType="integer"
+            resultType="String">
+        SELECT dv.device_name
+        FROM coll_device dv
+        WHERE
+            dv.device_valid = 0 AND
+            dv.device_status = 1 AND dv.id = #{id}
+    </select>
+    <select id="getSupDeviceName" parameterType="integer"
+            resultType="String">
+        SELECT dv.device_name
+        FROM coll_device dv
+        WHERE
+            dv.device_valid = 0 AND
+            dv.device_status = 1 AND dv.id = #{supid}
+    </select>
+    <select id="getFatherId" parameterType="integer"
+            resultType="integer">
+        SELECT dv.supId
+        FROM coll_device dv
+        WHERE dv.device_valid = 0
+              AND
+              dv.device_status = 1 AND dv.id = #{deviceId}
+    </select>
+    <select id="getSNExist" parameterType="String"
+            resultType="String">
+        SELECT dv.id
+        FROM coll_device dv
+        WHERE dv.device_sn = #{sn}
+              AND dv.device_valid = 0
+    </select>
+    <select id="getSNExist4Update" parameterType="map"
+            resultType="String">
+        SELECT dv.id
+        FROM coll_device dv
+        WHERE dv.device_sn = #{sn} AND dv.id<![CDATA[ != ]]>#{id}
+    </select>
+    <update id="delSubDevice" parameterType="integer">
+        UPDATE coll_device
+        SET
+            device_valid = 1, device_status = 0
+        WHERE id = #{deviceId}
+    </update>
+
+    <update id="deleteDevices" parameterType="map">
+        update coll_device dv set dv.device_valid=1 where dv.id IN
+        <foreach collection="reList" item="oId" open=" (" close=")"
+                 separator=",">
+            #{oId}
+        </foreach>
+    </update>
+    <update id="updateStatusCa" parameterType="hashmap">
+        UPDATE coll_device d
+        SET d.device_status = #{status}
+        WHERE d.id =
+              #{deviceId}
+    </update>
+    <update id="updateDeviceValid" parameterType="hashmap">
+        UPDATE coll_device
+               d
+        SET d.device_valid = #{valid}
+        WHERE d.id = #{deviceId}
+    </update>
+    <update id="updateCollectInfo" parameterType="hashmap">
+        UPDATE coll_device
+               d
+        SET d.device_valid = #{valid}, plant_id = #{plantId}
+        WHERE
+            d.id =
+            #{deviceId}
+    </update>
+    <update id="updateCollectValidAndName" parameterType="hashmap">
+        UPDATE
+            coll_device d
+        SET d.device_valid =
+        #{valid}, plant_id = #{plantId}, device_name = #{collName}
+        WHERE d.id =
+              #{deviceId}
+    </update>
+    <update id="updateCollectValid" parameterType="hashmap">
+        UPDATE coll_device
+               d
+        SET d.plant_id = #{plantId}, device_name = #{collName}
+        WHERE
+            d.id =
+            #{deviceId}
+    </update>
+    <update id="updateCollectorDeviceValid" parameterType="hashmap">
+        UPDATE
+            coll_device d
+        SET d.device_valid = #{valid}, plant_id = #{plantId}
+        WHERE
+            d.supId = #{collectorId}
+    </update>
+    <update id="updateCollectorDeviceInfo" parameterType="hashmap">
+        UPDATE
+            coll_device d
+        SET
+            d.device_valid    = #{valid},
+            d.plant_id        = #{plantId},
+            d.device_name     = #{devName},
+            d.device_model_id = #{modelId},
+            d.device_type     =
+            #{typeId}
+        WHERE
+            d.id = #{deviceId}
+    </update>
+    <update id="updateDeviceInfo" parameterType="hashmap">
+        UPDATE
+            coll_device d
+        SET
+            d.plant_id        = #{plantId},
+            d.device_name     = #{devName},
+            d.device_model_id = #{modelId},
+            d.device_type     = #{typeId}
+        WHERE
+            d.id =
+            #{deviceId}
+    </update>
+    <select id="getPlantAndDevice" parameterType="int"
+            resultMap="plantAndDeviceName">
+        SELECT
+            device_name,
+            plant_name
+        FROM coll_device dv
+            JOIN
+            plant_info pt ON dv.plant_id = pt.id
+        WHERE dv.id = #{deviceId}
+    </select>
+    <select id="getPlantIdofOrg" parameterType="String"
+            resultMap="plantIdMap">
+        SELECT DISTINCT
+            id,
+            plant_name
+        FROM plant_info
+        WHERE
+            org_id = #{orgId}
+    </select>
+    <resultMap id="plantIdMap" type="java.util.HashMap">
+        <result column="plant_id" property="plantId" jdbcType="INTEGER"/>
+        <result column="plant_name" property="plantName"
+                jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getCollectorsByPid" parameterType="Map"
+            resultMap="BaseResultMap">
+        SELECT * from coll_device where
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid=0 and plant_id=#{id}
+        <foreach collection="types" item="type"
+                 open=" and device_type IN (" close=")" separator=",">
+            #{type}
+        </foreach>
+        LIMIT #{offset},#{length}
+    </select>
+    <select id="getOrgDevice" parameterType="Map"
+            resultMap="BaseResultMap">
+        SELECT * from(
+        SELECT * from coll_device where
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid=2 and device_type=5 AND org_id IN
+        <foreach collection="reList" item="oId" open=" (" close=")"
+                 separator=",">
+            #{oId}
+        </foreach>
+        UNION
+        SELECT * from coll_device WHERE
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid=0 and device_type=5 AND org_id IN
+        <foreach collection="reList" item="oId" open=" (" close=")"
+                 separator=",">
+            #{oId}
+        </foreach>
+        )temp ORDER BY id LIMIT #{offset},#{length}
+    </select>
+    <select id="getPlantDevice" parameterType="Map"
+            resultMap="BaseResultMap">
+        SELECT device_model_id
+        ,plant_id,org_id,conn_time,device_type,id,device_name,device_sn,device_status
+        from coll_device where
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid<![CDATA[!= ]]>1
+        and plant_id=#{pid}
+        <foreach collection="types" item="type"
+                 open=" and device_type IN (" close=")" separator=",">
+            #{type}
+        </foreach>
+        LIMIT #{offset},#{length}
+    </select>
+    <select id="getTotalCountPlant" parameterType="Map"
+            resultType="integer">
+        SELECT IFNULL(count(*),0) from coll_device where
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid<![CDATA[!= ]]>1
+        and plant_id=#{pid}
+        <foreach collection="types" item="type"
+                 open=" and device_type IN (" close=")" separator=",">
+            #{type}
+        </foreach>
+    </select>
+
+    <select id="getTotalCountPage" parameterType="Map"
+            resultType="integer">
+        SELECT IFNULL(count(*),0) from(
+        SELECT * from coll_device where
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid=2 and device_type=5 AND org_id IN
+        <foreach collection="reList" item="oId" open=" (" close=")"
+                 separator=",">
+            #{oId}
+        </foreach>
+        UNION
+        SELECT * from coll_device WHERE
+        <if test="deviceName != null and deviceName != ''">
+            device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="status != null and status != ''">
+            device_status=#{status} and
+        </if>
+        device_valid=0 and device_type=5 AND org_id IN
+        <foreach collection="reList" item="oId" open=" (" close=")"
+                 separator=",">
+            #{oId}
+        </foreach>
+        )temp
+    </select>
+    <select id="getCollectInveter" parameterType="String"
+            resultType="int">
+        SELECT COUNT(*) num
+        FROM coll_device
+        WHERE device_valid != 1
+              AND device_type
+                  IN (1, 2) AND supId = (SELECT id
+                                         FROM coll_device
+                                         WHERE
+                                             device_sn = #{sn})
+    </select>
+    <select id="getAllDeviceType" resultMap="BaseResultMap">
+        SELECT *
+        FROM
+            coll_device
+        WHERE device_valid != 1 AND device_type IN (1, 2)
+        GROUP BY device_type
+    </select>
+    <select id="getCollectBySn" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device
+        WHERE device_sn = #{sn} AND
+              device_valid != '1' AND
+              device_type = 5
+    </select>
+    <select id="getmodelListById" parameterType="List"
+            resultType="integer">
+        select DISTINCT data_mode from coll_device where
+        <foreach collection="list" item="item" open="  id IN ("
+                 close=") " separator=",">
+            #{item}
+        </foreach>
+        and device_valid=0
+    </select>
+    <update id="delDevices" parameterType="List">
+        update coll_device set device_valid=1 where
+        <foreach collection="list" item="item" open="  id IN ("
+                 close=") " separator=",">
+            #{item}
+        </foreach>
+    </update>
+    <update id="delCollectorDevice" parameterType="int">
+        UPDATE coll_device
+        SET device_valid = 1
+        WHERE supId = #{supId}
+    </update>
+
+    <select id="getAllDevice" resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device
+        WHERE device_valid<![CDATA[ != ]]>1
+    </select>
+
+    <select id="getPlantCollector" parameterType="int"
+            resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device
+        WHERE device_type = 5 AND plant_id
+                                  = #{plantId} AND
+              device_valid = 0
+    </select>
+    <select id="getAllDeviceNotColl" parameterType="Map"
+            resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device
+        WHERE device_valid = 0 AND device_type<![CDATA[ <> ]]>5
+        LIMIT #{offset}, #{length}
+    </select>
+    <update id="updateCollectorStatus" parameterType="Map">
+        UPDATE
+            coll_device
+        SET device_status = #{statusNum}
+        WHERE id = #{deviceId}
+    </update>
+    <update id="updateCollectorDeviceStatus" parameterType="Map">
+        update coll_device set device_status=#{statusNum} where id IN
+        <foreach collection="deviceId" item="oId" open=" (" close=")"
+                 separator=",">
+            #{oId}
+        </foreach>
+    </update>
+    <select id="getM4Device" parameterType="Map"
+            resultMap="com.synpower.dao.DeviceDetailStringInverterMapper.BaseResultMap">
+        <choose>
+            <when test="deviceType==1">
+                select * from device_detail_central_inverter where
+                id=#{modeId}
+            </when>
+            <when test="deviceType==2">
+                select * from device_detail_string_inverter where
+                id=#{modeId}
+            </when>
+            <when test="deviceType==3">
+                select * from device_detail_electric_meter where
+                id=#{modeId}
+            </when>
+            <when test="deviceType==5">
+                select * from device_detail_data_collector where
+                id=#{modeId}
+            </when>
+            <when test="deviceType==11">
+                select * from device_detail_combiner_box where
+                id=#{modeId}
+            </when>
+            <otherwise>
+                select null from dual
+            </otherwise>
+        </choose>
+    </select>
+    <select id="getM4Device4Choice" parameterType="Map"
+            resultMap="com.synpower.dao.DeviceDetailStringInverterMapper.BaseResultMap">
+        <choose>
+            <when test="deviceType==1">
+                select id, model_identity from
+                device_detail_central_inverter where valid
+                = 1
+            </when>
+            <when test="deviceType==2">
+                select id,model_identity from
+                device_detail_string_inverter where valid =
+                1
+            </when>
+            <when test="deviceType==3">
+                select id,model_identity from
+                device_detail_electric_meter where valid = 1
+            </when>
+            <when test="deviceType==5">
+                select id,model_identity from
+                device_detail_data_collector where valid = 1
+            </when>
+            <when test="deviceType==11">
+                select id,model_identity from
+                device_detail_combiner_box where valid = 1
+            </when>
+            <when test="deviceType==13">
+                select id,model_identity from
+                device_detail_env_monitor where valid = 1
+            </when>
+            <otherwise>
+                select null from dual
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="getCameraInfo" parameterType="hashmap"
+            resultMap="camerabpInfo">
+        SELECT
+            ci.id,
+            ci.camera_name,
+            ci.plant_id,
+            ci.org_id,
+            ci.camera_sn,
+            ci.camera_status,
+            cm.model_name,
+            cm.manufacture,
+            cm.camera_resolution,
+            cm.support_infra,
+            cm.guard_level,
+            cm.network,
+            cm.max_resolution,
+            cm.in_storage,
+            cm.camera_photo
+        FROM device_detail_camera ci
+            JOIN coll_camera_model cm ON cm.id =
+                                         ci.camera_model_id
+        WHERE ci.plant_id = #{plantId} AND ci.camera_valid = 1
+              AND cm.valid = 1
+    </select>
+
+    <resultMap type="Map" id="camerabpInfo">
+        <result column="id" jdbcType="VARCHAR" property="cameraId"/>
+        <result column="device_name" jdbcType="VARCHAR"
+                property="cameraName"/>
+        <result column="plant_id" jdbcType="INTEGER" property="plantId"/>
+        <result column="org_id" jdbcType="INTEGER" property="orgId"/>
+        <result column="device_sn" jdbcType="VARCHAR"
+                property="cameraSN"/>
+        <result column="device_status" jdbcType="CHAR"
+                property="cameraStatus"/>
+        <result column="support_infra" jdbcType="CHAR"
+                property="supportInfra"/>
+        <result column="model_identity" jdbcType="VARCHAR"
+                property="modelName"/>
+        <result column="manufacture" jdbcType="VARCHAR"
+                property="manufacture"/>
+        <result column="camera_resolution" jdbcType="VARCHAR"
+                property="cameraResolution"/>
+        <result column="guard_level" jdbcType="VARCHAR"
+                property="guardLevel"/>
+        <result column="network" jdbcType="VARCHAR" property="network"/>
+        <result column="max_resolution" jdbcType="VARCHAR"
+                property="maxResolution"/>
+        <result column="in_storage" jdbcType="VARCHAR"
+                property="inStorage"/>
+        <result column="camera_photo" jdbcType="VARCHAR"
+                property="cameraPhoto"/>
+    </resultMap>
+    <select id="getSerialList" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT *
+        FROM coll_device dv
+        WHERE dv.plant_id = #{pId} AND
+              dv.device_type = 8
+              AND dv.device_valid = 0
+    </select>
+    <insert id="addCamera" parameterType="hashmap">
+        INSERT INTO coll_device
+        (device_name, device_valid, plant_id, org_id, device_sn, device_status, device_model_id, device_type, conn_time, conn_protocol, data_mode, supId)
+        VALUES
+            (#{cameraName}, 0, #{plantId}, #{orgId}, #{cameraSN}, 1, #{modelId}, 8, #{connTime}, 1, 0, 0)
+    </insert>
+    <insert id="addCamera4Org" parameterType="hashmap">
+        INSERT INTO coll_device
+        (device_name, device_valid, org_id, device_sn, device_status, device_model_id, device_type, conn_time, conn_protocol, data_mode, supId)
+        VALUES
+            (#{cameraName}, 0, #{orgId}, #{cameraSN}, 1, #{modelId}, 8, #{connTime}, 1, 1, 0)
+    </insert>
+    <update id="delCamera" parameterType="map">
+        update coll_device set device_valid=1 where id in
+        <foreach collection="idsList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <update id="updateCmaera" parameterType="map">
+        UPDATE coll_device
+        SET
+            device_name = #{cameraName}, device_model_id = #{cameraModelId}, device_sn = #{sn},
+            org_id      = #{orgId}, plant_id = #{plantId}
+        WHERE id = #{id}
+    </update>
+    <update id="updateCameraStatus"
+            parameterType="com.synpower.bean.CollDevice">
+        UPDATE coll_device
+        SET device_status = #{deviceStatus}
+        WHERE
+            device_sn = #{deviceSn} AND device_type = 8
+    </update>
+    <select id="getCameraListByPid" parameterType="map"
+            resultMap="camerabpInfo">
+        select
+        ci.id,ci.device_name,ci.device_sn,ci.plant_id,ci.org_id,ci.device_status,
+        cm.model_identity,cm.manufacture,cm.camera_resolution,cm.support_infra,cm.guard_level,cm.network,cm.max_resolution,cm.in_storage,cm.camera_photo
+        from coll_device ci JOIN device_detail_camera cm ON cm.id =
+        ci.device_model_id
+        where
+        <if test="deviceName != null and deviceName != ''">
+            ci.device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="manufacture != null and manufacture != ''">
+            cm.manufacture LIKE CONCAT('%',#{manufacture},'%') and
+        </if>
+        ci.device_type=8 and device_valid=0 and plant_id=#{plantId} limit
+        #{offset},#{length}
+    </select>
+    <select id="getTotalCameraByPid" parameterType="map"
+            resultType="integer">
+        select IFNULL(count(*),0)
+        from coll_device ci JOIN device_detail_camera
+        cm ON cm.id =
+        ci.device_model_id
+        where
+        <if test="deviceName != null and deviceName != ''">
+            ci.device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="manufacture != null and manufacture != ''">
+            cm.manufacture LIKE CONCAT('%',#{manufacture},'%') and
+        </if>
+        ci.device_type=8 and device_valid=0 and plant_id=#{plantId}
+    </select>
+    <select id="getCameraListByOid" parameterType="map"
+            resultMap="camerabpInfo">
+        select
+        ci.id,ci.device_name,ci.device_sn,ci.plant_id,ci.org_id,ci.device_status,
+        cm.model_identity,cm.manufacture,cm.camera_resolution,cm.support_infra,cm.guard_level,cm.network,cm.max_resolution,cm.in_storage,cm.camera_photo
+        from coll_device ci JOIN device_detail_camera cm ON cm.id =
+        ci.device_model_id
+        where
+        <if test="deviceName != null and deviceName != ''">
+            ci.device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="manufacture != null and manufacture != ''">
+            cm.manufacture LIKE CONCAT('%',#{manufacture},'%') and
+        </if>
+        ci.device_type=8 and device_valid=0 and org_id IN
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        limit #{offset},#{length}
+    </select>
+    <select id="getTotalCameraByOid" parameterType="map"
+            resultType="integer">
+        select IFNULL(count(*),0)
+        from coll_device ci JOIN device_detail_camera
+        cm ON cm.id =
+        ci.device_model_id
+        where
+        <if test="deviceName != null and deviceName != ''">
+            ci.device_name LIKE CONCAT('%',#{deviceName},'%') and
+        </if>
+        <if test="manufacture != null and manufacture != ''">
+            cm.manufacture LIKE CONCAT('%',#{manufacture},'%') and
+        </if>
+        ci.device_type=8 and device_valid=0 and org_id IN
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getCameraSerial" parameterType="String"
+            resultType="String">
+        SELECT dv.device_sn
+        FROM coll_device dv
+        WHERE dv.id = #{id}
+              AND
+              dv.device_valid = 0
+    </select>
+    <select id="getPlantIdofOrg4Camera" parameterType="String"
+            resultMap="plantIdMap2">
+        select distinct id,plant_name from plant_info where org_id IN
+        <foreach collection="reList" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <resultMap id="plantIdMap2" type="java.util.HashMap">
+        <result column="plant_id" property="plantId" jdbcType="INTEGER"/>
+        <result column="plant_name" property="plantName"
+                jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="equipmentDynaSql">
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        <if test="manufacturer != null and manufacturer != ''">
+            AND manufacturer like CONCAT(#{manufacture},'%')
+        </if>
+        <if test="model != null and model != ''">
+            AND device_name LIKE CONCAT('%',#{model},'%')
+        </if>
+    </sql>
+    <select id="listCamera" parameterType="hashmap"
+            resultMap="BaseResultMap">
+        select
+        *
+        from
+        coll_device
+        where device_valid = 0
+        <include refid="equipmentDynaSql"></include>
+        limit #{min},#{max}
+    </select>
+    <select id="listCollectorByPlantId" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT
+            cd.id,
+            cd.device_name,
+            cd.device_type,
+            cd.device_model_id
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND cd.device_valid = 0
+              AND cd.device_status = 1
+              AND cd.device_type = 5
+    </select>
+    <select id="listInverterByPlantId" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT
+            cd.id,
+            cd.device_name,
+            cd.device_type,
+            cd.device_model_id
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND cd.device_valid = 0
+              AND cd.device_status = 1
+              AND cd.device_type = 2
+    </select>
+    <select id="listCenInverterByPlantId" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT
+            cd.id,
+            cd.device_name,
+            cd.device_type,
+            cd.device_model_id
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND cd.device_valid = 0
+              AND cd.device_status = 1
+              AND cd.device_type = 1
+    </select>
+    <select id="listPcsByPlantId" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT
+            cd.id,
+            cd.device_name,
+            cd.device_type,
+            cd.device_model_id
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND cd.device_valid = 0
+              AND cd.device_status = 1
+              AND cd.device_type = 9
+    </select>
+    <select id="listBmsByPlantId" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT
+            cd.id,
+            cd.device_name,
+            cd.device_type,
+            cd.device_model_id
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND cd.device_valid = 0
+              AND cd.device_status = 1
+              AND cd.device_type = 10
+    </select>
+    <select id="listMeterByPlantId" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT
+            cd.id,
+            cd.device_name,
+            cd.device_type,
+            cd.device_model_id
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND cd.device_valid = 0
+              AND cd.device_status = 1
+              AND cd.device_type = 3
+    </select>
+    <select id="listConfBoxByPlantId" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT
+            cd.id,
+            cd.device_name,
+            cd.device_type,
+            cd.device_model_id
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND cd.device_valid = 0
+              AND cd.device_status = 1
+              AND cd.device_type = 11
+    </select>
+    <select id="listBoxChangeByPlantId" parameterType="String"
+            resultMap="BaseResultMap">
+        SELECT
+            cd.id,
+            cd.device_name,
+            cd.device_type,
+            cd.device_model_id
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND cd.device_valid = 0
+              AND cd.device_status = 1
+              AND cd.device_type = 12
+    </select>
+     <select id="listEnvMonitorByPlantId" parameterType="String"
+            resultType="Map">
+        SELECT
+            cd.id,
+            cd.device_name name,
+            cd.device_type deviceType
+        FROM coll_device cd
+        WHERE cd.plant_id = #{plantId}
+              AND cd.device_valid = 0
+              AND cd.device_status = 1
+              AND cd.device_type = 13
+    </select>
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.synpower.dao.ElecPowerFactorMapper" >
+  <resultMap id="BaseResultMap" type="com.synpower.bean.ElecPowerFactor" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="factor_name" property="factorName" jdbcType="VARCHAR" />
+    <result column="plant_id" property="plantId" jdbcType="INTEGER" />
+    <result column="valid" property="valid" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, factor_name, plant_id, valid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from elec_power_factor
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from elec_power_factor
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpower.bean.ElecPowerFactor" >
+    insert into elec_power_factor (id, factor_name, plant_id, 
+      valid)
+    values (#{id,jdbcType=INTEGER}, #{factorName,jdbcType=VARCHAR}, #{plantId,jdbcType=INTEGER}, 
+      #{valid,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpower.bean.ElecPowerFactor" >
+    insert into elec_power_factor
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="factorName != null" >
+        factor_name,
+      </if>
+      <if test="plantId != null" >
+        plant_id,
+      </if>
+      <if test="valid != null" >
+        valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="factorName != null" >
+        #{factorName,jdbcType=VARCHAR},
+      </if>
+      <if test="plantId != null" >
+        #{plantId,jdbcType=INTEGER},
+      </if>
+      <if test="valid != null" >
+        #{valid,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpower.bean.ElecPowerFactor" >
+    update elec_power_factor
+    <set >
+      <if test="factorName != null" >
+        factor_name = #{factorName,jdbcType=VARCHAR},
+      </if>
+      <if test="plantId != null" >
+        plant_id = #{plantId,jdbcType=INTEGER},
+      </if>
+      <if test="valid != null" >
+        valid = #{valid,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpower.bean.ElecPowerFactor" >
+    update elec_power_factor
+    set factor_name = #{factorName,jdbcType=VARCHAR},
+      plant_id = #{plantId,jdbcType=INTEGER},
+      valid = #{valid,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.DataYxMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.DataYx">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="yx_id" jdbcType="INTEGER" property="yxId" />
+    <result column="change_time" jdbcType="BIGINT" property="changeTime" />
+    <result column="status_value" jdbcType="VARCHAR" property="statusValue" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="operation_time" jdbcType="BIGINT" property="operationTime" />
+    <result column="operator" jdbcType="INTEGER" property="operator" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, yx_id, change_time, status_value, status, operation_time, operator, valid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_yx
+    where id = #{id,jdbcType=INTEGER} and valid != '1'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from data_yx
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.DataYx">
+    insert into data_yx (id, device_id, yx_id, 
+      change_time, status_value, status, operation_time, 
+      operator, valid)
+    values (#{id,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER}, #{yxId,jdbcType=INTEGER}, 
+      #{changeTime,jdbcType=BIGINT}, #{statusValue,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, #{operationTime,jdbcType=BIGINT}, 
+      #{operator,jdbcType=INTEGER}, #{valid,jdbcType=CHAR})
+  </insert>
+  
+  <!-- 批量插入 -->
+  <insert id="insertBatch" useGeneratedKeys="true" parameterType="java.util.List">  
+    insert into data_yx (id, device_id, yx_id, 
+      change_time, status_value, status, operation_time, 
+      operator, valid)
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id,jdbcType=INTEGER}, #{item.deviceId,jdbcType=INTEGER}, #{item.yxId,jdbcType=INTEGER}, 
+      #{item.changeTime,jdbcType=BIGINT}, #{item.statusValue,jdbcType=VARCHAR}, #{item.status,jdbcType=CHAR}, #{item.operationTime,jdbcType=BIGINT}, 
+      #{item.operator,jdbcType=INTEGER}, #{item.valid,jdbcType=CHAR}) 
+    </foreach>  
+  </insert>  
+  
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataYx">
+    insert into data_yx
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="yxId != null">
+        yx_id,
+      </if>
+      <if test="changeTime != null">
+        change_time,
+      </if>
+      <if test="statusValue != null">
+        status_value,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="operationTime != null">
+        operation_time,
+      </if>
+      <if test="operator != null">
+        operator,
+      </if>
+      <if test="valid != null">
+        valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="yxId != null">
+        #{yxId,jdbcType=INTEGER},
+      </if>
+      <if test="changeTime != null">
+        #{changeTime,jdbcType=BIGINT},
+      </if>
+      <if test="statusValue != null">
+        #{statusValue,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="operationTime != null">
+        #{operationTime,jdbcType=BIGINT},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=INTEGER},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataYx">
+    update data_yx
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="yxId != null">
+        yx_id = #{yxId,jdbcType=INTEGER},
+      </if>
+      <if test="changeTime != null">
+        change_time = #{changeTime,jdbcType=BIGINT},
+      </if>
+      <if test="statusValue != null">
+        status_value = #{statusValue,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="operationTime != null">
+        operation_time = #{operationTime,jdbcType=BIGINT},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=INTEGER},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.DataYx">
+    update data_yx
+    set device_id = #{deviceId,jdbcType=INTEGER},
+      yx_id = #{yxId,jdbcType=INTEGER},
+      change_time = #{changeTime,jdbcType=BIGINT},
+      status_value = #{statusValue,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR},
+      operation_time = #{operationTime,jdbcType=BIGINT},
+      operator = #{operator,jdbcType=INTEGER},
+      valid = #{valid,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

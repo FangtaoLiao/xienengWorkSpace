@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.CollYxExpandMapper">
+	<resultMap id="BaseResultMap"
+		type="com.synpower.bean.CollYxExpand">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="signal_guid" jdbcType="VARCHAR"
+			property="signalGuid" />
+		<result column="signal_name" jdbcType="VARCHAR"
+			property="signalName" />
+		<result column="data_model" jdbcType="INTEGER"
+			property="dataModel" />
+		<result column="yc_alarm" jdbcType="INTEGER" property="ycAlarm" />
+		<result column="alarm_bit" jdbcType="INTEGER"
+			property="alarmBit" />
+		<result column="alarm_bit_length" jdbcType="INTEGER"
+			property="alarmBitLength" />
+		<result column="alarm_type" jdbcType="CHAR"
+			property="alarmType" />
+		<result column="status_name" jdbcType="VARCHAR"
+			property="statusName" />
+		<result column="status_value" jdbcType="INTEGER"
+			property="statusValue" />
+		<result column="alarm_level" jdbcType="VARCHAR"
+			property="alarmLevel" />
+		<result column="suggest" jdbcType="VARCHAR" property="suggest" />
+		<result column="alarm_reason" jdbcType="VARCHAR"
+			property="alarmReason" />
+		<result column="fault_point" jdbcType="CHAR"
+			property="faultPoint" />
+		<result column="valid" jdbcType="CHAR" property="valid" />
+	</resultMap>
+	<resultMap type="Map" id="alarmResult">
+		<result column="union_id" jdbcType="VARCHAR" property="unionId" />
+		<result column="id_copy" jdbcType="VARCHAR" property="id" />
+		<result column="change_time" jdbcType="BIGINT"
+			property="changeTime" />
+		<result column="status" jdbcType="VARCHAR" property="status" />
+		<result column="alarm_level" jdbcType="VARCHAR"
+			property="alarmLevel" />
+		<result column="signal_name" jdbcType="VARCHAR"
+			property="signalName" />
+		<result column="signal_guid" jdbcType="VARCHAR"
+			property="signalGuid" />
+		<result column="device_name" jdbcType="VARCHAR"
+			property="deviceName" />
+		<result column="deviceId" jdbcType="VARCHAR"
+			property="deviceId" />
+		<result column="device_type" jdbcType="VARCHAR"
+			property="deviceType" />
+	</resultMap>
+	<resultMap type="Map" id="alarmResultWX">
+		<result column="id_copy" jdbcType="VARCHAR" property="id" />
+		<result column="change_time" jdbcType="BIGINT"
+			property="changeTime" />
+		<result column="status" jdbcType="VARCHAR" property="status" />
+		<result column="alarm_level" jdbcType="VARCHAR"
+			property="alarmLevel" />
+		<result column="signal_name" jdbcType="VARCHAR"
+			property="signalName" />
+		<result column="signal_guid" jdbcType="VARCHAR"
+			property="signalGuid" />
+		<result column="plant_name" jdbcType="VARCHAR"
+			property="plantName" />
+		<result column="deviceId" jdbcType="VARCHAR"
+			property="deviceId" />
+		<result column="device_type" jdbcType="VARCHAR"
+			property="deviceType" />
+	</resultMap>
+	<resultMap type="Map" id="alarmListWX">
+		<result column="id_copy" jdbcType="VARCHAR" property="id" />
+		<result column="change_time" jdbcType="VARCHAR"
+			property="changeTime" />
+		<result column="status" jdbcType="VARCHAR" property="status" />
+		<result column="alarm_level" jdbcType="VARCHAR"
+			property="alarmLevel" />
+		<result column="signal_name" jdbcType="VARCHAR"
+			property="signalName" />
+		<result column="signal_guid" jdbcType="VARCHAR"
+			property="signalGuid" />
+		<result column="plant_name" jdbcType="VARCHAR"
+			property="plantName" />
+		<result column="device_name" jdbcType="VARCHAR"
+			property="deviceName" />
+		<result column="deviceId" jdbcType="VARCHAR"
+			property="deviceId" />
+		<result column="plant_id" jdbcType="VARCHAR" property="plantId" />
+		<result column="suggest" jdbcType="VARCHAR" property="suggest" />
+		<result column="device_type" jdbcType="VARCHAR"
+			property="deviceType" />
+	</resultMap>
+	<resultMap type="Map" id="alarmCountWX">
+		<result column="alarm_level" jdbcType="VARCHAR"
+			property="alarmLevel" />
+		<result column="count" jdbcType="VARCHAR" property="count" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, signal_guid, signal_name, data_model, yc_alarm,
+		alarm_bit,
+		alarm_bit_length,
+		alarm_type, status_name, status_value,
+		alarm_level, suggest, alarm_reason,
+		fault_point,
+		valid
+	</sql>
+	<select id="getYxFaultPoint" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * from coll_yx_expand yx where yx.signal_guid
+		in(SELECT signal_guid
+		from coll_model_detail_mqtt mqtt where
+		mqtt.signal_type='YX'
+		and mqtt.data_mode=#{dataMode} and valid=0) and
+		yx.fault_point=1
+	</select>
+	<select id="getYxExceptionPoint" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * from coll_yx_expand yx where yx.signal_guid
+		in(SELECT signal_guid
+		from coll_model_detail_mqtt mqtt where
+		mqtt.signal_type='YX'
+		and mqtt.data_mode=#{dataMode} and valid=0) and
+		yx.fault_point=2
+	</select>
+	<select id="getYxStandbyPoint" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * from coll_yx_expand yx where yx.signal_guid
+		in(SELECT signal_guid
+		from coll_model_detail_mqtt mqtt where
+		mqtt.signal_type='YX'
+		and mqtt.data_mode=#{dataMode} and valid=0) and
+		yx.fault_point=3
+	</select>
+	<insert id="saveYXExcel" parameterType="java.util.List">
+		insert into coll_yx_expand
+		(signal_guid,signal_name,yc_alarm,alarm_bit,alarm_type,status_name,status_value,alarm_level,suggest,valid,alarm_reason)
+		values
+		<foreach collection="yxs" item="item" index="index"
+			separator=",">
+			(#{item.signalGuid},#{item.signalName},#{item.ycAlarm},#{item.alarmBit},#{item.alarmType},#{item.statusName},#{item.statusValue},#{item.alarmLevel},#{item.suggest},0,#{item.alarmReason})
+		</foreach>
+	</insert>
+	<select id="getAlarmList" parameterType="Map"
+		resultMap="alarmResult">
+		SELECT CONCAT(device_id,'*',signal_guid,'*',yx.status_value,'*',data.id)
+		id_copy
+		,data.change_time,
+		data.status,yx.alarm_level,yx.signal_name,signal_guid
+		,device.device_name,device.id deviceId,device_type
+		from
+		coll_yx_expand
+		yx
+		join
+		data_yx data on yx.id=data.yx_id
+		join coll_device device on
+		data.device_id=device.id
+		where data.valid=0
+		<if test=" attentionAlarmList != null ">
+			<foreach collection="attentionAlarmList" item="yxDataId"
+			open=" and data.id in (" close=")" separator=",">
+				#{yxDataId}
+			</foreach>
+		</if>
+		<if test=" level != null and level != ''">
+			and alarm_level=#{level}
+		</if>
+		<if test=" status != null and status != ''">
+			and data.status=#{status}
+		</if>
+		<if test=" startTime != null and startTime != ''">
+			and change_time>=#{startTime}
+		</if>
+		<if test=" list != null">
+			<foreach collection="list" item="deviceId"
+				open=" and device_id in (" close=")" separator=",">
+				#{deviceId}
+			</foreach>
+		</if>
+		order by change_time desc
+		limit #{min},#{max}
+	</select>
+	<select id="getAlarmListCount" parameterType="Map"
+		resultType="int">
+		SELECT count(*)
+		from
+		coll_yx_expand yx
+		join
+		data_yx data on
+		yx.id=data.yx_id
+		join coll_device device on data.device_id=device.id
+		where data.valid=0
+		<if test=" level != null and level != ''">
+			and alarm_level=#{level}
+		</if>
+		<if test=" status != null and status != ''">
+			and data.status=#{status}
+		</if>
+		<if test=" startTime != null and startTime != ''">
+			and change_time>=#{startTime}
+		</if>
+		<if test=" list != null">
+			<foreach collection="list" item="deviceId"
+				open=" and device_id in (" close=")" separator=",">
+				#{deviceId}
+			</foreach>
+		</if>
+	</select>
+	<!-- <select id="getAttentionAlarmCount" parameterType="Map"
+		resultType="int">
+		SELECT count(*) from (
+		SELECT MAX(id)
+		tid,max(signal_guid)signal_guid,signal_guid_copy
+		from
+		(SELECT
+		data_yx.id,CONCAT(device_id,'*',signal_guid)signal_guid_copy,change_time
+		,signal_guid ,data_yx .valid,status,alarm_level from data_yx
+		join
+		coll_yx_expand yx on yx.id=data_yx.yx_id where yx.valid=0
+		)data
+		where
+		data.valid=0
+		<foreach collection="list" item="signalGuid"
+			open=" and signal_guid_copy  in (" close=")" separator=",">
+			#{signalGuid}
+		</foreach>
+		<if test=" level != null and level !='' ">
+			and alarm_level=#{level}
+		</if>
+		GROUP BY signal_guid_copy
+		)temp
+		join (SELECT data_yx.id
+		tid,CONCAT(device_id,'*',signal_guid)signal_guid_copy,device_id,status,
+		change_time,alarm_level,signal_name,data_yx.valid ,data_yx.id
+		,signal_guid
+		from data_yx
+		join coll_yx_expand yx on yx.id=data_yx.yx_id
+		<if test=" status != null and status != ''">
+			where status=#{status}
+		</if>
+		)a on a.signal_guid=temp.signal_guid and temp.tid=a.tid
+	</select> -->
+	<!-- <select id="getAttentionAlarm" parameterType="Map"
+		resultMap="alarmResult">
+		SELECT device.device_name,temp.signal_guid_copy
+		id,a.change_time,status,device.device_name,
+		case alarm_level
+		WHEN '重要'
+		THEN '0'
+		WHEN '一般' THEN '1'
+		WHEN '提示' THEN '2'
+		end as alarm_level
+		,signal_name,a.signal_guid,device.id deviceId,device_type from (
+		SELECT 
+			MAX(id) tid,max(signal_guid)signal_guid,signal_guid_copy from(
+				SELECT
+				data_yx.id,CONCAT(device_id,'*',signal_guid)signal_guid_copy,change_time
+				,signal_guid ,data_yx .valid,status,alarm_level from data_yx
+				join coll_yx_expand yx 
+				on yx.id=data_yx.yx_id
+		) data
+		
+		where data.valid=0
+		<foreach collection="list" item="signalGuid"
+			open=" and signal_guid_copy   in (" close=")" separator=",">
+			#{signalGuid}
+		</foreach>
+		<if test=" level != null and level !='' ">
+			and alarm_level=#{level}
+		</if>
+		GROUP BY signal_guid_copy
+		)temp
+
+		join (SELECT data_yx.id
+		tid,CONCAT(device_id,'*',signal_guid)signal_guid_copy,device_id,status,
+		change_time,alarm_level,signal_name,data_yx.valid ,data_yx.id
+		,signal_guid
+		from data_yx
+		join coll_yx_expand yx on yx.id=data_yx.yx_id
+		<if test=" status != null and status != ''">
+			where status=#{status}
+		</if>
+		)a on a.signal_guid=temp.signal_guid and temp.tid=a.tid
+		join
+		coll_device device on device_id=device.id
+		order by change_time desc
+		
+	</select> -->
+
+<!-- 	<select id="getAttentionAlarmWX" parameterType="Map"
+		resultMap="alarmResultWX">
+		SELECT temp.signal_guid_copy
+		id_copy,a.change_time,status,p.plant_name,
+		case alarm_level
+		WHEN '重要'
+		THEN '0'
+		WHEN '一般' THEN '1'
+		WHEN '提示' THEN '2'
+		end as alarm_level
+		,CONCAT(device.device_name,signal_name)signal_name,a.signal_guid,device.id
+		deviceId,device_type from (
+		SELECT
+		MAX(id)tid,max(signal_guid)signal_guid,signal_guid_copy
+		from
+		(SELECT
+		data_yx.id,CONCAT(device_id,'*',signal_guid)signal_guid_copy,change_time
+		,signal_guid ,data_yx .valid,status,alarm_level from data_yx
+		join
+		coll_yx_expand yx on yx.id=data_yx.yx_id
+		)data
+		where data.valid=0
+		<foreach collection="list" item="signalGuid"
+			open=" and signal_guid_copy   in (" close=")" separator=",">
+			#{signalGuid}
+		</foreach>
+		<if test=" level != null and level !='' ">
+			and alarm_level=#{level}
+		</if>
+		GROUP BY signal_guid_copy
+		)temp
+		join (SELECT data_yx.id
+		tid,CONCAT(device_id,'*',signal_guid)signal_guid_copy,device_id,status,
+		change_time,alarm_level,signal_name,data_yx.valid ,data_yx.id
+		,signal_guid
+		from data_yx
+		join coll_yx_expand yx on yx.id=data_yx.yx_id
+		<if test=" status != null and status != ''">
+			where status=#{status}
+		</if>
+		)a on a.signal_guid=temp.signal_guid and temp.tid=a.tid
+		join
+		coll_device device on device_id=device.id
+		join plant_info p on
+		device.plant_id=p.id
+		order by change_time desc
+		limit #{min},#{max}
+
+	</select> -->
+	
+	<select id="getAlarmListWX" parameterType="Map"
+		resultMap="alarmResultWX">
+		SELECT CONCAT(device_id,'*',signal_guid,'*',yx.status_value,'*',data.id) id_copy,data.change_time,
+		data.status, plant_id,
+		case yx.alarm_level
+		WHEN '重要' THEN '0'
+		WHEN '一般'
+		THEN '1'
+		WHEN '提示' THEN '2'
+		end as
+		alarm_level,CONCAT(device.device_name,yx.signal_name)signal_name,signal_guid
+		,p.plant_name,device.id deviceId,device_type
+		from
+		coll_yx_expand yx
+		join
+		data_yx data on yx.id=data.yx_id
+		join coll_device device on
+		data.device_id=device.id
+		join plant_info p on device.plant_id=p.id
+		where data.valid=0
+		<if test=" attentionAlarmList != null ">
+			<foreach collection="attentionAlarmList" item="yxDataId"
+			open=" and data.id in (" close=")" separator=",">
+				#{yxDataId}
+			</foreach>
+		</if>
+		<if test=" level != null and level != ''">
+			and alarm_level=#{level}
+		</if>
+		<if test=" status != null and status != ''">
+			and data.status=#{status}
+		</if>
+		<if test=" startTime != null and startTime != ''">
+			and change_time>=#{startTime}
+		</if>
+		<if test=" list != null">
+			<foreach collection="list" item="deviceId"
+				open=" and device_id in (" close=")" separator=",">
+				#{deviceId}
+			</foreach>
+		</if>
+		order by change_time desc
+		limit #{min},#{max}
+	</select>
+
+	<select id="getAlarmCountWX" parameterType="Map"
+		resultMap="alarmCountWX">
+		SELECT
+		case yx.alarm_level
+		WHEN '重要' THEN '0'
+		WHEN '一般' THEN '1'
+		WHEN '提示'
+		THEN '2'
+		end as alarm_level,count(*)count
+		from
+		coll_yx_expand yx
+		join
+		data_yx data on yx.id=data.yx_id
+		where data.valid=0
+		<if test=" list != null">
+			<foreach collection="list" item="deviceId"
+				open=" and device_id in (" close=")" separator=",">
+				#{deviceId}
+			</foreach>
+		</if>
+		GROUP BY yx.alarm_level
+	</select>
+
+	<select id="getAlarmById" parameterType="Map"
+		resultMap="alarmListWX">
+		SELECT * from (
+		SELECT change_time, d.status,
+		yx.suggest,plant_id,device_name,
+		case yx.alarm_level
+		WHEN '重要' THEN '0'
+		WHEN '一般' THEN '1'
+		WHEN '提示' THEN '2'
+		end as alarm_level,yx.signal_name
+		,signal_guid ,p.plant_name,device.id
+		deviceId,device_type,d.id id
+		from data_yx
+		d
+		join coll_yx_expand yx on d.yx_id=yx.id
+		join coll_device device on
+		d.device_id=device.id
+		join plant_info p on device.plant_id=p.id
+		)temp
+		where temp.id=#{id} and temp.change_time=#{changeTime}
+	</select>
+	<select id="getYxValueCount" parameterType="collYxExpand"
+		resultType="int">
+		SELECT count(*) from coll_yx_expand where
+		signal_guid=#{signalGuid} and
+		status_value=#{statusValue}
+	</select>
+</mapper>

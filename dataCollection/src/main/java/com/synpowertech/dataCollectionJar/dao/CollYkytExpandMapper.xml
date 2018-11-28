@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.CollYkytExpandMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.CollYkytExpand">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="data_model" jdbcType="INTEGER" property="dataModel" />
+    <result column="signal_guid" jdbcType="VARCHAR" property="signalGuid" />
+    <result column="signal_name" jdbcType="VARCHAR" property="signalName" />
+    <result column="yc_control" jdbcType="INTEGER" property="ycControl" />
+    <result column="control_bit" jdbcType="INTEGER" property="controlBit" />
+    <result column="status_value" jdbcType="INTEGER" property="statusValue" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, data_model, signal_guid, signal_name, yc_control, control_bit, status_value, 
+    valid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_ykyt_expand
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coll_ykyt_expand
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.CollYkytExpand">
+    insert into coll_ykyt_expand (id, data_model, signal_guid, 
+      signal_name, yc_control, control_bit, 
+      status_value, valid)
+    values (#{id,jdbcType=INTEGER}, #{dataModel,jdbcType=INTEGER}, #{signalGuid,jdbcType=VARCHAR}, 
+      #{signalName,jdbcType=VARCHAR}, #{ycControl,jdbcType=INTEGER}, #{controlBit,jdbcType=INTEGER}, 
+      #{statusValue,jdbcType=INTEGER}, #{valid,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollYkytExpand">
+    insert into coll_ykyt_expand
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dataModel != null">
+        data_model,
+      </if>
+      <if test="signalGuid != null">
+        signal_guid,
+      </if>
+      <if test="signalName != null">
+        signal_name,
+      </if>
+      <if test="ycControl != null">
+        yc_control,
+      </if>
+      <if test="controlBit != null">
+        control_bit,
+      </if>
+      <if test="statusValue != null">
+        status_value,
+      </if>
+      <if test="valid != null">
+        valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dataModel != null">
+        #{dataModel,jdbcType=INTEGER},
+      </if>
+      <if test="signalGuid != null">
+        #{signalGuid,jdbcType=VARCHAR},
+      </if>
+      <if test="signalName != null">
+        #{signalName,jdbcType=VARCHAR},
+      </if>
+      <if test="ycControl != null">
+        #{ycControl,jdbcType=INTEGER},
+      </if>
+      <if test="controlBit != null">
+        #{controlBit,jdbcType=INTEGER},
+      </if>
+      <if test="statusValue != null">
+        #{statusValue,jdbcType=INTEGER},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollYkytExpand">
+    update coll_ykyt_expand
+    <set>
+      <if test="dataModel != null">
+        data_model = #{dataModel,jdbcType=INTEGER},
+      </if>
+      <if test="signalGuid != null">
+        signal_guid = #{signalGuid,jdbcType=VARCHAR},
+      </if>
+      <if test="signalName != null">
+        signal_name = #{signalName,jdbcType=VARCHAR},
+      </if>
+      <if test="ycControl != null">
+        yc_control = #{ycControl,jdbcType=INTEGER},
+      </if>
+      <if test="controlBit != null">
+        control_bit = #{controlBit,jdbcType=INTEGER},
+      </if>
+      <if test="statusValue != null">
+        status_value = #{statusValue,jdbcType=INTEGER},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.CollYkytExpand">
+    update coll_ykyt_expand
+    set data_model = #{dataModel,jdbcType=INTEGER},
+      signal_guid = #{signalGuid,jdbcType=VARCHAR},
+      signal_name = #{signalName,jdbcType=VARCHAR},
+      yc_control = #{ycControl,jdbcType=INTEGER},
+      control_bit = #{controlBit,jdbcType=INTEGER},
+      status_value = #{statusValue,jdbcType=INTEGER},
+      valid = #{valid,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

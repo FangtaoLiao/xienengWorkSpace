@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysWeatherMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysWeather">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="weather" jdbcType="VARCHAR" property="weather" />
+    <result column="day_picture_url" jdbcType="VARCHAR" property="dayPictureUrl" />
+    <result column="wind" jdbcType="VARCHAR" property="wind" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="current_temperature" jdbcType="VARCHAR" property="currentTemperature" />
+    <result column="plant_id" jdbcType="INTEGER" property="plantId" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, weather, day_picture_url, wind, temperature, current_temperature, plant_id, data_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_weather
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_weather
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpower.bean.SysWeather">
+    insert into sys_weather (weather, day_picture_url, 
+      wind, temperature, current_temperature, 
+      plant_id, data_time)
+    values (#{weather}, #{dayPictureUrl}, 
+      #{wind}, #{temperature}, #{currentTemperature}, 
+      #{plantId}, #{dataTime})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpower.bean.SysWeather">
+    insert into sys_weather
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="weather != null">
+        weather,
+      </if>
+      <if test="dayPictureUrl != null">
+        day_picture_url,
+      </if>
+      <if test="wind != null">
+        wind,
+      </if>
+      <if test="temperature != null">
+        temperature,
+      </if>
+      <if test="currentTemperature != null">
+        current_temperature,
+      </if>
+      <if test="plantId != null">
+        plant_id,
+      </if>
+      <if test="dataTime != null">
+        data_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="weather != null">
+        #{weather,jdbcType=VARCHAR},
+      </if>
+      <if test="dayPictureUrl != null">
+        #{dayPictureUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="wind != null">
+        #{wind,jdbcType=VARCHAR},
+      </if>
+      <if test="temperature != null">
+        #{temperature,jdbcType=VARCHAR},
+      </if>
+      <if test="currentTemperature != null">
+        #{currentTemperature,jdbcType=VARCHAR},
+      </if>
+      <if test="plantId != null">
+        #{plantId,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpower.bean.SysWeather">
+    update sys_weather
+    <set>
+      <if test="weather != null">
+        weather = #{weather,jdbcType=VARCHAR},
+      </if>
+      <if test="dayPictureUrl != null">
+        day_picture_url = #{dayPictureUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="wind != null">
+        wind = #{wind,jdbcType=VARCHAR},
+      </if>
+      <if test="temperature != null">
+        temperature = #{temperature,jdbcType=VARCHAR},
+      </if>
+      <if test="currentTemperature != null">
+        current_temperature = #{currentTemperature,jdbcType=VARCHAR},
+      </if>
+      <if test="plantId != null">
+        plant_id = #{plantId,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        data_time = #{dataTime,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpower.bean.SysWeather">
+    update sys_weather
+    set weather = #{weather,jdbcType=VARCHAR},
+      day_picture_url = #{dayPictureUrl,jdbcType=VARCHAR},
+      wind = #{wind,jdbcType=VARCHAR},
+      temperature = #{temperature,jdbcType=VARCHAR},
+      current_temperature = #{currentTemperature,jdbcType=VARCHAR},
+      plant_id = #{plantId,jdbcType=INTEGER},
+      data_time = #{dataTime,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <delete id="delPlantTodayWeather" parameterType="Map">
+  	delete from sys_weather where data_time >=#{dataTime} 
+  	<foreach collection="list" item="item" open=" and plant_id IN (" close=")" separator=",">
+				#{item}
+	</foreach>
+  </delete>
+  <select id="getPlantNowWeather" parameterType="Map" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/> from sys_weather where plant_id=#{plantId}
+  	 and data_time>=#{dataTime} limit 0,1
+  </select>
+  <select id="getPlantThreeWeather" parameterType="int" resultMap="BaseResultMap">
+  select <include refid="Base_Column_List"/> from (
+  	select <include refid="Base_Column_List"/> from sys_weather where plant_id=#{plantId}
+  	order by data_time DESC limit 0,3)temp order by data_time
+  </select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysUserRoleMapper">
+	<resultMap id="BaseResultMap" type="com.synpower.bean.SysUserRole">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="role_id" jdbcType="INTEGER" property="roleId" />
+		<result column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="create_time" jdbcType="BIGINT" property="createTime" />
+		<result column="create_user" jdbcType="INTEGER" property="createUser" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, role_id, user_id, create_time, create_user
+	</sql>
+	<delete id="delUserRole" parameterType="int">
+		delete from sys_user_role where user_id=#{userId};
+	</delete>
+	<insert id="insertUserRole" parameterType="hashmap">
+		insert into sys_user_role (role_id, user_id, create_time, create_user) values(#{roleId},#{userId},#{createTime},#{createUser})
+	</insert>
+	<update id="updateUserRoleId" parameterType="hashmap">
+		update sys_user_role set role_id = #{roleId} where user_id = #{userId}
+	</update>
+</mapper>

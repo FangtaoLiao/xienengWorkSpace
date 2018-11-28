@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysScreenMapper">
+	<resultMap id="BaseResultMap" type="com.synpower.bean.SysScreen">
+	    <id column="id" jdbcType="INTEGER" property="id" />
+	    <result column="level" jdbcType="INTEGER" property="level" />
+	    <result column="org_id" jdbcType="INTEGER" property="orgId" />
+	    <result column="plant_artificial_capacity" jdbcType="REAL" property="plantArtificialCapacity" />
+	    <result column="capacity_unit" jdbcType="REAL" property="capacityUnit" />
+	    <result column="plant_automatic_calculation" jdbcType="CHAR" property="plantAutomaticCalculation" />
+	    <result column="system_logo" jdbcType="VARCHAR" property="systemLogo" />
+	    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
+	    <result column="screen_logo" jdbcType="VARCHAR" property="screenLogo" />
+	    <result column="login_photo" jdbcType="VARCHAR" property="loginPhoto" />
+	    <result column="login_logo" jdbcType="VARCHAR" property="loginLogo" />
+	    <result column="screen_name" jdbcType="VARCHAR" property="screenName" />
+	    <result column="qr_code" jdbcType="VARCHAR" property="qrCode" />
+	</resultMap>
+	<select id="getScreenByOrgId" parameterType="String" resultMap="BaseResultMap">
+		select * from sys_screen where org_id = #{orgId}
+	</select>
+	<update id="updateLoginPhotoNull" parameterType="String">
+		UPDATE sys_screen s SET s.login_photo = NULL WHERE s.org_id = #{orgId}
+	</update>
+	<update id="updateQrCodeNull" parameterType="String">
+		UPDATE sys_screen s SET s.qr_code = NULL WHERE s.org_id = #{orgId}
+	</update>
+	<update id="updateQrCode" parameterType="hashmap">
+		UPDATE sys_screen s SET s.qr_code = #{QrCode} WHERE s.org_id = #{orgId}
+	</update>
+	<update id="updateAutoCal" parameterType="hashmap">
+		update 
+			sys_screen s 
+		set 
+			s.plant_artificial_capacity = #{plantArtificialCapacity},
+			s.plant_automatic_calculation = #{plantAutomaticCalculation},
+			s.capacity_unit = #{unit} 
+		where s.org_id = #{orgId}
+	</update>
+	<insert id="insertScreenByOrgId" parameterType="String">
+		INSERT INTO sys_screen(org_id) VALUES (#{orgId})
+	</insert>
+	<delete id="deleteScreenByOrgId" parameterType="list">
+		DELETE FROM sys_screen WHERE org_id IN 
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

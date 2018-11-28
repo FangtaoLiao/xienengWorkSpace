@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.CollJsonModelDetailExtendMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.CollJsonModelDetailExtend">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="data_model" jdbcType="INTEGER" property="dataModel" />
+    <result column="reg_address" jdbcType="VARCHAR" property="regAddress" />
+    <result column="fun_code" jdbcType="VARCHAR" property="funCode" />
+    <result column="dynamic" jdbcType="CHAR" property="dynamic" />
+    <result column="signal_guid" jdbcType="VARCHAR" property="signalGuid" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, data_model, reg_address, fun_code, dynamic, signal_guid, valid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_json_model_detail_extend
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 根据点表模型分类 -->
+  <select id="selectOrderByModel" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_json_model_detail_extend
+    where valid = '1' ORDER BY data_model
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coll_json_model_detail_extend
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonModelDetailExtend">
+    insert into coll_json_model_detail_extend (id, data_model, reg_address, 
+      fun_code, dynamic, signal_guid, 
+      valid)
+    values (#{id,jdbcType=INTEGER}, #{dataModel,jdbcType=INTEGER}, #{regAddress,jdbcType=VARCHAR}, 
+      #{funCode,jdbcType=VARCHAR}, #{dynamic,jdbcType=CHAR}, #{signalGuid,jdbcType=VARCHAR}, 
+      #{valid,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonModelDetailExtend">
+    insert into coll_json_model_detail_extend
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dataModel != null">
+        data_model,
+      </if>
+      <if test="regAddress != null">
+        reg_address,
+      </if>
+      <if test="funCode != null">
+        fun_code,
+      </if>
+      <if test="dynamic != null">
+        dynamic,
+      </if>
+      <if test="signalGuid != null">
+        signal_guid,
+      </if>
+      <if test="valid != null">
+        valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dataModel != null">
+        #{dataModel,jdbcType=INTEGER},
+      </if>
+      <if test="regAddress != null">
+        #{regAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="funCode != null">
+        #{funCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic != null">
+        #{dynamic,jdbcType=CHAR},
+      </if>
+      <if test="signalGuid != null">
+        #{signalGuid,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonModelDetailExtend">
+    update coll_json_model_detail_extend
+    <set>
+      <if test="dataModel != null">
+        data_model = #{dataModel,jdbcType=INTEGER},
+      </if>
+      <if test="regAddress != null">
+        reg_address = #{regAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="funCode != null">
+        fun_code = #{funCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamic != null">
+        dynamic = #{dynamic,jdbcType=CHAR},
+      </if>
+      <if test="signalGuid != null">
+        signal_guid = #{signalGuid,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonModelDetailExtend">
+    update coll_json_model_detail_extend
+    set data_model = #{dataModel,jdbcType=INTEGER},
+      reg_address = #{regAddress,jdbcType=VARCHAR},
+      fun_code = #{funCode,jdbcType=VARCHAR},
+      dynamic = #{dynamic,jdbcType=CHAR},
+      signal_guid = #{signalGuid,jdbcType=VARCHAR},
+      valid = #{valid,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,108 @@
+package com.synpower.handler;
+
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.synpower.lang.SessionTimeoutException;
+import com.synpower.msg.Msg;
+import com.synpower.msg.session.Session;
+import com.synpower.msg.session.User;
+import com.synpower.util.StringUtil;
+import com.synpower.util.Util;
+
+@Aspect
+@Component
+public class LoginHandler extends ErrorHandler {
+
+	private static Logger logger = Logger.getLogger(LoginHandler.class);
+
+	public LoginHandler() {
+	}
+
+	@Pointcut("execution(public * com.synpower.web..*.*(..))")
+	public void controllerPointcut() {
+	}
+
+	// 登录登出功能不需要Session验证
+	@Pointcut("execution(public * com.synpower.web.LoginController.*(..))")
+	public void rootPointcut() {
+	}
+
+	// 导出功能不需要Session验证
+	@Pointcut("execution(public * com.synpower.web.ExportController.*(..))")
+	public void exportPointcut() {
+	}
+
+	// 注册功能不需要Session验证
+	@Pointcut("execution(public * com.synpower.web.UserController.insertUserInfo(..))")
+	public void registerPointcut() {
+	}
+
+	@Pointcut("controllerPointcut()&&(!rootPointcut())&&(!registerPointcut())&&(!exportPointcut())")
+	public void sessionTimeOutPointcut() {
+	}
+
+	@Around("sessionTimeOutPointcut()")
+	public Object sessionTimeOutAdvice(ProceedingJoinPoint pjp) throws Throwable {
+		Object result = null;
+		String targetName = pjp.getTarget().getClass().getSimpleName();
+		String methodName = pjp.getSignature().getName();
+		logger.debug("----------------执行方法-----------------");
+		logger.debug("类名：" + targetName + " 方法名：" + methodName);
+		HttpServletResponse response = null;
+		String tokenId = null;
+		Map<String, Object> map = null;
+		Object[] obj = pjp.getArgs();
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+				.getRequest();
+		String tokenIdTemp = request.getParameter("tokenId");
+		if (tokenIdTemp == null && StringUtils.isBlank(tokenIdTemp)) {
+			if (obj != null && obj.length > 0 && StringUtils.isNotBlank(obj.toString())) {
+				map = Util.parseURL(obj[0].toString());
+				if (map != null && !map.isEmpty()) {
+					tokenId = map.containsKey("tokenId") ? map.get("tokenId").toString() : null;
+				}
+			}
+		}
+		Session session = getSession();
+		tokenId = tokenId == null ? tokenIdTemp : tokenId;
+		try {
+			if (tokenId != null && StringUtils.isNotBlank(tokenId)) {
+				if (!session.isValid(tokenId)) {
+					logger.warn(StringUtil.appendStr("拦截会话超时请求,tokenId:", tokenId, ", URL:", request.getRequestURI()));
+					throw new SessionTimeoutException(Msg.LOGIN_TIME_OUT);
+				}
+				// =================ybj
+				User user = session.getAttribute(tokenId);
+				// 把请求登录的类型置入参数中 requestType 2为小电监控 3为小电能控
+				if (user != null && user.getRequestType() != null) {
+					map.put("requestType", user.getRequestType());
+					obj[0] = Util.object2SJsonString(map);
+				}
+				result = pjp.proceed(obj);
+				// =================
+			} else {
+				logger.warn(StringUtil.appendStr("非法访问已被拦截", "URL:", request.getRequestURI()));
+				throw new SessionTimeoutException(Msg.LOGIN_NOT);
+			}
+		} catch (UndeclaredThrowableException ex) {
+			ex.printStackTrace();
+			throw new SessionTimeoutException(Msg.LOGIN_TIME_OUT);
+		}
+		return result;
+	}
+
+}

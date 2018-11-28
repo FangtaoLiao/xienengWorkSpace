@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysConfigMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysConfig">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="domainName" jdbcType="VARCHAR" property="domainname" />
+    <result column="login_photo" jdbcType="VARCHAR" property="loginPhoto" />
+    <result column="login_logo" jdbcType="VARCHAR" property="loginLogo" />
+    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
+    <result column="publicNumber" jdbcType="VARCHAR" property="publicnumber" />
+    <result column="copyright" jdbcType="VARCHAR" property="copyright" />
+    <result column="recordNumber" jdbcType="VARCHAR" property="recordnumber" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, domainName, login_photo, login_logo, system_name, publicNumber, copyright, recordNumber
+  </sql>
+  <select id="getInfoByDomainName" parameterType="String" resultMap="BaseResultMap">
+  	select 
+  		id, 
+  		domainName, 
+  		login_photo, 
+  		login_logo, 
+  		system_name, 
+  		publicNumber, 
+  		copyright, 
+  		recordNumber 
+  	from 
+  		sys_config 
+  	where 
+  		domainName=#{domainName} 
+  	limit 0,1
+  </select>
+  <insert id="insertInfo" parameterType="String">
+  	INSERT INTO sys_config(domainName) VALUES (#{domainName})
+  </insert>
+  <update id="updateLoginLogoNull" parameterType="String">
+	UPDATE sys_config s SET s.login_logo = NULL WHERE s.domainName = #{domainName}
+  </update>
+  <update id="updateLoginLogo" parameterType="hashmap">
+	UPDATE sys_config s SET s.login_logo = #{loginLogo} WHERE s.domainName = #{domainName}
+  </update>
+  <update id="updateLoginPhoto" parameterType="hashmap">
+	UPDATE sys_config s SET s.login_photo = #{loginPhoto} WHERE s.domainName = #{domainName}
+  </update>
+  <update id="updateSystemName" parameterType="hashmap">
+	UPDATE sys_config s SET s.system_name = #{systemName} WHERE s.domainName = #{domainName}
+  </update>
+</mapper>

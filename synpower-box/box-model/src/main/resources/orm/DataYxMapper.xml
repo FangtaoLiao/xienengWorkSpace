@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DataYxMapper">
+	<resultMap id="BaseResultMap" type="com.synpower.bean.DataYx">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="device_id" jdbcType="INTEGER"
+			property="deviceId" />
+		<result column="yx_id" jdbcType="INTEGER" property="yxId" />
+		<result column="change_time" jdbcType="BIGINT"
+			property="changeTime" />
+		<result column="status" jdbcType="CHAR" property="status" />
+		<result column="operation_time" jdbcType="BIGINT"
+			property="operationTime" />
+		<result column="operator" jdbcType="INTEGER"
+			property="operator" />
+		<result column="valid" jdbcType="CHAR" property="valid" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, device_id, yx_id, change_time, status, operation_time,
+		operator,
+		valid
+	</sql>
+	<select id="getDataByYxId" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT
+		dy.*
+		FROM
+		data_yx dy
+		JOIN coll_yx_expand cye ON cye.id =
+		dy.yx_id
+		WHERE
+		CONCAT(
+		dy.device_id,
+		'_',
+		cye.signal_guid,
+		'_',
+		cye.status_value,
+		'_',dy.id
+		) = #{id}
+		ORDER BY
+		dy.change_time
+		LIMIT 0,1
+	</select>
+</mapper>

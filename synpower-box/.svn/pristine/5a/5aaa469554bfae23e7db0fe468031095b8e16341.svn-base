@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.FieldSignalGuidMappingMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.FieldSignalGuidMapping">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="coll_id" jdbcType="INTEGER" property="collId" />
+    <result column="data_model" jdbcType="INTEGER" property="dataModel" />
+    <result column="signal_guid" jdbcType="VARCHAR" property="signalGuid" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, coll_id, data_model, signal_guid, valid
+  </sql>
+  <select id="getImId" parameterType="map" resultType="String">
+  	select coll_id from field_signal_guid_mapping where valid=0 and data_model=#{dataModel} and signal_guid =#{guid} 
+  </select>
+</mapper>

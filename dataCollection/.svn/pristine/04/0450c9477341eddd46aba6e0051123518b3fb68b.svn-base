@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.CollJsonDatacollSetMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.CollJsonDatacollSet">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="coll_id" jdbcType="BIGINT" property="collId" />
+    <result column="reset" jdbcType="VARCHAR" property="reset" />
+    <result column="reboot" jdbcType="VARCHAR" property="reboot" />
+    <result column="conn_addr" jdbcType="VARCHAR" property="connAddr" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="pwd" jdbcType="VARCHAR" property="pwd" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="time_out" jdbcType="VARCHAR" property="timeOut" />
+    <result column="heart_beat" jdbcType="VARCHAR" property="heartBeat" />
+    <result column="send_freq" jdbcType="VARCHAR" property="sendFreq" />
+    <result column="send_period" jdbcType="VARCHAR" property="sendPeriod" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, coll_id, reset, reboot, conn_addr, user_id, pwd, sn, time_out, heart_beat, 
+    send_freq, send_period, valid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_json_datacoll_set
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from coll_json_datacoll_set
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonDatacollSet">
+    insert into coll_json_datacoll_set (id, name, coll_id, 
+      reset, reboot, conn_addr, 
+      user_id, pwd, sn, time_out, 
+      heart_beat, send_freq, send_period, 
+      valid)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{collId,jdbcType=BIGINT}, 
+      #{reset,jdbcType=VARCHAR}, #{reboot,jdbcType=VARCHAR}, #{connAddr,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, #{sn,jdbcType=VARCHAR}, #{timeOut,jdbcType=VARCHAR}, 
+      #{heartBeat,jdbcType=VARCHAR}, #{sendFreq,jdbcType=VARCHAR}, #{sendPeriod,jdbcType=VARCHAR}, 
+      #{valid,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonDatacollSet">
+    insert into coll_json_datacoll_set
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="collId != null">
+        coll_id,
+      </if>
+      <if test="reset != null">
+        reset,
+      </if>
+      <if test="reboot != null">
+        reboot,
+      </if>
+      <if test="connAddr != null">
+        conn_addr,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="pwd != null">
+        pwd,
+      </if>
+      <if test="sn != null">
+        sn,
+      </if>
+      <if test="timeOut != null">
+        time_out,
+      </if>
+      <if test="heartBeat != null">
+        heart_beat,
+      </if>
+      <if test="sendFreq != null">
+        send_freq,
+      </if>
+      <if test="sendPeriod != null">
+        send_period,
+      </if>
+      <if test="valid != null">
+        valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="collId != null">
+        #{collId,jdbcType=BIGINT},
+      </if>
+      <if test="reset != null">
+        #{reset,jdbcType=VARCHAR},
+      </if>
+      <if test="reboot != null">
+        #{reboot,jdbcType=VARCHAR},
+      </if>
+      <if test="connAddr != null">
+        #{connAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="timeOut != null">
+        #{timeOut,jdbcType=VARCHAR},
+      </if>
+      <if test="heartBeat != null">
+        #{heartBeat,jdbcType=VARCHAR},
+      </if>
+      <if test="sendFreq != null">
+        #{sendFreq,jdbcType=VARCHAR},
+      </if>
+      <if test="sendPeriod != null">
+        #{sendPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonDatacollSet">
+    update coll_json_datacoll_set
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="collId != null">
+        coll_id = #{collId,jdbcType=BIGINT},
+      </if>
+      <if test="reset != null">
+        reset = #{reset,jdbcType=VARCHAR},
+      </if>
+      <if test="reboot != null">
+        reboot = #{reboot,jdbcType=VARCHAR},
+      </if>
+      <if test="connAddr != null">
+        conn_addr = #{connAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        pwd = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="timeOut != null">
+        time_out = #{timeOut,jdbcType=VARCHAR},
+      </if>
+      <if test="heartBeat != null">
+        heart_beat = #{heartBeat,jdbcType=VARCHAR},
+      </if>
+      <if test="sendFreq != null">
+        send_freq = #{sendFreq,jdbcType=VARCHAR},
+      </if>
+      <if test="sendPeriod != null">
+        send_period = #{sendPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.CollJsonDatacollSet">
+    update coll_json_datacoll_set
+    set name = #{name,jdbcType=VARCHAR},
+      coll_id = #{collId,jdbcType=BIGINT},
+      reset = #{reset,jdbcType=VARCHAR},
+      reboot = #{reboot,jdbcType=VARCHAR},
+      conn_addr = #{connAddr,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      pwd = #{pwd,jdbcType=VARCHAR},
+      sn = #{sn,jdbcType=VARCHAR},
+      time_out = #{timeOut,jdbcType=VARCHAR},
+      heart_beat = #{heartBeat,jdbcType=VARCHAR},
+      send_freq = #{sendFreq,jdbcType=VARCHAR},
+      send_period = #{sendPeriod,jdbcType=VARCHAR},
+      valid = #{valid,jdbcType=CHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.CollectorMessageStructureMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.CollectorMessageStructure">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="collector_id" jdbcType="INTEGER" property="collectorId" />
+    <result column="collector_sn" jdbcType="VARCHAR" property="collectorSn" />
+    <result column="data_model" jdbcType="INTEGER" property="dataModel" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="table_name" jdbcType="VARCHAR" property="tableName" />
+    <result column="parse_order" jdbcType="INTEGER" property="parseOrder" />
+    <result column="size" jdbcType="VARCHAR" property="size" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, collector_id, data_model, device_id, table_name, parse_order, size, valid
+  </sql>
+    <update id="delCollectorParse" parameterType="int">
+		update collector_message_structure set valid=0 where collector_id=#{collectorId}
+	</update>
+    
+    <update id="delSubDeviceforParse" parameterType="map" >
+		update collector_message_structure set valid=1 where device_id IN 
+		<foreach collection="reList" item="dId" open=" (" close=")" separator=",">
+				#{dId}
+		</foreach>
+	</update>
+	 <update id="delAnyParse" parameterType="Map">
+  	update collector_message_structure set valid=1 where id in 
+  	(SELECT * from 
+  		(SELECT id from collector_message_structure WHERE collector_id=#{collectorId} and valid=0 ORDER BY parse_order limit #{start},#{length})temp)
+
+  </update>
+  <select id="getDelDeviceIds" parameterType="int" resultType="INTEGER">
+	SELECT device_id from collector_message_structure where collector_id=#{collectorId} and valid=1 
+  </select>
+  <select id="getPareseOrder" parameterType="int" resultType="String">
+	SELECT parse_order from collector_message_structure where device_id=#{id} and valid=0 
+  </select>
+  <select id="getEachCount4Size" parameterType="map" resultMap="sizeCountMap" statementType="STATEMENT">
+	SELECT COUNT(ph.real_type = 'YC' OR NULL) ycCount, 
+		   COUNT(ph.real_type = 'YX' OR NULL) yxCount,
+		   COUNT(ph.real_type = 'YK' OR NULL) ykCount,
+		   COUNT(ph.real_type = 'YT' OR NULL) ytCount   
+	FROM ${tableName} ph WHERE ph.valid=0
+  </select>
+  <resultMap id="sizeCountMap" type="java.util.HashMap">
+  	<result column="ycCount" property="ycCount" jdbcType="INTEGER"/>
+  	<result column="yxCount" property="yxCount" jdbcType="INTEGER"/>
+  	<result column="ykCount" property="ykCount" jdbcType="INTEGER"/>
+  	<result column="ytCount" property="ytCount" jdbcType="INTEGER"/>
+  </resultMap>
+  <select id="getEachCountforSize" parameterType="map" resultType="map">
+  	SELECT ph.signal_type type,COUNT(DISTINCT ph.address_id) count FROM coll_model_detail_mqtt ph WHERE ph.data_mode=#{dataMode} and ph.valid = 0 GROUP BY ph.signal_type
+  </select>
+  <insert id="addNewStructure" parameterType="com.synpower.bean.CollectorMessageStructure"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+  	<selectKey resultType="int" order="AFTER" keyProperty="id">   
+            SELECT LAST_INSERT_ID() as id  
+    </selectKey> 
+  	insert into collector_message_structure (collector_id,collector_sn,data_model,device_id,table_name,parse_order,size,valid) values
+  	(#{collectorId},#{collectorSn},#{dataModel},#{deviceId},#{tableName},#{parseOrder},#{size},#{valid})
+  </insert>
+  <update id="deleteParseInfoByCollid" parameterType="map">
+		update collector_message_structure set valid=1 where collector_id IN 
+  	<foreach collection="cids" item="dId" open=" (" close=")" separator=",">
+				#{dId}
+	</foreach>
+  </update>
+  <update id="updatePareseStatusCollectorChange" parameterType="map">
+		update collector_message_structure set valid=#{statusAfter} where collector_id=#{pareseIds}
+	</update>
+  <update id="updatePareseOnUpdate" parameterType="com.synpower.bean.CollectorMessageStructure">
+		update collector_message_structure set collector_id=#{collectorId},collector_sn=#{collectorSn}, data_model=#{dataModel},collector_id=#{collectorId},
+		parse_order=#{parseOrder},table_name=#{tableName},size=#{size} where device_id=#{deviceId}
+	</update>
+</mapper>

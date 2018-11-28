@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DeviceDetailModuleMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DeviceDetailModule">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="model_identity" jdbcType="VARCHAR" property="modelIdentity" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="subassembly_type" jdbcType="VARCHAR" property="subassemblyType" />
+    <result column="power" jdbcType="REAL" property="power" />
+    <result column="efficiency" jdbcType="VARCHAR" property="efficiency" />
+    <result column="voc" jdbcType="REAL" property="voc" />
+    <result column="isc" jdbcType="REAL" property="isc" />
+    <result column="vm" jdbcType="REAL" property="vm" />
+    <result column="im" jdbcType="REAL" property="im" />
+    <result column="ff" jdbcType="REAL" property="ff" />
+    <result column="pmax_temperature_coefficient" jdbcType="REAL" property="pmaxTemperatureCoefficient" />
+    <result column="voc_temperature_coefficient" jdbcType="REAL" property="vocTemperatureCoefficient" />
+    <result column="isc_temperature_coefficient" jdbcType="REAL" property="iscTemperatureCoefficient" />
+    <result column="working_temperature" jdbcType="VARCHAR" property="workingTemperature" />
+    <result column="photo_path" jdbcType="VARCHAR" property="photoPath" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, model_identity, device_type, manufacturer, model, subassembly_type, power, efficiency, 
+    voc, isc, vm, im, ff, pmax_temperature_coefficient, voc_temperature_coefficient, 
+    isc_temperature_coefficient, working_temperature, photo_path, valid
+  </sql>
+  <sql id="equipmentDynaSql">
+	<if test="status != null and status != ''">
+		 AND mds.valid = #{status} 
+	</if>
+	<if test="manufacturer != null and manufacturer != ''">
+		 AND mds.manufacturer like CONCAT(#{manufacturer},'%') 
+	</if>
+	<if test="model != null and model != ''">
+		 AND mds.model LIKE CONCAT('%',#{model},'%') 
+	</if>
+  </sql>
+  <select id="countSubassembly" parameterType="hashmap" resultType="int">
+  	SELECT 
+		count(*) 
+	FROM device_detail_module mds 
+	JOIN device_type dt ON mds.device_type = dt.id 
+	WHERE 1 = 1 
+	<include refid="equipmentDynaSql"></include>
+  </select>
+  <select id="listSubassembly" parameterType="hashmap" resultMap="subassemblyMap">
+  	SELECT 
+		mds.id,
+		mds.model_identity,
+		mds.manufacturer,
+		mds.model,
+		mds.subassembly_type,
+		mds.power,
+		mds.efficiency,
+		mds.voc,
+		mds.isc,
+		mds.vm,
+		mds.im,
+		mds.ff,
+		mds.pmax_temperature_coefficient,
+		mds.voc_temperature_coefficient,
+		mds.isc_temperature_coefficient,
+		mds.working_temperature,
+		mds.photo_path,
+		mds.valid 
+	FROM device_detail_module mds 
+	JOIN device_type dt ON mds.device_type = dt.id 
+	WHERE 1 = 1 
+	<include refid="equipmentDynaSql"></include>
+	limit #{min},#{max}
+  </select>
+  <resultMap id="subassemblyMap" type="java.util.HashMap">
+  	<result column="mds.id" property="id" jdbcType="VARCHAR"/>
+  	<result column="mds.model_identity" property="model_identity" jdbcType="VARCHAR"/>
+  	<result column="mds.manufacturer" property="manufacturer" jdbcType="VARCHAR"/>
+  	<result column="mds.model" property="model" jdbcType="VARCHAR"/>
+  	<result column="mds.subassembly_type" property="subassembly_type" jdbcType="VARCHAR"/>
+  	<result column="mds.power" property="power" jdbcType="VARCHAR"/>
+  	<result column="mds.efficiency" property="efficiency" jdbcType="VARCHAR"/>
+  	<result column="mds.voc" property="voc" jdbcType="VARCHAR"/>
+  	<result column="mds.isc" property="isc" jdbcType="VARCHAR"/>
+  	<result column="mds.vm" property="vm" jdbcType="VARCHAR"/>
+  	<result column="mds.im" property="im" jdbcType="VARCHAR"/>
+  	<result column="mds.ff" property="ff" jdbcType="VARCHAR"/>
+  	<result column="mds.pmax_temperature_coefficient" property="pmax_temperature_coefficient" jdbcType="VARCHAR"/>
+  	<result column="mds.voc_temperature_coefficient" property="voc_temperature_coefficient" jdbcType="VARCHAR"/>
+  	<result column="mds.isc_temperature_coefficient" property="isc_temperature_coefficient" jdbcType="VARCHAR"/>
+  	<result column="mds.working_temperature" property="working_temperature" jdbcType="VARCHAR"/>
+  	<result column="mds.photo_path " property="photo" jdbcType="VARCHAR"/>
+  	<result column="mds.valid " property="valid" jdbcType="VARCHAR"/>
+  </resultMap>
+  <update id="updateSubStatus" parameterType="hashmap">
+  	UPDATE device_detail_module m SET m.valid = #{status} WHERE m.id = #{deviceId}
+  </update>
+  <select id="getSubBasic" parameterType="String" resultMap="subassemblyMap">
+  	SELECT 
+		mds.id,
+		mds.model_identity,
+		mds.manufacturer,
+		mds.model,
+		mds.subassembly_type,
+		mds.power,
+		mds.efficiency,
+		mds.voc,
+		mds.isc,
+		mds.vm,
+		mds.im,
+		mds.ff,
+		mds.pmax_temperature_coefficient,
+		mds.voc_temperature_coefficient,
+		mds.isc_temperature_coefficient,
+		mds.working_temperature,
+		mds.photo_path 
+	FROM device_detail_module mds 
+	JOIN device_type dt ON mds.device_type = dt.id 
+	WHERE mds.id = #{deviceId}
+  </select>
+  <update id="updateSubBasic" parameterType="hashmap">
+  	UPDATE 
+  		device_detail_module m 
+  	SET 
+  		m.model_identity=#{modelIdentity},
+  		m.manufacturer=#{manufacturer},
+  		m.model=#{model},
+  		m.power=#{power},
+  		m.efficiency=#{efficiency},
+		m.voc=#{voc},
+		m.isc=#{isc},
+		m.vm=#{vm},
+		m.im=#{im},
+		m.ff=#{ff},
+		m.pmax_temperature_coefficient=#{pmaxTemperatureCoefficient},
+		m.voc_temperature_coefficient=#{vocTemperatureCoefficient},
+		m.isc_temperature_coefficient=#{iscTemperatureCoefficient},
+		m.working_temperature=#{workingTemperature} 
+	WHERE m.id = #{id}
+  </update>
+  <update id="updatePhotoNull" parameterType="String">
+  	UPDATE device_detail_module m SET m.photo_path = NULL WHERE m.id = #{deviceId}
+  </update>
+  <update id="updatePhoto" parameterType="hashmap">
+  	UPDATE device_detail_module m SET m.photo_path = #{url} WHERE m.id = #{deviceId}
+  </update>
+  <select id="getSubInfo" resultMap="subassemblyInfoMap">
+  	SELECT 
+		mds.model_identity,
+		mds.manufacturer,
+		mds.model,
+		mds.subassembly_type,
+		mds.power,
+		mds.efficiency,
+		mds.voc,
+		mds.isc,
+		mds.vm,
+		mds.im,
+		mds.ff,
+		mds.pmax_temperature_coefficient,
+		mds.voc_temperature_coefficient,
+		mds.isc_temperature_coefficient,
+		mds.working_temperature 
+	FROM device_detail_module mds 
+	JOIN device_type dt ON mds.device_type = dt.id 
+	WHERE 1 = 1 
+	<include refid="equipmentDynaSql"></include>
+  </select>
+  <resultMap id="subassemblyInfoMap" type="java.util.HashMap">
+  	<result column="mds.model_identity" property="model_identity" jdbcType="VARCHAR"/>
+  	<result column="mds.manufacturer" property="manufacturer" jdbcType="VARCHAR"/>
+  	<result column="mds.model" property="model" jdbcType="VARCHAR"/>
+  	<result column="mds.subassembly_type" property="subassembly_type" jdbcType="VARCHAR"/>
+  	<result column="mds.power" property="power" jdbcType="VARCHAR"/>
+  	<result column="mds.efficiency" property="efficiency" jdbcType="VARCHAR"/>
+  	<result column="mds.voc" property="voc" jdbcType="VARCHAR"/>
+  	<result column="mds.isc" property="isc" jdbcType="VARCHAR"/>
+  	<result column="mds.vm" property="vm" jdbcType="VARCHAR"/>
+  	<result column="mds.im" property="im" jdbcType="VARCHAR"/>
+  	<result column="mds.ff" property="ff" jdbcType="VARCHAR"/>
+  	<result column="mds.pmax_temperature_coefficient" property="pmax_temperature_coefficient" jdbcType="VARCHAR"/>
+  	<result column="mds.voc_temperature_coefficient" property="voc_temperature_coefficient" jdbcType="VARCHAR"/>
+  	<result column="mds.isc_temperature_coefficient" property="isc_temperature_coefficient" jdbcType="VARCHAR"/>
+  	<result column="mds.working_temperature" property="working_temperature" jdbcType="VARCHAR"/>
+  </resultMap>
+  <insert id="insertSub" parameterType="List">
+  	insert into device_detail_module (
+  		model_identity, 
+  		device_type, 
+  		manufacturer, 
+  		model, 
+  		subassembly_type, 
+  		power, 
+  		efficiency, 
+  		voc, 
+  		isc, 
+  		vm, 
+  		im, 
+  		ff, 
+  		pmax_temperature_coefficient, 
+  		voc_temperature_coefficient, 
+  		isc_temperature_coefficient, 
+  		working_temperature, 
+  		valid) 
+  	values 
+  	<foreach collection="list" item="item" index="index"  separator="," > 
+  		(#{item.modelIdentity},
+  		#{item.deviceType},
+  		#{item.manufacturer},
+  		#{item.model},
+  		#{item.subassemblyType},
+  		#{item.power},
+  		#{item.efficiency},
+  		#{item.voc},
+  		#{item.isc},
+  		#{item.vm},
+  		#{item.im},
+  		#{item.ff},
+  		#{item.pmaxTemperatureCoefficient},
+  		#{item.vocTemperatureCoefficient},
+  		#{item.iscTemperatureCoefficient},
+  		#{item.workingTemperature},
+  		#{item.valid})
+  	</foreach>
+  </insert>
+  <insert id="insertSubByBean" parameterType="DeviceDetailModule"  useGeneratedKeys="true" keyProperty="id">
+  	insert into device_detail_module (
+  		model_identity, 
+  		device_type, 
+  		manufacturer, 
+  		model, 
+  		subassembly_type, 
+  		power, 
+  		efficiency, 
+  		voc, 
+  		isc, 
+  		vm, 
+  		im, 
+  		ff, 
+  		pmax_temperature_coefficient, 
+  		voc_temperature_coefficient, 
+  		isc_temperature_coefficient, 
+  		working_temperature, 
+  		valid) 
+  	values 
+  		(#{modelIdentity},
+  		#{deviceType},
+  		#{manufacturer},
+  		#{model},
+  		#{subassemblyType},
+  		#{power},
+  		#{efficiency},
+  		#{voc},
+  		#{isc},
+  		#{vm},
+  		#{im},
+  		#{ff},
+  		#{pmaxTemperatureCoefficient},
+  		#{vocTemperatureCoefficient},
+  		#{iscTemperatureCoefficient},
+  		#{workingTemperature},
+  		#{valid})
+  </insert>
+  <select id="getModeleInfoSearch" parameterType="map" resultMap="BaseResultMap">
+  	select id,model_identity,manufacturer,subassembly_type,power
+  	from device_detail_module where
+	<if test="modelIdentity != null and modelIdentity != ''">
+  		model_identity LIKE CONCAT('%',#{modelIdentity},'%') and
+  	</if>
+	<if test="manufacturer != null and manufacturer != ''">
+  		manufacturer LIKE CONCAT('%',#{manufacturer},'%') and
+  	</if>
+  	<if test="power != null and power != ''">
+  		power=#{power} and
+  	</if>
+  	 valid=1 limit #{offset},#{length}
+  </select>
+  <select id="getModeleInfoSearchPage" parameterType="map" resultType="integer">
+  	select IFNULL(count(*),0) 
+  	from device_detail_module where
+	<if test="modelIdentity != null and modelIdentity != ''">
+  		model_identity LIKE CONCAT('%',#{modelIdentity},'%') and
+  	</if>
+	<if test="manufacturer != null and manufacturer != ''">
+  		manufacturer LIKE CONCAT('%',#{manufacturer},'%') and
+  	</if>
+  	<if test="power != null and power != ''">
+  		power=#{power} and
+  	</if>
+  	 valid=1 
+  </select>
+	<select id="getSubById" parameterType="String" resultMap="BaseResultMap">
+		select * from device_detail_module where id = #{deviceId}
+	</select>
+</mapper>

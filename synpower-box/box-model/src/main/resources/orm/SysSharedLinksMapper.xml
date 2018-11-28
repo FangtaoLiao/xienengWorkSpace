@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysSharedLinksMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysSharedLinks">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="shared_link_code" jdbcType="VARCHAR" property="sharedLinkCode" />
+    <result column="org_id" jdbcType="INTEGER" property="orgId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="plants_id" jdbcType="VARCHAR" property="plantsId" />
+    <result column="user_type" jdbcType="CHAR" property="userType" />
+    <result column="create_user" jdbcType="INTEGER" property="createUser" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="used_user" jdbcType="VARCHAR" property="usedUser" />
+    <result column="used_time" jdbcType="BIGINT" property="usedTime" />
+    <result column="status" jdbcType="CHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, shared_link_code, org_id, role_id, plants_id, user_type, create_user, create_time, 
+    used_user, used_time, status
+  </sql>
+  <select id="selectByLinkCode" parameterType="String" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from sys_shared_links
+    where shared_link_code = #{sharedLinkCode} and status!=0
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_shared_links
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpower.bean.SysSharedLinks">
+    insert into sys_shared_links (id, shared_link_code, org_id, 
+      role_id, plants_id, user_type, 
+      create_user, create_time, used_user, 
+      used_time, status)
+    values (#{id,jdbcType=INTEGER}, #{sharedLinkCode,jdbcType=VARCHAR}, #{orgId,jdbcType=INTEGER}, 
+      #{roleId,jdbcType=INTEGER}, #{plantsId,jdbcType=VARCHAR}, #{userType,jdbcType=CHAR}, 
+      #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{usedUser,jdbcType=VARCHAR}, 
+      #{usedTime,jdbcType=BIGINT}, #{status,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpower.bean.SysSharedLinks">
+    insert into sys_shared_links
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sharedLinkCode != null">
+        shared_link_code,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="plantsId != null">
+        plants_id,
+      </if>
+      <if test="userType != null">
+        user_type,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="usedUser != null">
+        used_user,
+      </if>
+      <if test="usedTime != null">
+        used_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="sharedLinkCode != null">
+        #{sharedLinkCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="plantsId != null">
+        #{plantsId,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        #{userType,jdbcType=CHAR},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="usedUser != null">
+        #{usedUser,jdbcType=VARCHAR},
+      </if>
+      <if test="usedTime != null">
+        #{usedTime,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpower.bean.SysSharedLinks">
+    update sys_shared_links
+    <set>
+      <if test="sharedLinkCode != null">
+        shared_link_code = #{sharedLinkCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="plantsId != null">
+        plants_id = #{plantsId,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null">
+        user_type = #{userType,jdbcType=CHAR},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="usedUser != null">
+        used_user = #{usedUser,jdbcType=VARCHAR},
+      </if>
+      <if test="usedTime != null">
+        used_time = #{usedTime,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpower.bean.SysSharedLinks">
+    update sys_shared_links
+    set 
+      org_id = #{orgId,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      plants_id = #{plantsId,jdbcType=VARCHAR},
+      user_type = #{userType,jdbcType=CHAR},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=BIGINT},
+      used_user = #{usedUser,jdbcType=VARCHAR},
+      used_time = #{usedTime,jdbcType=BIGINT},
+      status = #{status,jdbcType=CHAR}
+    where shared_link_code = #{sharedLinkCode,jdbcType=VARCHAR}
+  </update>
+    <update id="updateLinkUserdUser" parameterType="com.synpower.bean.SysSharedLinks">
+    update sys_shared_links
+    set 
+      used_user = #{usedUser,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR}
+    where shared_link_code = #{sharedLinkCode,jdbcType=VARCHAR}
+  </update>
+    <update id="updateLinkTime" parameterType="com.synpower.bean.SysSharedLinks">
+    update sys_shared_links
+    set 
+      used_time = #{usedTime,jdbcType=BIGINT},
+      used_user = #{usedUser,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR}
+    where shared_link_code = #{sharedLinkCode,jdbcType=VARCHAR}
+  </update>
+   <select id="getRegisterCodeByCode" parameterType="String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_shared_links
+    where shared_link_code = #{sharedLinkCode} 
+  </select>
+</mapper>

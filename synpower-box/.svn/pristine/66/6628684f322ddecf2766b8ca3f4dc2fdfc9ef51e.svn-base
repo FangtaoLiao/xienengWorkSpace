@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysRoleMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysRole">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="last_modify_time" jdbcType="BIGINT" property="lastModifyTime" />
+    <result column="last_modify_user" jdbcType="INTEGER" property="lastModifyUser" />
+    <result column="org_id" jdbcType="INTEGER" property="orgId" />
+    <result column="sup_status" jdbcType="CHAR" property="supStatus" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="role_valid" jdbcType="CHAR" property="roleValid" />
+    <result column="role_status" jdbcType="CHAR" property="roleStatus" />
+    <result column="father_id" jdbcType="CHAR" property="fatherId" />
+  </resultMap>
+  	<select id="getAllRolesByOrgList" resultMap="BaseResultMap">
+  		select * from sys_role where 1=1
+		<foreach collection="list" item="orgId" open=" and org_id IN (" close=")" separator=",">
+					#{orgId}
+		</foreach>
+  	</select>
+  	<insert id="saveRightsOfRole" parameterType="Map">
+ 		insert into sys_role_rights(role_id,rights_id,create_user,create_time)values
+		<foreach collection="list" item="item" index="index" separator="," >  
+        (#{roleId},#{item},#{uId},#{createTime})  
+    	</foreach> 
+ 	</insert>
+ 	<insert id="saveNewRole"  parameterType="sysRole" useGeneratedKeys="true" keyProperty="id">
+ 		insert into sys_role (role_name,last_modify_time,last_modify_user,org_id,sup_status,create_time,role_valid,role_status,father_id)
+ 		values(#{roleName},#{lastModifyTime},#{lastModifyUser},#{orgId},#{supStatus},#{createTime},#{roleValid},#{roleStatus},#{fatherId})
+ 	</insert>
+ 	<update id="updateRoleInfo" parameterType="Map">
+ 		update sys_role set last_modify_time=#{lastModifyTime},last_modify_user= #{lastModifyUser} where id=#{id} 
+ 	</update>
+ 	<delete id="deleteRightsOfRole" parameterType="String">
+ 		delete from sys_role_rights where role_id=#{roleId}
+ 	</delete>
+ 	<delete id="deleteRightOfRoles" parameterType="Map">
+ 		delete from sys_role_rights where 
+ 		<foreach collection="roles" item="roleId" open=" role_id IN (" close=")" separator=",">
+					#{roleId}
+		</foreach>
+		<foreach collection="rights" item="rightsId" open=" and rights_id NOT IN (" close=")" separator=",">
+					#{rightsId}
+		</foreach>
+ 	</delete>
+ 	    
+	<select id="getActualOrgRoles" parameterType="String" resultMap="BaseResultMap">
+		select r.id,r.role_name from sys_role r where r.org_id = #{org_id}
+	</select>
+	<update id="updateRoleValid" parameterType="String">
+		update sys_role set role_valid = 1 where id = #{orgId}
+	</update>
+	<select id="getRoleByOrgId" parameterType="String" resultMap="com.synpower.dao.SysRoleMapper.BaseResultMap">
+  		SELECT 
+  			sr.id,
+  			sr.role_name 
+  		FROM 
+  			sys_role sr 
+  		WHERE sr.role_valid = 0 AND sr.role_name != '系统管理员' and sr.org_id = #{orgId} or sr.id in (1,2)
+  	</select>
+  	<select id="getRoleAll" parameterType="list" resultMap="BaseResultMap">
+  		SELECT 
+  			sr.id,
+  			sr.role_name 
+  		FROM 
+  			sys_role sr 
+  		WHERE sr.role_valid = 0 AND sr.role_name != '系统管理员' 
+  		<foreach collection="list" item="item" open="AND sr.org_id in(" separator="," close=")">
+  			#{item}
+  		</foreach>
+  		 or sr.id in (1,2) GROUP BY sr.role_name ORDER BY sr.id
+  	</select>
+  	<select id="getRoleByOrgIds" parameterType="list" resultMap="BaseResultMap">
+  		SELECT * from sys_role WHERE id != 4 
+  		<foreach collection="list" item="item" open=" and org_id in (" separator="," close=")">
+  			#{item}
+  		</foreach> OR id = 2
+  	</select>
+  	<select id="getRoleById" parameterType="integer" resultMap="BaseResultMap">
+  		select * from sys_role WHERE id=#{id}
+  	</select>
+  	<select id="getSameNameById" parameterType="String" resultMap="BaseResultMap">
+  		SELECT id FROM sys_role WHERE role_name = (SELECT role_name FROM sys_role WHERE id = #{roleId})
+  	</select>
+</mapper>
