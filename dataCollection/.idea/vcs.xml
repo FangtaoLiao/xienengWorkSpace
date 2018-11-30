@@ -2,5 +2,10 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../synpower-box" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../synpower-box/box-model" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../synpower-box/box-service" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../synpower-box/box-util" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../synpower-box/box-web" vcs="svn" />
   </component>
 </project>

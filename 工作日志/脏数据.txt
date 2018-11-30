@@ -1,0 +1,37 @@
+﻿SELECT *,FROM_UNIXTIME(LEFT(data_time,10),'%Y年%m月%d日%H时%i分')fdata_time 
+FROM inventer_storage_data WHERE plant_id = 25 ORDER BY fdata_time DESC;
+
+#查所有电站某一个逆变器在指定时间内
+select FROM_UNIXTIME(left(dsi.data_time,10)) as data_time,dsi.daily_energy,dsi.total_energy,dsi.* from data_central_inverter as dsi 
+where dsi.plant=25
+and dsi.data_time >= (CONCAT(UNIX_TIMESTAMP('2018-09-03 23:59:59'),'000') + 0)
+and dsi.data_time <= (CONCAT(UNIX_TIMESTAMP('2018-09-04 23:59:59'),'000') + 0 )
+order by dsi.daily_energy desc;
+
+#查某一个逆变器在指定时间内
+select FROM_UNIXTIME(LEFT(data_time,10),'%Y年%m月%d日%H时%i分') fdata_time,dsi.daily_energy,dsi.total_energy,
+mppt_power,active_power,dsi.* from data_string_inverter as dsi 
+where dsi.device_id in (91)
+and dsi.data_time >= (CONCAT(UNIX_TIMESTAMP('2018-11-02 23:59:59'),'000') + 0)
+and dsi.data_time <= (CONCAT(UNIX_TIMESTAMP('2018-11-03 23:59:59'),'000') + 0 )
+order by dsi.data_time desc;
+
+#查某个电站在指定时间内的
+select dsi.id,dsi.device_id,FROM_UNIXTIME(left(dsi.data_time,10)) as 
+data_time,dsi.daily_energy,dsi.total_energy  from data_central_inverter as dsi 
+where dsi.plant=25
+and dsi.data_time >= (CONCAT(UNIX_TIMESTAMP('2018-08-15 23:59:59'),'000') + 0)
+and dsi.data_time <= (CONCAT(UNIX_TIMESTAMP('2018-08-16 23:59:59'),'000') + 0 )
+order by dsi.data_time desc;
+
+
+#查某个电站的某天收益
+select FROM_UNIXTIME(left(data_time,10)),isd.*  from inventer_storage_data isd 
+where isd.plant_id=25
+and isd.data_time >= (CONCAT(UNIX_TIMESTAMP('2018-08-01 23:59:59'),'000') + 0)
+-- and isd.data_time <= (CONCAT(UNIX_TIMESTAMP('2018-08-17 23:59:59'),'000') + 0 )
+order by isd.data_time desc;
+
+
+#转时间
+#FROM_UNIXTIME(left(isd.data_time,10))

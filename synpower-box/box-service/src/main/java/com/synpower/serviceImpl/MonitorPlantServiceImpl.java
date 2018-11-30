@@ -778,12 +778,19 @@ public class MonitorPlantServiceImpl implements MonitorPlantService {
         return msg;
     }
 
+    /**
+     * @Author lz
+     * @Description: 首页排序
+     * @param: [jsonData, session]
+     * @return: {com.synpower.msg.MessageBean}
+     * @Date: 2018/11/30 15:15
+     **/
     @Override
     public MessageBean plantDist(String jsonData, Session session)
             throws SessionTimeoutException, SessionException, ServiceException {
         MessageBean msg = new MessageBean();
         Map<String, Object> parMap = Util.parseURL(jsonData);
-        String tokenId = parMap.get("tokenId") + "";
+        String tokenId = Util.getString(parMap.get("tokenId"));
         List<Integer> plants = plantInfoService.getPlantsForUser(tokenId, session, 1);
         // 电站状态筛选
         int status = Util.getInt(parMap.get("status"));
@@ -813,17 +820,8 @@ public class MonitorPlantServiceImpl implements MonitorPlantService {
             if (type == 2) {
                 // 当前区域名
                 Map<String, Object> pnameMap = new HashMap<>();
-
                 // 筛选类型
-                Object orderObj = parMap.get("orderName");
-                List<Map<String, String>> orderList = "null".equals(orderObj) ? null
-                        : "".equals(orderObj) ? null : (List<Map<String, String>>) orderObj;
-                if (!CollectionUtils.isEmpty(orderList)) {
-                    for (Map.Entry<String, String> entry : orderList.get(0).entrySet()) {
-                        mMap.put("orderName", entry.getKey());
-                        mMap.put("order", entry.getValue().toUpperCase());
-                    }
-                }
+                ServiceUtil.parseOrderName(parMap, mMap);
                 pnameMap.put("areaId", areaId);
                 pnameMap.put("plantTypeA", 1);
                 String name = addMapper.getPnames(pnameMap);
@@ -866,10 +864,14 @@ public class MonitorPlantServiceImpl implements MonitorPlantService {
         return msg;
     }
 
-    //@PostConstruct
-    //public void init() {
-    //    commonSerch(new ArrayList<>(), null);
-    //}
+
+    /**
+     * @Author lz
+     * @Description: 排序
+     * @param: [pids, orderName]
+     * @return: {java.util.HashMap<java.lang.String,java.lang.Object>}
+     * @Date: 2018/11/30 15:14
+     **/
     public HashMap<String, Object> commonSerch(List<Integer> pids, Map<String, Object> orderName) {
         SearchCondition condition = new SearchCondition();
         //BeanUtils.copyProperties(orderName, condition);
@@ -1450,6 +1452,7 @@ public class MonitorPlantServiceImpl implements MonitorPlantService {
         msg.setBody(finalMap);
         return msg;
     }
+
 
     public MessageBean commonSerch(String condition, String[] ranges, List<Integer> list, String v1, String v2,
                                    MessageBean msg, String fname, Map<String, Object> oMap, String fatherUnique) throws ServiceException {

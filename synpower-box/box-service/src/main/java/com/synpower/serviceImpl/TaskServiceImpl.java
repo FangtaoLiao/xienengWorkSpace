@@ -1,0 +1,98 @@
+package com.synpower.serviceImpl;
+
+import com.synpower.bean.AllParam;
+import com.synpower.bean.Task;
+import com.synpower.dao.TaskMapper;
+import com.synpower.msg.session.User;
+import com.synpower.service.TaskService;
+import com.synpower.util.CacheUtil0;
+import com.synpower.util.Util;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.xmlbeans.impl.xb.xsdschema.All;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class TaskServiceImpl implements TaskService {
+    @Autowired
+    private TaskMapper taskMapper;
+    @Autowired
+    CacheUtil0 cacheUtil0;
+
+    @Override
+    @Transactional
+    public boolean distribution(Map<String, Object> parMap, User user) {
+        String alarmName = Util.getString(parMap.get("alarmName"));
+        Integer alarmId = Util.getInt(parMap.get("alarmId"));
+        Integer deviceId = Util.getInt(parMap.get("deviceId"));
+        Integer yxId = Util.getInt(parMap.get("yxId"));
+        Integer plantId = Util.getInt(parMap.get("plantId"));
+        Integer personId = Util.getInt(parMap.get("personId"));
+        int userId = Util.getInt(user.getId());
+        Task task = new Task();
+        long currentTime = System.currentTimeMillis();
+        task.setUserUpId(userId);
+        task.setUserDownId(personId);
+        task.setAlarmId(alarmId);
+        task.setYxId(yxId);
+        task.setDeviceId(deviceId);
+        task.setPlantId(plantId);
+        task.setCreateTime(currentTime);
+        task.setUpdateTime(currentTime);
+        task.setLastModifyUser(userId);
+        task.setTaskStatus("0");
+        task.setTaskValid("0");
+        task.setTaskName(alarmName);
+        return taskMapper.insertSelective(task) == 1 ? true : false;
+    }
+
+    @Override
+    @Transactional
+    public boolean reback(Integer taskId, Integer userId) {
+        Task task = taskMapper.selectByPrimaryKey(taskId);
+        if (task == null)
+            return false;
+        Integer taskStatus = Util.getInt(task.getTaskStatus());
+        if (taskStatus > 2 || taskStatus < 1)
+            return false;
+        taskStatus -= 1;
+        task.setTaskStatus(taskStatus + "");
+        task.setLastModifyUser(userId);
+        task.setUpdateTime(System.currentTimeMillis());
+
+        cacheUtil0.updateTaskStatus(task.getDeviceId() + "", task.getYxId() + "", taskStatus + "");
+        return taskMapper.updateByPrimaryKeySelective(task) == 1 ? true : false;
+    }
+
+    @Override
+    public boolean delete(Integer taskId) {
+        Task task = taskMapper.selectByPrimaryKey(taskId);
+        if (task == null)
+            return false;
+        task.setTaskValid(1 + "");
+        return taskMapper.updateByPrimaryKeySelective(task) == 1 ? true : false;
+    }
+
+    @Override
+    public List<Map<String, Object>> getList(Map<String, Object> parMap) throws InvocationTargetException, IllegalAccessException {
+        AllParam allParam = new AllParam();
+        //allParam.setOrderName(Util.get);
+        //List<Object> taskList = taskMapper.getTaskList(allParam);
+        BeanUtils.populate(allParam,parMap);  //将map中与allParam属性名相同的键将值赋给allParam
+        if(Util.isEmpty(allParam.getLength())){
+             allParam.setStart("10");
+        }
+        if(Util.isEmpty(allParam.getStart())){
+            allParam.setStart("0");
+        }
+
+
+        return null;
+    }
+}
