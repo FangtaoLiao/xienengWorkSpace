@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.CollModelDetailMqttMapper">
+	<resultMap id="BaseResultMap"
+		type="com.synpower.bean.CollModelDetailMqtt">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="signal_name" jdbcType="VARCHAR"
+			property="signalName" />
+		<result column="data_mode" jdbcType="INTEGER"
+			property="dataMode" />
+		<result column="signal_type" jdbcType="CHAR"
+			property="signalType" />
+		<result column="address_id" jdbcType="INTEGER"
+			property="addressId" />
+		<result column="signal_sub_id" jdbcType="INTEGER"
+			property="signalSubId" />
+		<result column="signal_guid" jdbcType="VARCHAR"
+			property="signalGuid" />
+		<result column="real_type" jdbcType="CHAR" property="realType" />
+		<result column="data_type" jdbcType="TINYINT"
+			property="dataType" />
+		<result column="start_bit" jdbcType="INTEGER"
+			property="startBit" />
+		<result column="bit_length" jdbcType="INTEGER"
+			property="bitLength" />
+		<result column="data_gain" jdbcType="REAL" property="dataGain" />
+		<result column="correction_factor" jdbcType="REAL"
+			property="correctionFactor" />
+		<result column="minVal" jdbcType="REAL" property="minval" />
+		<result column="maxVal" jdbcType="REAL" property="maxval" />
+		<result column="data_unit" jdbcType="VARCHAR"
+			property="dataUnit" />
+		<result column="single_register" jdbcType="CHAR"
+			property="singleRegister" />
+		<result column="special_process" jdbcType="VARCHAR"
+			property="specialProcess" />
+		<result column="visibility" jdbcType="CHAR"
+			property="visibility" />
+		<result column="push" jdbcType="CHAR" property="push" />
+		<result column="dId" jdbcType="INTEGER" property="dId" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, signal_name, data_mode, signal_type, address_id,
+		signal_sub_id,
+		signal_guid,
+		real_type, data_type, start_bit, bit_length,
+		data_gain, correction_factor,
+		minVal,
+		maxVal, data_unit,
+		single_register, special_process, visibility, push, valid
+	</sql>
+
+	<select id="getGuidForDevice" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT dev.id dId,temp.signal_guid from (
+		SELECT cmd.signal_guid
+		,cmd.data_mode from coll_model_detail_mqtt cmd
+		where cmd.signal_guid in
+		(SELECT fsg.signal_guid from field_signal_guid_mapping fsg where
+		fsg.coll_id
+		in
+		(SELECT id from coll_signal_label csl where
+		csl.tableName=#{tableName} and
+		csl.field=#{field} )
+		)
+		<foreach collection="modelList" item="model"
+			open=" and cmd.data_mode in (" close=")" separator=",">
+			#{model}
+		</foreach>
+		)temp join coll_device dev on temp.data_mode=dev.data_mode
+		where
+		dev.device_valid=0
+		<foreach collection="deviceList" item="deviceId"
+			open=" and dev.id IN (" close=")" separator=",">
+			#{deviceId}
+		</foreach>
+	</select>
+
+	<select id="getYKValueOfDevice" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT mq.id,mq.signal_guid,mq.signal_name,mq.data_unit from
+		coll_model_detail_mqtt mq where mq.data_mode=#{dataModel} and valid=0
+		and mq.real_type='YK' and visibility =1
+	</select>
+	<select id="getYTValueOfDevice" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * from coll_model_detail_mqtt mq where
+		mq.data_mode=#{dataModel} and
+		valid=0 and mq.real_type='YT' and
+		mq.visibility=1
+	</select>
+	<select id="getSignalValueOfInveter" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * from coll_model_detail_mqtt mqtt where
+		mqtt.data_mode=#{dataModel}
+		and mqtt.real_type="YC" and
+		mqtt.visibility!=0
+	</select>
+	<select id="getSignalValueOfElectric" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT cmd.signal_guid,cmd.signal_name,cmd.data_unit from
+		coll_model_detail_mqtt cmd
+		where cmd.data_mode=#{deviceId}
+		and
+		cmd.signal_guid in
+		(SELECT fsg.signal_guid from
+		field_signal_guid_mapping fsg where fsg.coll_id
+		in
+		(SELECT id from
+		coll_signal_label csl where csl.tableName=#{tableName}
+		<foreach collection="list" item="field"
+			open=" and csl.field IN (" close=")" separator=",">
+			#{field}
+		</foreach>
+		))
+	</select>
+	<select id="getYXValueOfDevice" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * from coll_model_detail_mqtt mqtt where
+		mqtt.real_type="YX" and
+		visibility!=0 and mqtt.data_mode=#{dataModel}
+	</select>
+	<select id="getDetailByGuid" parameterType="String"
+		resultMap="BaseResultMap">
+		select * from coll_model_detail_mqtt where
+		signal_guid=#{signalGuid}
+	</select>
+	<insert id="insertMq" parameterType="map"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO coll_model_detail_mqtt VALUES
+		<foreach collection="mqs" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</insert>
+	<select id="getYCList" parameterType="map"
+		resultMap="BaseResultMap">
+		SELECT * from coll_model_detail_mqtt mqtt where
+		mqtt.real_type="YC" and
+		visibility!=0 and
+		mqtt.data_mode=#{dataModel}
+		and mqtt.valid=0 LIMIT #{offset},#{length}
+	</select>
+	<select id="getTotalCount" parameterType="map"
+		resultType="integer">
+		SELECT IFNULL(count(*),0) from coll_model_detail_mqtt mqtt
+		where
+		mqtt.real_type="YC" and visibility!=0 and
+		mqtt.data_mode=#{dataModel} and mqtt.valid=0
+	</select>
+	<select id="getYKList" parameterType="map" resultMap="ykMap">
+		SELECT
+		mqtt.signal_name,mqtt.real_type,mqtt.minVal,mqtt.maxVal,mqtt.data_gain,yk.status_value
+		from coll_model_detail_mqtt mqtt join coll_ykyt_expand yk on
+		yk.signal_guid=mqtt.signal_guid where mqtt.real_type="YK" OR
+		mqtt.real_type="YT" and
+		mqtt.data_mode=#{dataModel} and mqtt.valid=0
+		LIMIT #{offset},#{length}
+	</select>
+	<select id="getTotalYK" parameterType="map" resultType="integer">
+		SELECT
+		IFNULL(count(*),0)
+		from coll_model_detail_mqtt mqtt join
+		coll_ykyt_expand yk on
+		yk.signal_guid=mqtt.signal_guid where
+		mqtt.real_type="YK" OR
+		mqtt.real_type="YT" and
+		mqtt.data_mode=#{dataModel} and mqtt.valid=0
+	</select>
+	<resultMap id="ykMap" type="java.util.LinkedHashMap">
+		<result column="signal_name" property="signalName"
+			jdbcType="VARCHAR" />
+		<result column="status_value" property="statusValue"
+			jdbcType="INTEGER" />
+		<result column="real_type" property="realType" jdbcType="CHAR" />
+		<result column="data_gain" jdbcType="REAL" property="dataGain" />
+		<result column="minVal" jdbcType="REAL" property="minval" />
+		<result column="maxVal" jdbcType="REAL" property="maxval" />
+	</resultMap>
+	<select id="getYXList" parameterType="map" resultMap="yxMap">
+		SELECT
+		IFNULL(mqtt.start_bit,null) as startBit,IFNULL(mqtt.push,null) as
+		push,mqtt.visibility, yx.signal_name,
+		yx.alarm_type,yx.status_value,yx.status_name,yx.alarm_level,yx.yc_alarm,yx.alarm_bit_length,IFNULL(yx.alarm_reason,null)
+		as alarmReason,IFNULL(yx.suggest,null) as
+		suggest,IFNULL(yx.fault_point,null) as faultPoint
+		from
+		coll_model_detail_mqtt mqtt join coll_yx_expand yx on
+		yx.signal_guid=mqtt.signal_guid where mqtt.real_type="YX"
+		and
+		mqtt.data_mode=#{dataModel} and mqtt.valid=0 LIMIT
+		#{offset},#{length}
+	</select>
+	<select id="getTotalYX" parameterType="map" resultType="integer">
+		SELECT
+		IFNULL(count(*),0)
+		from coll_model_detail_mqtt mqtt join coll_yx_expand
+		yx on
+		yx.signal_guid=mqtt.signal_guid where mqtt.real_type="YX"
+		and
+		mqtt.data_mode=#{dataModel} and mqtt.valid=0
+	</select>
+	<resultMap id="yxMap" type="java.util.LinkedHashMap">
+		<result column="start_bit" property="startBit"
+			jdbcType="INTEGER" />
+		<result column="push" property="push" jdbcType="CHAR" />
+		<result column="signal_name" property="signalName"
+			jdbcType="VARCHAR" />
+		<result column="alarm_type" property="alarmType"
+			jdbcType="CHAR" />
+		<result column="status_value" property="statusValue"
+			jdbcType="INTEGER" />
+		<result column="status_name" property="statusName"
+			jdbcType="VARCHAR" />
+		<result column="alarm_level" property="alarmLevel"
+			jdbcType="VARCHAR" />
+		<result column="yc_alarm" property="ycAlarm" jdbcType="INTEGER" />
+		<result column="alarm_bit_length" property="alarmBitLength"
+			jdbcType="INTEGER" />
+		<result column="alarm_reason" property="alarmReason"
+			jdbcType="VARCHAR" />
+		<result column="suggest" property="suggest" jdbcType="VARCHAR" />
+		<result column="fault_point" property="faultPoint"
+			jdbcType="CHAR" />
+		<result column="visibility" property="visibility"
+			jdbcType="CHAR" />
+	</resultMap>
+</mapper>

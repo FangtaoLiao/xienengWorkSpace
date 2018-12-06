@@ -1,5 +1,7 @@
 package com.synpowertech.dataCollectionJar.utils;
 
+import java.util.TimeZone;
+
 public class TimeUtil {
 
     //把时间转换为5分钟的整数 向最进五分钟整数靠拢
@@ -15,5 +17,10 @@ public class TimeUtil {
         currTime = countplus * (long) minute;
 
         return currTime;
+    }
+
+    public static long getDay0() {
+        return System.currentTimeMillis() / (1000 * 3600 * 24) * (1000 * 3600 * 24)
+                - TimeZone.getDefault().getRawOffset();
     }
 }

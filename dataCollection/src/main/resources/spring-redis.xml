@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>  
-<beans xmlns="http://www.springframework.org/schema/beans"  
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"  
-    xmlns:context="http://www.springframework.org/schema/context"  
-    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"  
-    xmlns:aop="http://www.springframework.org/schema/aop"  
-    xsi:schemaLocation="  
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">  
 
@@ -103,5 +101,20 @@
     
 	<bean id="jedisUtil4plantStatus" class="com.synpowertech.dataCollectionJar.initialization.JedisUtil4plantStatus" init-method="initMethod">
 		<property name="shardedJedisPool" ref="shardedJedisPool4plantStatus"></property>
+	</bean>
+
+	<bean id="shardedJedisPool4OPS" class="redis.clients.jedis.ShardedJedisPool" scope="singleton">
+		<constructor-arg index="0" ref="jedisPoolConfig"/>
+		<constructor-arg index="1">
+			<list>
+				<bean class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg index="0" value="${redis.uri.0}"/>
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="JedisUtil4OPS" class="com.synpowertech.dataCollectionJar.initialization.JedisUtil4OPS">
+		<property name="shardedJedisPool" ref="shardedJedisPool4OPS"></property>
 	</bean>
 </beans>

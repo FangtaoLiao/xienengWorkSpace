@@ -17,6 +17,19 @@
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://192.168.1.198/svn/SynpowerColl/branches" />
+                  <option value="https://192.168.1.198/svn/SynpowerColl/tags" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://192.168.1.198/svn/SynpowerColl/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../synpower-box">
           <value>
             <SvnBranchConfiguration>

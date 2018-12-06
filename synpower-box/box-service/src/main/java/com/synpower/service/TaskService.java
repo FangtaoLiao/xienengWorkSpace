@@ -1,5 +1,6 @@
 package com.synpower.service;
 
+import com.synpower.bean.AllParam;
 import com.synpower.lang.ServiceException;
 import com.synpower.lang.SessionException;
 import com.synpower.lang.SessionTimeoutException;
@@ -37,5 +38,5 @@ public interface TaskService {
      * @return: {java.util.List<java.util.Map<java.lang.String,java.lang.Object>>}
      * @Date: 2018/11/21 16:37
      **/
-    List<Map<String, Object>> getList(Map<String, Object> parMap) throws InvocationTargetException, IllegalAccessException;
+    List<AllParam> getList(Map<String, Object> parMap) throws InvocationTargetException, IllegalAccessException;
 }

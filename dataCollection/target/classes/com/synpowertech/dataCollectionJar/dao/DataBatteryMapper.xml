@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.DataBatteryMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.DataBattery">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="u_cell" jdbcType="REAL" property="uCell" />
+    <result column="i_cell" jdbcType="REAL" property="iCell" />
+    <result column="inner_resistance" jdbcType="REAL" property="innerResistance" />
+    <result column="temp_cell" jdbcType="REAL" property="tempCell" />
+    <result column="left_capacity" jdbcType="REAL" property="leftCapacity" />
+    <result column="left_capacity_percent" jdbcType="REAL" property="leftCapacityPercent" />
+    <result column="soc_cell" jdbcType="REAL" property="socCell" />
+    <result column="running_status" jdbcType="TINYINT" property="runningStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_id, plant, data_time, u_cell, i_cell, inner_resistance, temp_cell, left_capacity, 
+    left_capacity_percent, soc_cell, running_status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_battery
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+    <!-- 根据deviceId和dataTime查询 -->
+  <select id="selectByIdAndDataTime"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from data_battery
+    where device_id = #{deviceId,jdbcType=INTEGER} and data_time = #{dataTime,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from data_battery
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.DataBattery">
+    insert into data_battery (id, device_id, plant, 
+      data_time, u_cell, i_cell, inner_resistance, 
+      temp_cell, left_capacity, left_capacity_percent, 
+      soc_cell, running_status)
+    values (#{id,jdbcType=BIGINT}, #{deviceId,jdbcType=INTEGER}, #{plant,jdbcType=INTEGER}, 
+      #{dataTime,jdbcType=BIGINT}, #{uCell,jdbcType=REAL}, #{iCell,jdbcType=REAL}, #{innerResistance,jdbcType=REAL}, 
+      #{tempCell,jdbcType=REAL}, #{leftCapacity,jdbcType=REAL}, #{leftCapacityPercent,jdbcType=REAL}, 
+      #{socCell,jdbcType=REAL}, #{runningStatus,jdbcType=TINYINT})
+  </insert>
+  
+    <!-- 批量插入 -->
+  <insert id="insertBatch"  parameterType="java.util.List">  
+    insert into data_battery (id, device_id, plant, 
+      data_time, u_cell, i_cell, inner_resistance, 
+      temp_cell, left_capacity, left_capacity_percent, 
+      soc_cell, running_status)
+      values
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id,jdbcType=BIGINT}, #{item.deviceId,jdbcType=INTEGER}, #{item.plant,jdbcType=INTEGER}, 
+      #{item.dataTime,jdbcType=BIGINT}, #{item.uCell,jdbcType=REAL}, #{item.iCell,jdbcType=REAL}, #{item.innerResistance,jdbcType=REAL}, 
+      #{item.tempCell,jdbcType=REAL}, #{item.leftCapacity,jdbcType=REAL}, #{item.leftCapacityPercent,jdbcType=REAL}, 
+      #{item.socCell,jdbcType=REAL}, #{item.runningStatus,jdbcType=TINYINT})
+    </foreach>  
+  </insert>  
+  
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataBattery">
+    insert into data_battery
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="plant != null">
+        plant,
+      </if>
+      <if test="dataTime != null">
+        data_time,
+      </if>
+      <if test="uCell != null">
+        u_cell,
+      </if>
+      <if test="iCell != null">
+        i_cell,
+      </if>
+      <if test="innerResistance != null">
+        inner_resistance,
+      </if>
+      <if test="tempCell != null">
+        temp_cell,
+      </if>
+      <if test="leftCapacity != null">
+        left_capacity,
+      </if>
+      <if test="leftCapacityPercent != null">
+        left_capacity_percent,
+      </if>
+      <if test="socCell != null">
+        soc_cell,
+      </if>
+      <if test="runningStatus != null">
+        running_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="uCell != null">
+        #{uCell,jdbcType=REAL},
+      </if>
+      <if test="iCell != null">
+        #{iCell,jdbcType=REAL},
+      </if>
+      <if test="innerResistance != null">
+        #{innerResistance,jdbcType=REAL},
+      </if>
+      <if test="tempCell != null">
+        #{tempCell,jdbcType=REAL},
+      </if>
+      <if test="leftCapacity != null">
+        #{leftCapacity,jdbcType=REAL},
+      </if>
+      <if test="leftCapacityPercent != null">
+        #{leftCapacityPercent,jdbcType=REAL},
+      </if>
+      <if test="socCell != null">
+        #{socCell,jdbcType=REAL},
+      </if>
+      <if test="runningStatus != null">
+        #{runningStatus,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.DataBattery">
+    update data_battery
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="plant != null">
+        plant = #{plant,jdbcType=INTEGER},
+      </if>
+      <if test="dataTime != null">
+        data_time = #{dataTime,jdbcType=BIGINT},
+      </if>
+      <if test="uCell != null">
+        u_cell = #{uCell,jdbcType=REAL},
+      </if>
+      <if test="iCell != null">
+        i_cell = #{iCell,jdbcType=REAL},
+      </if>
+      <if test="innerResistance != null">
+        inner_resistance = #{innerResistance,jdbcType=REAL},
+      </if>
+      <if test="tempCell != null">
+        temp_cell = #{tempCell,jdbcType=REAL},
+      </if>
+      <if test="leftCapacity != null">
+        left_capacity = #{leftCapacity,jdbcType=REAL},
+      </if>
+      <if test="leftCapacityPercent != null">
+        left_capacity_percent = #{leftCapacityPercent,jdbcType=REAL},
+      </if>
+      <if test="socCell != null">
+        soc_cell = #{socCell,jdbcType=REAL},
+      </if>
+      <if test="runningStatus != null">
+        running_status = #{runningStatus,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.DataBattery">
+    update data_battery
+    set device_id = #{deviceId,jdbcType=INTEGER},
+      plant = #{plant,jdbcType=INTEGER},
+      data_time = #{dataTime,jdbcType=BIGINT},
+      u_cell = #{uCell,jdbcType=REAL},
+      i_cell = #{iCell,jdbcType=REAL},
+      inner_resistance = #{innerResistance,jdbcType=REAL},
+      temp_cell = #{tempCell,jdbcType=REAL},
+      left_capacity = #{leftCapacity,jdbcType=REAL},
+      left_capacity_percent = #{leftCapacityPercent,jdbcType=REAL},
+      soc_cell = #{socCell,jdbcType=REAL},
+      running_status = #{runningStatus,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

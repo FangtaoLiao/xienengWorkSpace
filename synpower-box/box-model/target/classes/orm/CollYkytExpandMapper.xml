@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.CollYkytExpandMapper">
+<resultMap id="BaseResultMap" type="com.synpower.bean.CollYkytExpand">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="data_model" jdbcType="INTEGER" property="dataModel" />
+    <result column="signal_guid" jdbcType="VARCHAR" property="signalGuid" />
+    <result column="signal_name" jdbcType="VARCHAR" property="signalName" />
+    <result column="yc_control" jdbcType="INTEGER" property="ycControl" />
+    <result column="control_bit" jdbcType="INTEGER" property="controlBit" />
+    <result column="status_value" jdbcType="INTEGER" property="statusValue" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, data_model, signal_guid, signal_name, yc_control, control_bit, status_value, 
+    valid
+  </sql>
+  <select id="getValuesOfYK" parameterType="String" resultMap="BaseResultMap">
+	  SELECT * from coll_ykyt_expand yk where yk.signal_guid=#{signalGuid} and valid=0
+  </select>
+  <insert id="saveYKExcel" parameterType="java.util.List">  
+    insert into coll_ykyt_expand (signal_guid,signal_name,yc_control,control_bit,status_value,valid)   
+    values  
+    <foreach collection="yks" item="item" index="index" separator="," >  
+        (#{item.signalGuid},#{item.signalName},#{item.ycControl},#{item.controlBit},#{item.statusValue},#{item.valid})  
+    </foreach>  
+  </insert> 
+</mapper>

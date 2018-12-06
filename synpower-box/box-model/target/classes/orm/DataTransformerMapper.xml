@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DataTransformerMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DataTransformer">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+    <result column="plant" jdbcType="INTEGER" property="plant" />
+    <result column="data_time" jdbcType="BIGINT" property="dataTime" />
+    <result column="u_output_a" jdbcType="REAL" property="uOutputA" />
+    <result column="u_output_b" jdbcType="REAL" property="uOutputB" />
+    <result column="u_output_c" jdbcType="REAL" property="uOutputC" />
+    <result column="i_output_a" jdbcType="REAL" property="iOutputA" />
+    <result column="i_output_b" jdbcType="REAL" property="iOutputB" />
+    <result column="i_output_c" jdbcType="REAL" property="iOutputC" />
+    <result column="running_status" jdbcType="TINYINT" property="runningStatus" />
+    <result column="grid_frequency" jdbcType="REAL" property="gridFrequency" />
+    <result column="active_power" jdbcType="REAL" property="activePower" />
+    <result column="reactive_power" jdbcType="REAL" property="reactivePower" />
+    <result column="transfer_efficiency" jdbcType="REAL" property="transferEfficiency" />
+    <result column="power_factor" jdbcType="REAL" property="powerFactor" />
+    <result column="inner_temperature" jdbcType="REAL" property="innerTemperature" />
+    <result column="u_input_a2" jdbcType="REAL" property="uInputA2" />
+    <result column="u_input_b2" jdbcType="REAL" property="uInputB2" />
+    <result column="u_input_c2" jdbcType="REAL" property="uInputC2" />
+    <result column="i_input_a2" jdbcType="REAL" property="iInputA2" />
+    <result column="i_input_b2" jdbcType="REAL" property="iInputB2" />
+    <result column="i_input_c2" jdbcType="REAL" property="iInputC2" />
+    <result column="u_input_a1" jdbcType="REAL" property="uInputA1" />
+    <result column="u_input_b1" jdbcType="REAL" property="uInputB1" />
+    <result column="u_input_c1" jdbcType="REAL" property="uInputC1" />
+    <result column="i_input_a1" jdbcType="REAL" property="iInputA1" />
+    <result column="i_input_b1" jdbcType="REAL" property="iInputB1" />
+    <result column="i_input_c1" jdbcType="REAL" property="iInputC1" />
+  </resultMap>
+</mapper>

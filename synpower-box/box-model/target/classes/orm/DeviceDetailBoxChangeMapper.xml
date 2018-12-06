@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DeviceDetailBoxChangeMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DeviceDetailBoxChange">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="model_identity" jdbcType="VARCHAR" property="modelIdentity" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="photo_path" jdbcType="VARCHAR" property="photoPath" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, model_identity, device_type, manufacturer, model, photo_path, valid
+  </sql>
+  <!-- <include refid="Base_Column_List" /> -->
+</mapper>

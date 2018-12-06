@@ -5,14 +5,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import com.synpowertech.dataCollectionJar.dao.YxInfoMapper;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author ybj
  * @date 2018年9月1日上午10:47:24
  * @Description -_-
  */
+
 public class Test01 {
+
+    private static YxInfoMapper yxInfoMapper;
+    @Autowired
+    private YxInfoMapper yxInfoMapperTemp;
+
 
     //把时间转换为5分钟的整数 向最进五分钟整数靠拢
     private static long getTo5Int(long currTime) {

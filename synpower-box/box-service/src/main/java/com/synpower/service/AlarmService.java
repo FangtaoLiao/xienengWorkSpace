@@ -6,6 +6,7 @@ import com.synpower.lang.SessionTimeoutException;
 import com.synpower.msg.MessageBean;
 import com.synpower.msg.session.Session;
 
+import java.util.List;
 import java.util.Map;
 
 public interface AlarmService {
@@ -61,5 +62,19 @@ public interface AlarmService {
 	
 	public MessageBean getAlarmData(String jsonData, Session session) throws ServiceException, SessionException, SessionTimeoutException;
 
-    Map<String,Object> recentAlarmList(Map<String, Object> jsonMap);
+	/**
+	 * @Description: 获取告警列表
+	 * @param jsonMap
+	 * @return
+	 */
+	MessageBean recentAlarmList(Map<String, Object> jsonMap);
+
+	/**
+	 * @Description: 获取不同等级的告警列表
+	 * @param jssonMap
+	 * @return
+	 */
+    MessageBean recentAlarmListByLevel(Map<String,Object> jssonMap);
+
+    MessageBean getPlantInfo();
 }

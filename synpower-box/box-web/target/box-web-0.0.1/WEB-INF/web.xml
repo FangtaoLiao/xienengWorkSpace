@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+
+
+<web-app>
+	<!-- 关于SpringMVC的配置 -->
+	<servlet>
+		<servlet-name>springMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>WEB-INF/spring/webmvc-config.xml</param-value>
+		</init-param>
+		<load-on-startup>0</load-on-startup>
+		<async-supported>true</async-supported>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+ 	<absolute-ordering />
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>WEB-INF/log4j.properties</param-value>
+	</context-param>
+	<!-- 启多个项目时需要不同的 webAppRootKey-->
+	<context-param>
+	<param-name>webAppRootKey</param-name>
+	<param-value>webapp.box-web.root</param-value>
+	</context-param>
+	<context-param>
+		<param-name>log4jRefreshInterval</param-name>
+		<param-value>3000</param-value>
+	</context-param>
+	<listener>
+		<listener-class>
+			org.springframework.web.util.Log4jConfigListener
+		</listener-class>
+	</listener>
+	<filter>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<async-supported>true</async-supported>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+    	<filter-name>characterEncodingFilter</filter-name>
+    	<url-pattern>/*</url-pattern>
+  	</filter-mapping>
+  	<!-- <filter>
+        <filter-name>RequestFilter</filter-name>
+        <filter-class>com.synpower.handler.RequestHander</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>RequestFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping> -->
+  	<filter>
+  <filter-name>DruidWebStatFilter</filter-name>
+  <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+  <init-param>
+    <param-name>exclusions</param-name>
+    <param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,*.jsp,/druid/*,/download/*</param-value>
+  </init-param>
+  <init-param>
+    <param-name>sessionStatMaxCount</param-name>
+    <param-value>2000</param-value>
+  </init-param>
+  <init-param>
+    <param-name>sessionStatEnable</param-name>
+    <param-value>true</param-value>
+  </init-param>
+  <init-param>
+    <param-name>principalSessionName</param-name>
+    <param-value>session_user_key</param-value>
+  </init-param>
+  <init-param>
+    <param-name>profileEnable</param-name>
+    <param-value>true</param-value>
+  </init-param>
+</filter>
+<filter-mapping>
+  <filter-name>DruidWebStatFilter</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
+<servlet>
+  <servlet-name>DruidStatView</servlet-name>
+  <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+  <init-param>
+    <!-- 允许清空统计数据 -->
+    <param-name>resetEnable</param-name>
+    <param-value>true</param-value>
+  </init-param>
+  <init-param>
+    <!-- 用户名 -->
+    <param-name>loginUsername</param-name>
+    <param-value>root</param-value>
+  </init-param>
+  <init-param>
+    <!-- 密码 -->
+    <param-name>loginPassword</param-name>
+    <param-value>synpower</param-value>
+  </init-param>
+</servlet>
+<servlet-mapping>
+    <servlet-name>DruidStatView</servlet-name>
+    <url-pattern>/druid/*</url-pattern>
+</servlet-mapping>
+ <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+</web-app>

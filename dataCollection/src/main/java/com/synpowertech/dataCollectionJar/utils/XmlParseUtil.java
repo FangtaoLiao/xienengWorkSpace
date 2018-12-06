@@ -1,10 +1,7 @@
 package com.synpowertech.dataCollectionJar.utils;
 
 import com.synpowertech.dataCollectionJar.domain.*;
-import com.synpowertech.dataCollectionJar.initialization.JedisUtil;
-import com.synpowertech.dataCollectionJar.initialization.JedisUtil4plantStatus;
-import com.synpowertech.dataCollectionJar.initialization.JedisUtil4signal;
-import com.synpowertech.dataCollectionJar.initialization.RabbitMqProducer;
+import com.synpowertech.dataCollectionJar.initialization.*;
 import com.synpowertech.dataCollectionJar.service.IDataSaveService;
 import com.synpowertech.dataCollectionJar.timedTask.DataSaveTask;
 import org.apache.commons.lang3.StringUtils;
@@ -177,7 +174,6 @@ public class XmlParseUtil implements InitializingBean {
                             if (dataMode == null) {
                                 continue;
                             }
-
 
                             if (devIdTemp == null) {
                                 devIdTemp = deviceId;
@@ -480,7 +476,7 @@ public class XmlParseUtil implements InitializingBean {
                 if (!"Yx".equals(typeName)) {
 
                     //遥测表遥信数据如果有变位增加存数据库的操作
-                    List<DataYx> yc4yxDataList = new ArrayList<DataYx>();
+                    List<DataYx> yc4yxDataList = new ArrayList<>();
                     for (Element detailType : detailTypes) {
 
                         //"0"表示数据采集正常
@@ -503,7 +499,7 @@ public class XmlParseUtil implements InitializingBean {
 
                             if (devIdTemp == null) {
                                 devIdTemp = deviceId;
-                                signalGuidMap = JedisUtil.getMap(deviceId) == null ? new HashMap<String, String>() : JedisUtil.getMap(deviceId);
+                                signalGuidMap = JedisUtil.getMap(deviceId) == null ? new HashMap<>() : JedisUtil.getMap(deviceId);
                             } else if (!deviceId.equals(devIdTemp)) {
                                 //先更新一次上一个设备状态
                                 signalGuidMap.put("data_time", data_time);
@@ -587,7 +583,7 @@ public class XmlParseUtil implements InitializingBean {
 
                 } else {
                     //遥信数据增加存数据库的操作
-                    List<DataYx> yxDataList = new ArrayList<DataYx>();
+                    List<DataYx> yxDataList = new ArrayList<>();
                     for (Element detailType : detailTypes) {
                         //"0"表示数据采集正常
                         if ("0".equals(detailType.attributeValue("q"))) {
@@ -1321,13 +1317,17 @@ public class XmlParseUtil implements InitializingBean {
                     //关联表查到yx_id存库
                     Integer yxId = CacheMappingUtil.signalGuid2yxId(signalGuid, signalValTarget);
                     if (yxId != null) {
+                        DataYx dataYx;
                         //正常遥信status传0或1,其他的传1
                         if (signalVal4compare > 1) {
-                            yc4yxDataList.add(new DataYx(Integer.parseInt(deviceId), yxId, Long.parseLong(data_time), signalValTarget, "1", "0"));
+                            yc4yxDataList.add(dataYx = new DataYx(Integer.parseInt(deviceId), yxId, Long.parseLong(data_time), signalValTarget, "1", "0"));
                         } else {
-                            yc4yxDataList.add(new DataYx(Integer.parseInt(deviceId), yxId, Long.parseLong(data_time), signalValTarget, signalValTarget, "0"));
+                            yc4yxDataList.add(dataYx = new DataYx(Integer.parseInt(deviceId), yxId, Long.parseLong(data_time), signalValTarget, signalValTarget, "0"));
                         }
-
+                        // yxId是告警则存redis
+                        if (DeviceCache.alramLevelMap.get(yxId) != null) {
+                            JedisUtil4OPS.addAlarm(dataYx);
+                        }
                         //TODO 增加电站状态，0表示正常，1表示异常和故障
                         if (CacheMappingUtil.yxIdAlarmContain(yxId)) {
                             Integer plantId = CacheMappingUtil.devId2plantId(Integer.parseInt(deviceId));

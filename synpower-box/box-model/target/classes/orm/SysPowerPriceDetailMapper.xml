@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysPowerPriceDetailMapper">
+	<resultMap id="BaseResultMap"
+		type="com.synpower.bean.SysPowerPriceDetail">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="pos_price" jdbcType="REAL" property="posPrice" />
+		<result column="neg_price" jdbcType="REAL" property="negPrice" />
+		<result column="start_time" jdbcType="VARCHAR"
+			property="startTime" />
+		<result column="end_time" jdbcType="VARCHAR" property="endTime" />
+		<result column="price_type" jdbcType="INTEGER"
+			property="priceType" />
+		<result column="price_id" jdbcType="INTEGER" property="priceId" />
+		<result column="price_valid" jdbcType="CHAR"
+			property="priceValid" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, pos_price, neg_price, start_time, end_time, price_type,
+		price_id,
+		price_valid
+	</sql>
+	<select id="selectByPrimaryKey"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_power_price_detail
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from sys_power_price_detail
+		where id =
+		#{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert"
+		parameterType="com.synpower.bean.SysPowerPriceDetail">
+		insert into sys_power_price_detail (id, pos_price,
+		neg_price,
+		start_time, end_time, price_type,
+		price_id, price_valid)
+		values (#{id,jdbcType=INTEGER}, #{posPrice,jdbcType=REAL},
+		#{negPrice,jdbcType=REAL},
+		#{startTime,jdbcType=VARCHAR},
+		#{endTime,jdbcType=VARCHAR}, #{priceType,jdbcType=INTEGER},
+		#{priceId,jdbcType=INTEGER}, #{priceValid,jdbcType=CHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.synpower.bean.SysPowerPriceDetail">
+		insert into sys_power_price_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="posPrice != null">
+				pos_price,
+			</if>
+			<if test="negPrice != null">
+				neg_price,
+			</if>
+			<if test="startTime != null">
+				start_time,
+			</if>
+			<if test="endTime != null">
+				end_time,
+			</if>
+			<if test="priceType != null">
+				price_type,
+			</if>
+			<if test="priceId != null">
+				price_id,
+			</if>
+			<if test="priceValid != null">
+				price_valid,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="posPrice != null">
+				#{posPrice,jdbcType=REAL},
+			</if>
+			<if test="negPrice != null">
+				#{negPrice,jdbcType=REAL},
+			</if>
+			<if test="startTime != null">
+				#{startTime,jdbcType=VARCHAR},
+			</if>
+			<if test="endTime != null">
+				#{endTime,jdbcType=VARCHAR},
+			</if>
+			<if test="priceType != null">
+				#{priceType,jdbcType=INTEGER},
+			</if>
+			<if test="priceId != null">
+				#{priceId,jdbcType=INTEGER},
+			</if>
+			<if test="priceValid != null">
+				#{priceValid,jdbcType=CHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.synpower.bean.SysPowerPriceDetail">
+		update sys_power_price_detail
+		<set>
+			<if test="posPrice != null">
+				pos_price = #{posPrice,jdbcType=REAL},
+			</if>
+			<if test="negPrice != null">
+				neg_price = #{negPrice,jdbcType=REAL},
+			</if>
+			<if test="startTime != null">
+				start_time = #{startTime,jdbcType=VARCHAR},
+			</if>
+			<if test="endTime != null">
+				end_time = #{endTime,jdbcType=VARCHAR},
+			</if>
+			<if test="priceType != null">
+				price_type = #{priceType,jdbcType=INTEGER},
+			</if>
+			<if test="priceId != null">
+				price_id = #{priceId,jdbcType=INTEGER},
+			</if>
+			<if test="priceValid != null">
+				price_valid = #{priceValid,jdbcType=CHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.synpower.bean.SysPowerPriceDetail">
+		update sys_power_price_detail
+		set pos_price =
+		#{posPrice,jdbcType=REAL},
+		neg_price = #{negPrice,jdbcType=REAL},
+		start_time = #{startTime,jdbcType=VARCHAR},
+		end_time =
+		#{endTime,jdbcType=VARCHAR},
+		price_type =
+		#{priceType,jdbcType=INTEGER},
+		price_id = #{priceId,jdbcType=INTEGER},
+		price_valid = #{priceValid,jdbcType=CHAR}
+		where id =
+		#{id,jdbcType=INTEGER}
+	</update>
+	<select id="getPlantPowerPrice" parameterType="integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_power_price_detail where price_id=#{priceId} and
+		price_valid=0
+	</select>
+	<select id="getPlantPriceDetail" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM sys_power_price_detail WHERE price_id = #{priceId} AND
+		price_valid = 0
+	</select>
+	<select id="getPlantPriceDetailByPlantId"
+		parameterType="Integer" resultMap="BaseResultMap">
+		SELECT
+		sppd.*
+		FROM
+		plant_info pi
+		LEFT
+		JOIN
+		sys_power_price_detail sppd ON pi.price_id = sppd.price_id
+		WHERE
+		pi.id =
+		#{plantId}
+		AND sppd.price_valid = 0;
+	</select>
+</mapper>

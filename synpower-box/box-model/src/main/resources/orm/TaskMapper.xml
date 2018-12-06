@@ -27,15 +27,23 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <select id="selectTaskList" resultMap="com.synpower.bean.AllParam" parameterMap="com.synpower.bean.AllParam">
-    select a.create_time from task a
+  <select id="selectTaskListByStatus" resultType="com.synpower.bean.AllParam" parameterType="com.synpower.bean.AllParam">
+    select (select count(id) from task where task_status=#{taskStatus})as total,a.task_name as taskName,a.create_time as breakTime,
+    case when  ISNULL(a.update_time) then '-' end as update_time,b.plant_addr as addr,b.plant_name as plantName,
+    b.plant_status as plantStatus,c.device_name as devName,c.device_status as devStatus,d.status_name ,
+    d.alarm_level as level,case when ISNULL(e.user_name)then '-' end as userName,e.user_tel as userTell,
+		e.icon_url as avaTar from task a
     left join plant_info b
     on a.plant_id=b.id
     left join coll_device c
     on a.device_id=c.id and b.id=c.plant_id
+	left join coll_yx_expand d
+    on a.yx_id=d.id
+    left join sys_user e
+    on a.user_down_id=e.id
     where a.task_status=#{taskStatus}
     order by
-    ${orderName} ${order}
+    ${orderName} ${order} limit #{start} ,#{length}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

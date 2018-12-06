@@ -44,10 +44,10 @@ public class PushCallback implements MqttCallback {
 		 */
         if(new String(message.getPayload()).contains("S011H20A9HRMCL")){
         	writeLog(new String(message.getPayload()));
-        	System.out.println("消息计数:" + count++);  
-            System.out.println("接收消息主题:" + topic);  
-            System.out.println("接收消息Qos:" + message.getQos());  
-        	System.out.println(new String(message.getPayload()));	
+        	System.out.println("消息计数:" + count++);
+            System.out.println("接收消息主题:" + topic);
+            System.out.println("接收消息Qos:" + message.getQos());
+        	System.out.println(new String(message.getPayload()));
         }
 //		final MqttMessage messages = message;
 //		new Thread(new Runnable() {

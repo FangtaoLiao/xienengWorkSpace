@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysPoorInfoMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysPoorInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="total_num" jdbcType="INTEGER" property="totalNum" />
+    <result column="cover_num" jdbcType="INTEGER" property="coverNum" />
+    <result column="increase_income" jdbcType="DOUBLE" property="increaseIncome" />
+    <result column="invest" jdbcType="DOUBLE" property="invest" />
+    <result column="org_id" jdbcType="INTEGER" property="orgId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, total_num, cover_num, increase_income, invest, org_id
+  </sql>
+  <select id="getPoorInfo" parameterType="list" resultMap="BaseResultMap">
+  	SELECT 
+  		<include refid="Base_Column_List" /> 
+  	FROM 
+  		sys_poor_info 
+  	WHERE 
+  		org_id IN 
+  		<foreach collection="list" item="item" open="(" separator="," close=")">
+  			#{item}
+  		</foreach>
+  </select>
+</mapper>

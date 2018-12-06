@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.synpower.dao.ElecCapDecMapper">
+    <resultMap id="BaseResultMap"
+               type="com.synpower.bean.ElecCapDec">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="plant_id" property="plantId" jdbcType="INTEGER"/>
+        <result column="year" property="year" jdbcType="VARCHAR"/>
+        <result column="month_dec_1" property="monthDec1"
+                jdbcType="TINYINT"/>
+        <result column="month_1" property="month1" jdbcType="DOUBLE"/>
+        <result column="month_price_1" property="monthPrice1"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_2" property="monthDec2"
+                jdbcType="TINYINT"/>
+        <result column="month_2" property="month2" jdbcType="DOUBLE"/>
+        <result column="month_price_2" property="monthPrice2"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_3" property="monthDec3"
+                jdbcType="TINYINT"/>
+        <result column="month_3" property="month3" jdbcType="DOUBLE"/>
+        <result column="month_price_3" property="monthPrice3"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_4" property="monthDec4"
+                jdbcType="TINYINT"/>
+        <result column="month_4" property="month4" jdbcType="DOUBLE"/>
+        <result column="month_price_4" property="monthPrice4"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_5" property="monthDec5"
+                jdbcType="TINYINT"/>
+        <result column="month_5" property="month5" jdbcType="DOUBLE"/>
+        <result column="month_price_5" property="monthPrice5"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_6" property="monthDec6"
+                jdbcType="TINYINT"/>
+        <result column="month_6" property="month6" jdbcType="DOUBLE"/>
+        <result column="month_price_6" property="monthPrice6"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_7" property="monthDec7"
+                jdbcType="TINYINT"/>
+        <result column="month_7" property="month7" jdbcType="DOUBLE"/>
+        <result column="month_price_7" property="monthPrice7"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_8" property="monthDec8"
+                jdbcType="TINYINT"/>
+        <result column="month_8" property="month8" jdbcType="DOUBLE"/>
+        <result column="month_price_8" property="monthPrice8"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_9" property="monthDec9"
+                jdbcType="TINYINT"/>
+        <result column="month_9" property="month9" jdbcType="DOUBLE"/>
+        <result column="month_price_9" property="monthPrice9"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_10" property="monthDec10"
+                jdbcType="TINYINT"/>
+        <result column="month_10" property="month10" jdbcType="DOUBLE"/>
+        <result column="month_price_10" property="monthPrice10"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_11" property="monthDec11"
+                jdbcType="TINYINT"/>
+        <result column="month_11" property="month11" jdbcType="DOUBLE"/>
+        <result column="month_price_11" property="monthPrice11"
+                jdbcType="DOUBLE"/>
+        <result column="month_dec_12" property="monthDec12"
+                jdbcType="TINYINT"/>
+        <result column="month_12" property="month12" jdbcType="DOUBLE"/>
+        <result column="month_price_12" property="monthPrice12"
+                jdbcType="DOUBLE"/>
+        <result column="valid" property="valid" jdbcType="TINYINT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, plant_id, year, month_dec_1, month_1, month_price_1,
+        month_dec_2,
+        month_2, month_price_2,
+        month_dec_3, month_3,
+        month_price_3, month_dec_4, month_4, month_price_4,
+        month_dec_5,
+        month_5, month_price_5, month_dec_6, month_6, month_price_6,
+        month_dec_7,
+        month_7,
+        month_price_7, month_dec_8, month_8,
+        month_price_8, month_dec_9, month_9,
+        month_price_9,
+        month_dec_10,
+        month_10, month_price_10, month_dec_11, month_11, month_price_11,
+        month_dec_12,
+        month_12, month_price_12, valid
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap"
+            parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from elec_cap_dec
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey"
+            parameterType="java.lang.Integer">
+        DELETE FROM elec_cap_dec
+        WHERE id =
+              #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.synpower.bean.ElecCapDec">
+        INSERT INTO elec_cap_dec (id,
+                                  plant_id, year,
+                                  month_dec_1, month_1, month_price_1,
+                                  month_dec_2,
+                                  month_2, month_price_2,
+                                  month_dec_3, month_3, month_price_3,
+                                  month_dec_4, month_4, month_price_4,
+                                  month_dec_5, month_5,
+                                  month_price_5,
+                                  month_dec_6, month_6, month_price_6,
+                                  month_dec_7,
+                                  month_7, month_price_7,
+                                  month_dec_8, month_8, month_price_8,
+                                  month_dec_9, month_9, month_price_9,
+                                  month_dec_10, month_10,
+                                  month_price_10,
+                                  month_dec_11, month_11, month_price_11,
+                                  month_dec_12,
+                                  month_12, month_price_12,
+                                  valid)
+        VALUES (#{id,jdbcType=INTEGER},
+            #{plantId,jdbcType=INTEGER},
+            #{year,jdbcType=VARCHAR},
+            #{monthDec1,jdbcType=TINYINT}, #{month1,jdbcType=DOUBLE},
+            #{monthPrice1,jdbcType=DOUBLE},
+            #{monthDec2,jdbcType=TINYINT},
+            #{month2,jdbcType=DOUBLE},
+            #{monthPrice2,jdbcType=DOUBLE},
+            #{monthDec3,jdbcType=TINYINT}, #{month3,jdbcType=DOUBLE},
+            #{monthPrice3,jdbcType=DOUBLE},
+            #{monthDec4,jdbcType=TINYINT},
+            #{month4,jdbcType=DOUBLE},
+            #{monthPrice4,jdbcType=DOUBLE},
+            #{monthDec5,jdbcType=TINYINT}, #{month5,jdbcType=DOUBLE},
+            #{monthPrice5,jdbcType=DOUBLE},
+            #{monthDec6,jdbcType=TINYINT},
+            #{month6,jdbcType=DOUBLE},
+            #{monthPrice6,jdbcType=DOUBLE},
+            #{monthDec7,jdbcType=TINYINT}, #{month7,jdbcType=DOUBLE},
+            #{monthPrice7,jdbcType=DOUBLE},
+            #{monthDec8,jdbcType=TINYINT},
+            #{month8,jdbcType=DOUBLE},
+            #{monthPrice8,jdbcType=DOUBLE},
+            #{monthDec9,jdbcType=TINYINT}, #{month9,jdbcType=DOUBLE},
+            #{monthPrice9,jdbcType=DOUBLE},
+            #{monthDec10,jdbcType=TINYINT},
+                #{month10,jdbcType=DOUBLE},
+                #{monthPrice10,jdbcType=DOUBLE},
+                #{monthDec11,jdbcType=TINYINT}, #{month11,jdbcType=DOUBLE},
+                #{monthPrice11,jdbcType=DOUBLE},
+                #{monthDec12,jdbcType=TINYINT},
+                #{month12,jdbcType=DOUBLE},
+                #{monthPrice12,jdbcType=DOUBLE},
+                #{valid,jdbcType=TINYINT})
+    </insert>
+    <insert id="insertSelective"
+            parameterType="com.synpower.bean.ElecCapDec">
+        insert into elec_cap_dec
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="plantId != null">
+                plant_id,
+            </if>
+            <if test="year != null">
+                year,
+            </if>
+            <if test="monthDec1 != null">
+                month_dec_1,
+            </if>
+            <if test="month1 != null">
+                month_1,
+            </if>
+            <if test="monthPrice1 != null">
+                month_price_1,
+            </if>
+            <if test="monthDec2 != null">
+                month_dec_2,
+            </if>
+            <if test="month2 != null">
+                month_2,
+            </if>
+            <if test="monthPrice2 != null">
+                month_price_2,
+            </if>
+            <if test="monthDec3 != null">
+                month_dec_3,
+            </if>
+            <if test="month3 != null">
+                month_3,
+            </if>
+            <if test="monthPrice3 != null">
+                month_price_3,
+            </if>
+            <if test="monthDec4 != null">
+                month_dec_4,
+            </if>
+            <if test="month4 != null">
+                month_4,
+            </if>
+            <if test="monthPrice4 != null">
+                month_price_4,
+            </if>
+            <if test="monthDec5 != null">
+                month_dec_5,
+            </if>
+            <if test="month5 != null">
+                month_5,
+            </if>
+            <if test="monthPrice5 != null">
+                month_price_5,
+            </if>
+            <if test="monthDec6 != null">
+                month_dec_6,
+            </if>
+            <if test="month6 != null">
+                month_6,
+            </if>
+            <if test="monthPrice6 != null">
+                month_price_6,
+            </if>
+            <if test="monthDec7 != null">
+                month_dec_7,
+            </if>
+            <if test="month7 != null">
+                month_7,
+            </if>
+            <if test="monthPrice7 != null">
+                month_price_7,
+            </if>
+            <if test="monthDec8 != null">
+                month_dec_8,
+            </if>
+            <if test="month8 != null">
+                month_8,
+            </if>
+            <if test="monthPrice8 != null">
+                month_price_8,
+            </if>
+            <if test="monthDec9 != null">
+                month_dec_9,
+            </if>
+            <if test="month9 != null">
+                month_9,
+            </if>
+            <if test="monthPrice9 != null">
+                month_price_9,
+            </if>
+            <if test="monthDec10 != null">
+                month_dec_10,
+            </if>
+            <if test="month10 != null">
+                month_10,
+            </if>
+            <if test="monthPrice10 != null">
+                month_price_10,
+            </if>
+            <if test="monthDec11 != null">
+                month_dec_11,
+            </if>
+            <if test="month11 != null">
+                month_11,
+            </if>
+            <if test="monthPrice11 != null">
+                month_price_11,
+            </if>
+            <if test="monthDec12 != null">
+                month_dec_12,
+            </if>
+            <if test="month12 != null">
+                month_12,
+            </if>
+            <if test="monthPrice12 != null">
+                month_price_12,
+            </if>
+            <if test="valid != null">
+                valid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="plantId != null">
+                #{plantId,jdbcType=INTEGER},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="monthDec1 != null">
+                #{monthDec1,jdbcType=TINYINT},
+            </if>
+            <if test="month1 != null">
+                #{month1,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice1 != null">
+                #{monthPrice1,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec2 != null">
+                #{monthDec2,jdbcType=TINYINT},
+            </if>
+            <if test="month2 != null">
+                #{month2,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice2 != null">
+                #{monthPrice2,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec3 != null">
+                #{monthDec3,jdbcType=TINYINT},
+            </if>
+            <if test="month3 != null">
+                #{month3,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice3 != null">
+                #{monthPrice3,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec4 != null">
+                #{monthDec4,jdbcType=TINYINT},
+            </if>
+            <if test="month4 != null">
+                #{month4,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice4 != null">
+                #{monthPrice4,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec5 != null">
+                #{monthDec5,jdbcType=TINYINT},
+            </if>
+            <if test="month5 != null">
+                #{month5,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice5 != null">
+                #{monthPrice5,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec6 != null">
+                #{monthDec6,jdbcType=TINYINT},
+            </if>
+            <if test="month6 != null">
+                #{month6,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice6 != null">
+                #{monthPrice6,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec7 != null">
+                #{monthDec7,jdbcType=TINYINT},
+            </if>
+            <if test="month7 != null">
+                #{month7,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice7 != null">
+                #{monthPrice7,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec8 != null">
+                #{monthDec8,jdbcType=TINYINT},
+            </if>
+            <if test="month8 != null">
+                #{month8,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice8 != null">
+                #{monthPrice8,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec9 != null">
+                #{monthDec9,jdbcType=TINYINT},
+            </if>
+            <if test="month9 != null">
+                #{month9,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice9 != null">
+                #{monthPrice9,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec10 != null">
+                #{monthDec10,jdbcType=TINYINT},
+            </if>
+            <if test="month10 != null">
+                #{month10,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice10 != null">
+                #{monthPrice10,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec11 != null">
+                #{monthDec11,jdbcType=TINYINT},
+            </if>
+            <if test="month11 != null">
+                #{month11,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice11 != null">
+                #{monthPrice11,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec12 != null">
+                #{monthDec12,jdbcType=TINYINT},
+            </if>
+            <if test="month12 != null">
+                #{month12,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice12 != null">
+                #{monthPrice12,jdbcType=DOUBLE},
+            </if>
+            <if test="valid != null">
+                #{valid,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.synpower.bean.ElecCapDec">
+        update elec_cap_dec
+        <set>
+            <if test="plantId != null">
+                plant_id = #{plantId,jdbcType=INTEGER},
+            </if>
+            <if test="year != null">
+                year = #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="monthDec1 != null">
+                month_dec_1 = #{monthDec1,jdbcType=TINYINT},
+            </if>
+            <if test="month1 != null">
+                month_1 = #{month1,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice1 != null">
+                month_price_1 = #{monthPrice1,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec2 != null">
+                month_dec_2 = #{monthDec2,jdbcType=TINYINT},
+            </if>
+            <if test="month2 != null">
+                month_2 = #{month2,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice2 != null">
+                month_price_2 = #{monthPrice2,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec3 != null">
+                month_dec_3 = #{monthDec3,jdbcType=TINYINT},
+            </if>
+            <if test="month3 != null">
+                month_3 = #{month3,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice3 != null">
+                month_price_3 = #{monthPrice3,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec4 != null">
+                month_dec_4 = #{monthDec4,jdbcType=TINYINT},
+            </if>
+            <if test="month4 != null">
+                month_4 = #{month4,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice4 != null">
+                month_price_4 = #{monthPrice4,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec5 != null">
+                month_dec_5 = #{monthDec5,jdbcType=TINYINT},
+            </if>
+            <if test="month5 != null">
+                month_5 = #{month5,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice5 != null">
+                month_price_5 = #{monthPrice5,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec6 != null">
+                month_dec_6 = #{monthDec6,jdbcType=TINYINT},
+            </if>
+            <if test="month6 != null">
+                month_6 = #{month6,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice6 != null">
+                month_price_6 = #{monthPrice6,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec7 != null">
+                month_dec_7 = #{monthDec7,jdbcType=TINYINT},
+            </if>
+            <if test="month7 != null">
+                month_7 = #{month7,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice7 != null">
+                month_price_7 = #{monthPrice7,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec8 != null">
+                month_dec_8 = #{monthDec8,jdbcType=TINYINT},
+            </if>
+            <if test="month8 != null">
+                month_8 = #{month8,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice8 != null">
+                month_price_8 = #{monthPrice8,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec9 != null">
+                month_dec_9 = #{monthDec9,jdbcType=TINYINT},
+            </if>
+            <if test="month9 != null">
+                month_9 = #{month9,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice9 != null">
+                month_price_9 = #{monthPrice9,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec10 != null">
+                month_dec_10 = #{monthDec10,jdbcType=TINYINT},
+            </if>
+            <if test="month10 != null">
+                month_10 = #{month10,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice10 != null">
+                month_price_10 = #{monthPrice10,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec11 != null">
+                month_dec_11 = #{monthDec11,jdbcType=TINYINT},
+            </if>
+            <if test="month11 != null">
+                month_11 = #{month11,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice11 != null">
+                month_price_11 = #{monthPrice11,jdbcType=DOUBLE},
+            </if>
+            <if test="monthDec12 != null">
+                month_dec_12 = #{monthDec12,jdbcType=TINYINT},
+            </if>
+            <if test="month12 != null">
+                month_12 = #{month12,jdbcType=DOUBLE},
+            </if>
+            <if test="monthPrice12 != null">
+                month_price_12 = #{monthPrice12,jdbcType=DOUBLE},
+            </if>
+            <if test="valid != null">
+                valid = #{valid,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey"
+            parameterType="com.synpower.bean.ElecCapDec">
+        UPDATE elec_cap_dec
+        SET plant_id       =
+        #{plantId,jdbcType=INTEGER},
+            year           = #{year,jdbcType=VARCHAR},
+            month_dec_1    = #{monthDec1,jdbcType=TINYINT},
+            month_1        =
+            #{month1,jdbcType=DOUBLE},
+            month_price_1  =
+            #{monthPrice1,jdbcType=DOUBLE},
+            month_dec_2    =
+            #{monthDec2,jdbcType=TINYINT},
+            month_2        = #{month2,jdbcType=DOUBLE},
+            month_price_2  = #{monthPrice2,jdbcType=DOUBLE},
+            month_dec_3    =
+            #{monthDec3,jdbcType=TINYINT},
+            month_3        = #{month3,jdbcType=DOUBLE},
+            month_price_3  = #{monthPrice3,jdbcType=DOUBLE},
+            month_dec_4    =
+            #{monthDec4,jdbcType=TINYINT},
+            month_4        = #{month4,jdbcType=DOUBLE},
+            month_price_4  = #{monthPrice4,jdbcType=DOUBLE},
+            month_dec_5    =
+            #{monthDec5,jdbcType=TINYINT},
+            month_5        = #{month5,jdbcType=DOUBLE},
+            month_price_5  = #{monthPrice5,jdbcType=DOUBLE},
+            month_dec_6    =
+            #{monthDec6,jdbcType=TINYINT},
+            month_6        = #{month6,jdbcType=DOUBLE},
+            month_price_6  = #{monthPrice6,jdbcType=DOUBLE},
+            month_dec_7    =
+            #{monthDec7,jdbcType=TINYINT},
+            month_7        = #{month7,jdbcType=DOUBLE},
+            month_price_7  = #{monthPrice7,jdbcType=DOUBLE},
+            month_dec_8    =
+            #{monthDec8,jdbcType=TINYINT},
+            month_8        = #{month8,jdbcType=DOUBLE},
+            month_price_8  = #{monthPrice8,jdbcType=DOUBLE},
+            month_dec_9    =
+            #{monthDec9,jdbcType=TINYINT},
+            month_9        = #{month9,jdbcType=DOUBLE},
+            month_price_9  = #{monthPrice9,jdbcType=DOUBLE},
+            month_dec_10   =
+            #{monthDec10,jdbcType=TINYINT},
+            month_10       = #{month10,jdbcType=DOUBLE},
+            month_price_10 = #{monthPrice10,jdbcType=DOUBLE},
+            month_dec_11   =
+            #{monthDec11,jdbcType=TINYINT},
+            month_11       = #{month11,jdbcType=DOUBLE},
+            month_price_11 = #{monthPrice11,jdbcType=DOUBLE},
+            month_dec_12   =
+            #{monthDec12,jdbcType=TINYINT},
+            month_12       = #{month12,jdbcType=DOUBLE},
+            month_price_12 = #{monthPrice12,jdbcType=DOUBLE},
+            valid          =
+            #{valid,jdbcType=TINYINT}
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectByPlantAndYear" parameterType="java.util.Map"
+            resultType="java.util.Map">
+        SELECT
+            (IFNULL(month_1, 0) * IFNULL(month_price_1, 0))   mp1,
+            (IFNULL(month_2, 0) * IFNULL(month_price_2, 0))   mp2,
+            (IFNULL(month_3, 0) * IFNULL(month_price_3, 0))   mp3,
+            (IFNULL(month_4, 0) * IFNULL(month_price_4, 0))   mp4,
+            (IFNULL(month_5, 0) * IFNULL(month_price_5, 0))   mp5,
+            (IFNULL(month_6, 0) * IFNULL(month_price_6, 0))   mp6,
+            (IFNULL(month_7, 0) * IFNULL(month_price_7, 0))   mp7,
+            (IFNULL(month_8, 0) * IFNULL(month_price_8, 0))   mp8,
+            (IFNULL(month_9, 0) * IFNULL(month_price_9, 0))   mp9,
+            (IFNULL(month_10, 0) * IFNULL(month_price_10, 0)) mp10,
+            (IFNULL(month_11, 0) * IFNULL(month_price_11, 0)) mp11,
+            (IFNULL(month_12, 0) * IFNULL(month_price_12, 0)) mp12
+        FROM elec_cap_dec
+        WHERE plant_id = #{plantId} AND `year` = #{year} AND
+              valid = 0;
+    </select>
+
+    <select id="getYearCapByPlantId" parameterType="java.util.Map"
+            resultMap="BaseResultMap">
+        SELECT
+        *
+        FROM
+        elec_cap_dec ecd
+        WHERE
+        ecd.plant_id = #{plantId}
+        <if test="years!=null">
+            <foreach collection="years" item="year"
+                     open=" and ecd.YEAR IN (" close=")" separator=",">
+                #{year}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectAll" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT *
+        FROM elec_cap_dec
+        WHERE valid = 0;
+    </select>
+</mapper>

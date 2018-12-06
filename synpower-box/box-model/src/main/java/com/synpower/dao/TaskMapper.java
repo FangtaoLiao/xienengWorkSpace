@@ -4,6 +4,7 @@ import com.synpower.bean.AllParam;
 import com.synpower.bean.Task;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TaskMapper {
     int deleteByPrimaryKey(Integer id);
@@ -18,5 +19,7 @@ public interface TaskMapper {
 
     int updateByPrimaryKey(Task record);
 
-    List<AllParam> getList(AllParam allParam);
+    List<AllParam> selectTaskListByStatus(AllParam allParam);
+
+
 }

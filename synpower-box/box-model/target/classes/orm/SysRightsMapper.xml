@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysRightsMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.SysRights">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="rights_name" jdbcType="VARCHAR" property="rightsName" />
+    <result column="rights_mark" jdbcType="VARCHAR" property="rightsMark" />
+    <result column="father_id" jdbcType="INTEGER" property="fatherId" />
+    <result column="last_modify_time" jdbcType="INTEGER" property="lastModifyTime" />
+    <result column="last_modify_user" jdbcType="INTEGER" property="lastModifyUser" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="rights_valid" jdbcType="CHAR" property="rightsValid" />
+    <result column="rights_status" jdbcType="CHAR" property="rightsStatus" />
+    <result column="rights_desc" jdbcType="VARCHAR" property="rightsDesc" />
+    <result column="edit_look" jdbcType="CHAR" property="editLook" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, rights_name, rights_mark, father_id, last_modify_time, last_modify_user, create_time, 
+    rights_valid, rights_status, rights_desc,edit_look
+  </sql>
+  <select id="getFatherRights" resultMap="BaseResultMap">
+  	SELECT 
+  		<include refid="Base_Column_List"/>
+  	FROM sys_rights WHERE father_id = 0 
+  	AND rights_valid = 0 
+  	AND rights_status = 1
+  </select>
+  <select id="getFatherRightsByRoleId" parameterType="String" resultMap="BaseResultMap">
+  	SELECT 
+		ssr.id,
+		ssr.rights_name,
+		ssr.father_id,
+		ssr.last_modify_time,
+		ssr.last_modify_user,
+		ssr.create_time,
+		ssr.rights_valid,
+		ssr.rights_status,
+		ssr.rights_mark,
+		ssr.rights_desc,
+		ssr.edit_look 
+	FROM sys_rights ssr 
+	JOIN sys_role_rights srr ON ssr.id = srr.rights_id 
+	JOIN sys_role role ON srr.role_id = role.id WHERE role.id = #{roleId} and ssr.father_id = 0 
+  </select>
+  <select id="getChildRightsByRoleId" parameterType="hashmap" resultMap="BaseResultMap">
+  	SELECT 
+		ssr.id,
+		ssr.rights_name,
+		ssr.father_id,
+		ssr.last_modify_time,
+		ssr.last_modify_user,
+		ssr.create_time,
+		ssr.rights_valid,
+		ssr.rights_status,
+		ssr.rights_mark,
+		ssr.rights_desc,
+		ssr.edit_look 
+	FROM sys_rights ssr 
+	JOIN sys_role_rights srr ON ssr.id = srr.rights_id 
+	JOIN sys_role role ON srr.role_id = role.id WHERE role.id = #{roleId} and ssr.father_id = #{fatherId} 
+  </select>
+  <select id="getChildRights" parameterType="String" resultMap="BaseResultMap">
+  	SELECT 
+  		<include refid="Base_Column_List"/>
+  	FROM sys_rights WHERE father_id = #{fatherId} 
+  	AND rights_valid = 0 
+  	AND rights_status = 1
+  </select>
+  <select id="getRightsByRoleId" parameterType="String" resultMap="BaseResultMap">
+  	SELECT 
+		ssr.id,
+		ssr.rights_name,
+		ssr.father_id,
+		ssr.last_modify_time,
+		ssr.last_modify_user,
+		ssr.create_time,
+		ssr.rights_valid,
+		ssr.rights_status,
+		ssr.rights_mark,
+		ssr.rights_desc,
+		ssr.edit_look 
+	FROM sys_rights ssr 
+	JOIN sys_role_rights srr ON ssr.id = srr.rights_id 
+	JOIN sys_role role ON srr.role_id = role.id WHERE role.id = #{roleId}
+  </select>
+</mapper>

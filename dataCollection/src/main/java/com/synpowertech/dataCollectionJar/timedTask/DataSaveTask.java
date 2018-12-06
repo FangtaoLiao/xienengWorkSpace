@@ -250,13 +250,13 @@ public class DataSaveTask implements Job, InitializingBean {
 	 * @Title: ycDataSave4List
 	 * @Description: //存库List到达设定size就执行一次
 	 * @param dataCentralInverterList
-	 * @param dataElectricMeterLis
+	 * @param dataElectricMeterList
 	 * @param dataStringInverterList
-	 * @param dataBoxChangeList2
-	 * @param dataCombinerBoxList2
-	 * @param dataPcsList2
-	 * @param dataBmsList2
-	 * @param dataBatteryList2
+	 * @param dataBoxChangeList
+	 * @param dataCombinerBoxList
+	 * @param dataPcsList
+	 * @param dataBmsList
+	 * @param dataBatteryList
 	 * @param                         dataTransformerList: void
 	 * @lastEditor: SP0010
 	 * @lastEdit: 2017年12月6日上午11:33:58

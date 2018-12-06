@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.DeviceMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.Device">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
+    <result column="device_sn" jdbcType="VARCHAR" property="deviceSn" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="device_model_id" jdbcType="INTEGER" property="deviceModelId" />
+    <result column="conn_addr" jdbcType="VARCHAR" property="connAddr" />
+    <result column="conn_port" jdbcType="INTEGER" property="connPort" />
+    <result column="plant_id" jdbcType="INTEGER" property="plantId" />
+    <result column="conn_time" jdbcType="BIGINT" property="connTime" />
+    <result column="conn_protocol" jdbcType="INTEGER" property="connProtocol" />
+    <result column="data_mode" jdbcType="INTEGER" property="dataMode" />
+    <result column="manufacture" jdbcType="VARCHAR" property="manufacture" />
+    <result column="power" jdbcType="REAL" property="power" />
+    <result column="supId" jdbcType="INTEGER" property="supId" />
+    <result column="max_num" jdbcType="INTEGER" property="maxNum" />
+    <result column="device_valid" jdbcType="CHAR" property="deviceValid" />
+    <result column="device_status" jdbcType="CHAR" property="deviceStatus" />
+    <result column="join_plant" jdbcType="CHAR" property="joinPlant" />
+    <result column="join_device" jdbcType="CHAR" property="joinDevice" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, device_name, device_sn, device_type,device_model_id, conn_addr, conn_port, plant_id, conn_time, conn_protocol, 
+    data_mode, manufacture, power, supId, max_num, device_valid, device_status,join_plant,join_device
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_device
+	<!--where id = #{id,jdbcType=INTEGER} and device_valid = '0' and device_status = '1' -->
+    where id = #{id,jdbcType=INTEGER} and device_valid = '0'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coll_device
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.Device">
+    insert into coll_device (id, device_name, device_sn,device_type, device_model_id,
+      conn_addr, conn_port, plant_id, 
+      conn_time, conn_protocol, data_mode, 
+      manufacture, power, supId, 
+      max_num , device_valid, device_status)
+    values (#{id,jdbcType=INTEGER}, #{deviceName,jdbcType=VARCHAR},#{deviceSn,jdbcType=VARCHAR}, #{deviceType,jdbcType=INTEGER}, 
+      #{deviceModelId,jdbcType=INTEGER}, 
+      #{connAddr,jdbcType=VARCHAR}, #{connPort,jdbcType=INTEGER}, #{plantId,jdbcType=INTEGER}, 
+      #{connTime,jdbcType=BIGINT}, #{connProtocol,jdbcType=INTEGER}, #{dataMode,jdbcType=INTEGER}, 
+      #{manufacture,jdbcType=VARCHAR}, #{power,jdbcType=REAL}, #{supId,jdbcType=INTEGER}, 
+      #{maxNum,jdbcType=INTEGER}, #{deviceValid,jdbcType=CHAR}, #{deviceStatus,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.Device">
+    insert into coll_device
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="deviceName != null">
+        device_name,
+      </if>
+      <if test="deviceSn != null">
+        device_sn,
+      </if>
+      <if test="deviceType != null">
+        device_type,
+      </if>
+      <if test="deviceModelId != null">
+        device_model_id,
+      </if>
+      <if test="connAddr != null">
+        conn_addr,
+      </if>
+      <if test="connPort != null">
+        conn_port,
+      </if>
+      <if test="plantId != null">
+        plant_id,
+      </if>
+      <if test="connTime != null">
+        conn_time,
+      </if>
+      <if test="connProtocol != null">
+        conn_protocol,
+      </if>
+      <if test="dataMode != null">
+        data_mode,
+      </if>
+      <if test="manufacture != null">
+        manufacture,
+      </if>
+      <if test="power != null">
+        power,
+      </if>
+      <if test="supId != null">
+        supId,
+      </if>
+      <if test="maxNum != null">
+        max_num,
+      </if>
+      <if test="deviceValid != null">
+        device_valid,
+      </if>
+      <if test="deviceStatus != null">
+        device_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="deviceName != null">
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceSn != null">
+        #{deviceSn,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null">
+        #{deviceType,jdbcType=INTEGER},
+      </if>
+      <if test="deviceModelId != null">
+        #{deviceModelId,jdbcType=INTEGER},
+      </if>
+      <if test="connAddr != null">
+        #{connAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="connPort != null">
+        #{connPort,jdbcType=INTEGER},
+      </if>
+      <if test="plantId != null">
+        #{plantId,jdbcType=INTEGER},
+      </if>
+      <if test="connTime != null">
+        #{connTime,jdbcType=BIGINT},
+      </if>
+      <if test="connProtocol != null">
+        #{connProtocol,jdbcType=INTEGER},
+      </if>
+      <if test="dataMode != null">
+        #{dataMode,jdbcType=INTEGER},
+      </if>
+      <if test="manufacture != null">
+        #{manufacture,jdbcType=VARCHAR},
+      </if>
+      <if test="power != null">
+        #{power,jdbcType=REAL},
+      </if>
+      <if test="supId != null">
+        #{supId,jdbcType=INTEGER},
+      </if>
+      <if test="maxNum != null">
+        #{maxNum,jdbcType=INTEGER},
+      </if>
+      <if test="deviceValid != null">
+        #{deviceValid,jdbcType=CHAR},
+      </if>
+      <if test="deviceStatus != null">
+        #{deviceStatus,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.Device">
+    update coll_device
+    <set>
+      <if test="deviceName != null">
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceSn != null">
+        device_sn = #{deviceSn,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null">
+        device_type = #{deviceType,jdbcType=INTEGER},
+      </if>
+      <if test="deviceModelId != null">
+        device_model_id = #{deviceModelId,jdbcType=INTEGER},
+      </if>
+      <if test="connAddr != null">
+        conn_addr = #{connAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="connPort != null">
+        conn_port = #{connPort,jdbcType=INTEGER},
+      </if>
+      <if test="plantId != null">
+        plant_id = #{plantId,jdbcType=INTEGER},
+      </if>
+      <if test="connTime != null">
+        conn_time = #{connTime,jdbcType=BIGINT},
+      </if>
+      <if test="connProtocol != null">
+        conn_protocol = #{connProtocol,jdbcType=INTEGER},
+      </if>
+      <if test="dataMode != null">
+        data_mode = #{dataMode,jdbcType=INTEGER},
+      </if>
+      <if test="manufacture != null">
+        manufacture = #{manufacture,jdbcType=VARCHAR},
+      </if>
+      <if test="power != null">
+        power = #{power,jdbcType=REAL},
+      </if>
+      <if test="supId != null">
+        supId = #{supId,jdbcType=INTEGER},
+      </if>
+      <if test="maxNum != null">
+        max_num = #{maxNum,jdbcType=INTEGER},
+      </if>
+      <if test="deviceValid != null">
+        device_valid = #{deviceValid,jdbcType=CHAR},
+      </if>
+      <if test="deviceStatus != null">
+        device_status = #{deviceStatus,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.Device">
+    update coll_device
+    set device_name = #{deviceName,jdbcType=VARCHAR},
+      device_sn = #{deviceSn,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=INTEGER},
+      device_model_id = #{deviceModelId,jdbcType=INTEGER},
+      conn_addr = #{connAddr,jdbcType=VARCHAR},
+      conn_port = #{connPort,jdbcType=INTEGER},
+      plant_id = #{plantId,jdbcType=INTEGER},
+      conn_time = #{connTime,jdbcType=BIGINT},
+      conn_protocol = #{connProtocol,jdbcType=INTEGER},
+      data_mode = #{dataMode,jdbcType=INTEGER},
+      manufacture = #{manufacture,jdbcType=VARCHAR},
+      power = #{power,jdbcType=REAL},
+      supId = #{supId,jdbcType=INTEGER},
+      max_num = #{maxNum,jdbcType=INTEGER},
+      device_valid = #{deviceValid,jdbcType=CHAR},
+      device_status = #{deviceStatus,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectAll"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_device
+	<!-- where device_valid = '0' and device_status = '1' ORDER BY supId DESC -->
+	<!-- 设备暂停缴费停用也要采集数据入库 -->
+    where device_valid = '0' ORDER BY supId DESC
+  </select>
+  
+  <!-- 查询所有设备id用于定时判断redis中设备通讯状态缓存 -->
+  <select id="selectAllDevId"  resultType="java.lang.Integer">
+    select 
+    id 
+    from coll_device
+	<!-- where device_valid = '0' and device_status = '1' ORDER BY supId DESC -->
+	<!-- 设备暂停缴费停用也要采集数据入库 -->
+    where device_valid = '0'
+  </select>
+  
+  <select id="selectAllDataColls"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List_coll" />
+    from coll_device c  
+    where  c.device_type = 5 and c.device_valid = '0'
+  </select>
+  
+  <select id="selectDataCollectors"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List_coll" />
+    from coll_device c  
+    where  c.device_type = 5 and c.device_valid = '0' and c.device_status != '0'
+  </select>
+  
+  <select id="selectOldDataColls"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List_coll" />
+    from coll_device c  
+    where  c.device_type = 5 and c.device_model_id &lt; 3 and c.device_valid = '0' and c.device_status != '0'
+  </select>
+  
+   <select id="selectNewDataColls"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List_coll" />
+    from coll_device c 
+    where c.device_type = 5 and c.device_model_id &gt; 2 and c.device_valid = '0' and c.device_status != '0'
+  </select>
+  
+  <sql id="Base_Column_List_coll">
+    c.id, c.device_name,c.device_sn, c.device_type,c.device_model_id, c.conn_addr, c.conn_port, c.plant_id, c.conn_time, c.conn_protocol, 
+    c.data_mode, c.manufacture, c.power, c.supId, c.device_valid, c.device_status
+  </sql>
+  
+  <!-- 根据id查询Product, 关联将Orders查询出来,只查询逆变器 -->
+  <select id="selectDeviceLocation"  resultMap="LocationResultMap" >
+  	  <!-- 设备暂停缴费停用也要采集数据入库 -->
+	  <!-- select c.id cId,p.loaction pLocation from coll_device  c LEFT JOIN plant_info p on c.plant_id = p.id where c.device_valid = '0' and c.device_status != '0' -->
+		<!--select c.id cId,p.loaction pLocation from coll_device  c LEFT JOIN plant_info p on c.plant_id = p.id where c.device_valid = '0' and c.device_type &lt; 3 -->
+      select c.id cId,p.loaction pLocation from coll_device  c LEFT JOIN plant_info p on c.plant_id = p.id where c.device_valid = '0' and c.device_type in (1, 2, 11)
+  </select>   
+  
+  <resultMap id="LocationResultMap" type="com.synpowertech.dataCollectionJar.domain.CollDeviceLocation">
+    <id column="cId" jdbcType="INTEGER" property="id" />
+    <result column="pLocation" jdbcType="VARCHAR" property="location" />
+  </resultMap>
+  
+  <!-- 查询所有示例电站数采id -->
+  <select id="selectExampleColl"  resultType="java.lang.Integer">
+	SELECT c.id cid FROM coll_device c WHERE (c.id BETWEEN 4 AND 846) AND c.supId = 0 and device_valid = '0'
+  </select>
+  
+  <!-- 查询所有示例电站逆变器id -->
+  <select id="selectExampleInverter"  resultType="java.lang.Integer">
+	SELECT c.id cid FROM coll_device c WHERE (c.id BETWEEN 4 AND 846) AND c.supId > 0 and device_valid = '0'
+  </select>
+  
+   <!-- 查询所有60ktl_a设备 -->
+  <select id="select60ktlA"  resultType="java.lang.Integer">
+	SELECT c.id cid FROM coll_device c WHERE c.device_type = 2 and c.device_model_id = 6 and c.data_mode = 4 and device_valid = '0'
+  </select>
+  
+  <!-- 查询数采的所有子设备id -->
+  <select id="selectBySupId" parameterType="java.lang.Integer"  resultType="java.lang.Integer">
+	SELECT c.id cid FROM coll_device c WHERE c.supId = #{supId,jdbcType=INTEGER}
+  </select>
+  
+</mapper>

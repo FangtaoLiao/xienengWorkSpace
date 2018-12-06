@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /*****************************************************************************
@@ -69,8 +70,20 @@ public class AlarmController extends ErrorHandler{
 
 	@RequestMapping("/recentAlarmList")
 	public MessageBean recentAlarmList(@RequestBody String json) {
-		Map<String, Object> resulMap = alarmService.recentAlarmList(getJsonMap());
-		return MessageBeanUtil.getOkMB(resulMap);
+//		List<Map<String, Object>> result = alarmService.recentAlarmList(getJsonMap());
+//		MessageBean messageBean = MessageBeanUtil.getOkMB(result);
+//		return messageBean;
+//
+		return alarmService.recentAlarmList(getJsonMap());
+	}
+
+	@RequestMapping("/recentAlarmListByLevel")
+	public MessageBean recentAlarmListByLevel(@RequestBody String json) {
+//		List<Map<String, Object>> result = alarmService.recentAlarmList(getJsonMap());
+//		MessageBean messageBean = MessageBeanUtil.getOkMB(result);
+//		return messageBean;
+//
+		return alarmService.recentAlarmListByLevel(getJsonMap());
 	}
 
 }

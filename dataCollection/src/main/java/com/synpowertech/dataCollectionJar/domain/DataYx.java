@@ -111,4 +111,19 @@ public class DataYx {
     public void setValid(String valid) {
         this.valid = valid == null ? null : valid.trim();
     }
+
+    @Override
+    public String toString() {
+        return "DataYx{" +
+                "id=" + id +
+                ", deviceId=" + deviceId +
+                ", yxId=" + yxId +
+                ", changeTime=" + changeTime +
+                ", statusValue='" + statusValue + '\'' +
+                ", status='" + status + '\'' +
+                ", operationTime=" + operationTime +
+                ", operator=" + operator +
+                ", valid='" + valid + '\'' +
+                '}';
+    }
 }

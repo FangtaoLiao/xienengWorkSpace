@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+	<bean id="propertyConfigurer3"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:cache.properties</value>
+			</list>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig"
+		scope="singleton">
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxTotal" value="${redis.maxTotal}" />
+		<property name="maxWaitMillis" value="${redis.maxWait}" />
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+	<bean id="cachePool" class="redis.clients.jedis.JedisPool"
+		scope="singleton">
+		<constructor-arg name="poolConfig" ref="poolConfig" />
+		<constructor-arg name="host" value="${redis.host}" />
+		<constructor-arg name="port" value="${redis.port}" />
+		<constructor-arg name="timeout"
+			value="${redis.timeOut}" type="int" />
+		<constructor-arg name="password"
+			value="${redis.password}" />
+		<constructor-arg name="database"
+			value="${redis.database}" type="int" />
+	</bean>
+
+	<bean id="cachePool2" class="redis.clients.jedis.JedisPool"
+		scope="singleton">
+		<constructor-arg name="poolConfig" ref="poolConfig" />
+		<constructor-arg name="host" value="${redis.host}" />
+		<constructor-arg name="port" value="${redis.port}" />
+		<constructor-arg name="timeout"
+			value="${redis.timeOut}" type="int" />
+		<constructor-arg name="password"
+			value="${redis.password}" />
+		<constructor-arg name="database"
+			value="${redis.database2}" type="int" />
+	</bean>
+	<bean id="cachePool3" class="redis.clients.jedis.JedisPool"
+		scope="singleton">
+		<constructor-arg name="poolConfig" ref="poolConfig" />
+		<constructor-arg name="host" value="${redis.host}" />
+		<constructor-arg name="port" value="${redis.port}" />
+		<constructor-arg name="timeout"
+			value="${redis.timeOut}" type="int" />
+		<constructor-arg name="password"
+			value="${redis.password}" />
+		<constructor-arg name="database"
+			value="${redis.database3}" type="int" />
+	</bean>
+	<bean id="cachePool4" class="redis.clients.jedis.JedisPool"
+		scope="singleton">
+		<constructor-arg name="poolConfig" ref="poolConfig" />
+		<constructor-arg name="host" value="${redis.host}" />
+		<constructor-arg name="port" value="${redis.port}" />
+		<constructor-arg name="timeout"
+			value="${redis.timeOut}" type="int" />
+		<constructor-arg name="password"
+			value="${redis.password}" />
+		<constructor-arg name="database"
+			value="${redis.database4}" type="int" />
+	</bean>
+
+	<bean id="cachePool0" class="redis.clients.jedis.JedisPool"
+		  scope="singleton">
+		<constructor-arg name="poolConfig" ref="poolConfig"/>
+		<constructor-arg name="host" value="${redis.host}"/>
+		<constructor-arg name="port" value="${redis.port}"/>
+		<constructor-arg name="timeout"
+						 value="${redis.timeOut}" type="int"/>
+		<constructor-arg name="password"
+						 value="${redis.password}"/>
+		<constructor-arg name="database"
+						 value="${redis.database0}" type="int"/>
+	</bean>
+
+	<bean id="cacheUtil" class="com.synpower.util.CacheUtil">
+		<property name="cachePool" ref="cachePool" />
+	</bean>
+	<bean id="cacheUtil2" class="com.synpower.util.CacheUtil2">
+		<property name="cachePool2" ref="cachePool2" />
+	</bean>
+	<bean id="cacheUtil3" class="com.synpower.util.CacheUtil3">
+		<property name="cachePool3" ref="cachePool3" />
+	</bean>
+	<bean id="cacheUtil4" class="com.synpower.util.CacheUtil4">
+		<property name="cachePool4" ref="cachePool4" />
+	</bean>
+	<bean id="cacheUtil0" class="com.synpower.util.CacheUtil0">
+		<property name="cachePool0" ref="cachePool0"/>
+	</bean>
+</beans>

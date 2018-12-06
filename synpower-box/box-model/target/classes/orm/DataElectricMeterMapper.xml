@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DataElectricMeterMapper">
+	<resultMap id="BaseResultMap"
+		type="com.synpower.bean.DataElectricMeter">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="device_id" jdbcType="INTEGER"
+			property="deviceId" />
+		<result column="plant" jdbcType="INTEGER" property="plant" />
+		<result column="data_time" jdbcType="BIGINT"
+			property="dataTime" />
+		<result column="em_ua" jdbcType="REAL" property="emUa" />
+		<result column="em_ub" jdbcType="REAL" property="emUb" />
+		<result column="em_uc" jdbcType="REAL" property="emUc" />
+		<result column="em_uab" jdbcType="REAL" property="emUab" />
+		<result column="em_ubc" jdbcType="REAL" property="emUbc" />
+		<result column="em_uca" jdbcType="REAL" property="emUca" />
+		<result column="em_ia" jdbcType="REAL" property="emIa" />
+		<result column="em_ib" jdbcType="REAL" property="emIb" />
+		<result column="em_ic" jdbcType="REAL" property="emIc" />
+		<result column="em_frequency" jdbcType="REAL"
+			property="emFrequency" />
+		<result column="em_active_power" jdbcType="REAL"
+			property="emActivePower" />
+		<result column="em_reactive_power" jdbcType="REAL"
+			property="emReactivePower" />
+		<result column="em_power_factor" jdbcType="REAL"
+			property="emPowerFactor" />
+		<result column="em_pos_active_energy" jdbcType="REAL"
+			property="emPosActiveEnergy" />
+		<result column="em_neg_active_energy" jdbcType="REAL"
+			property="emNegActiveEnergy" />
+		<result column="em_pos_jian_active_energy" jdbcType="REAL"
+			property="emPosJianActiveEnergy" />
+		<result column="em_pos_feng_active_energy" jdbcType="REAL"
+			property="emPosFengActiveEnergy" />
+		<result column="em_pos_ping_active_energy" jdbcType="REAL"
+			property="emPosPingActiveEnergy" />
+		<result column="em_pos_gu_active_energy" jdbcType="REAL"
+			property="emPosGuActiveEnergy" />
+		<result column="em_neg_jian_active_energy" jdbcType="REAL"
+			property="emNegJianActiveEnergy" />
+		<result column="em_neg_feng_active_energy" jdbcType="REAL"
+			property="emNegFengActiveEnergy" />
+		<result column="em_neg_ping_active_energy" jdbcType="REAL"
+			property="emNegPingActiveEnergy" />
+		<result column="em_neg_gu_active_energy" jdbcType="REAL"
+			property="emNegGuActiveEnergy" />
+		<result column="em_pos_reactive_energy" jdbcType="REAL"
+			property="emPosReactiveEnergy" />
+		<result column="em_neg_reactive_energy" jdbcType="REAL"
+			property="emNegReactiveEnergy" />
+		<result column="em_pos_jian_reactive_energy" jdbcType="REAL"
+			property="emPosJianReactiveEnergy" />
+		<result column="em_pos_feng_reactive_energy" jdbcType="REAL"
+			property="emPosFengReactiveEnergy" />
+		<result column="em_pos_ping_reactive_energy" jdbcType="REAL"
+			property="emPosPingReactiveEnergy" />
+		<result column="em_pos_gu_reactive_energy" jdbcType="REAL"
+			property="emPosGuReactiveEnergy" />
+		<result column="em_neg_jian_reactive_energy" jdbcType="REAL"
+			property="emNegJianReactiveEnergy" />
+		<result column="em_neg_feng_reactive_energy" jdbcType="REAL"
+			property="emNegFengReactiveEnergy" />
+		<result column="em_neg_ping_reactive_energy" jdbcType="REAL"
+			property="emNegPingReactiveEnergy" />
+		<result column="em_neg_gu_reactive_energy" jdbcType="REAL"
+			property="emNegGuReactiveEnergy" />
+	</resultMap>
+
+	<insert id="insert"
+		parameterType="com.synpower.bean.DataElectricMeter">
+		<selectKey keyProperty="id" order="AFTER"
+			resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into data_electric_meter (device_id, plant, data_time,
+		em_ua,
+		em_ub, em_uc, em_uab,
+		em_ubc, em_uca, em_ia, em_ib,
+		em_ic, em_frequency,
+		em_active_power,
+		em_reactive_power, em_power_factor,
+		em_pos_active_energy,
+		em_neg_active_energy, em_pos_jian_active_energy,
+		em_pos_feng_active_energy,
+		em_pos_ping_active_energy,
+		em_pos_gu_active_energy,
+		em_neg_jian_active_energy,
+		em_neg_feng_active_energy, em_neg_ping_active_energy,
+		em_neg_gu_active_energy, em_pos_reactive_energy,
+		em_neg_reactive_energy,
+		em_pos_jian_reactive_energy,
+		em_pos_feng_reactive_energy,
+		em_pos_ping_reactive_energy,
+		em_pos_gu_reactive_energy,
+		em_neg_jian_reactive_energy,
+		em_neg_feng_reactive_energy,
+		em_neg_ping_reactive_energy,
+		em_neg_gu_reactive_energy
+		)
+		values (#{deviceId,jdbcType=INTEGER},
+		#{plant,jdbcType=INTEGER},
+		#{dataTime,jdbcType=BIGINT},
+		#{emUa,jdbcType=REAL}, #{emUb,jdbcType=REAL}, #{emUc,jdbcType=REAL},
+		#{emUab,jdbcType=REAL},
+		#{emUbc,jdbcType=REAL}, #{emUca,jdbcType=REAL},
+		#{emIa,jdbcType=REAL},
+		#{emIb,jdbcType=REAL},
+		#{emIc,jdbcType=REAL},
+		#{emFrequency,jdbcType=REAL}, #{emActivePower,jdbcType=REAL},
+		#{emReactivePower,jdbcType=REAL}, #{emPowerFactor,jdbcType=REAL},
+		#{emPosActiveEnergy,jdbcType=REAL},
+		#{emNegActiveEnergy,jdbcType=REAL},
+		#{emPosJianActiveEnergy,jdbcType=REAL},
+		#{emPosFengActiveEnergy,jdbcType=REAL},
+		#{emPosPingActiveEnergy,jdbcType=REAL},
+		#{emPosGuActiveEnergy,jdbcType=REAL},
+		#{emNegJianActiveEnergy,jdbcType=REAL},
+		#{emNegFengActiveEnergy,jdbcType=REAL},
+		#{emNegPingActiveEnergy,jdbcType=REAL},
+		#{emNegGuActiveEnergy,jdbcType=REAL},
+		#{emPosReactiveEnergy,jdbcType=REAL},
+		#{emNegReactiveEnergy,jdbcType=REAL},
+		#{emPosJianReactiveEnergy,jdbcType=REAL},
+		#{emPosFengReactiveEnergy,jdbcType=REAL},
+		#{emPosPingReactiveEnergy,jdbcType=REAL},
+		#{emPosGuReactiveEnergy,jdbcType=REAL},
+		#{emNegJianReactiveEnergy,jdbcType=REAL},
+		#{emNegFengReactiveEnergy,jdbcType=REAL},
+		#{emNegPingReactiveEnergy,jdbcType=REAL},
+		#{emNegGuReactiveEnergy,jdbcType=REAL}
+		)
+	</insert>
+
+	<select id="getTimesPower" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT (sum(em_pos_active_energy)-sum(em_neg_active_energy))
+		em_active_power,data_time from (
+		SELECT DISTINCT
+		device_id,data_time,em_pos_active_energy,em_neg_active_energy from
+		data_electric_meter
+		where data_time>=#{minTime} and
+		#{maxTime}>=data_time
+		<foreach collection="devices" item="deviceId"
+			open=" and device_id IN (" close=")" separator=",">
+			#{deviceId}
+		</foreach>
+		)a
+		GROUP BY data_time
+	</select>
+	<select id="getCurrentPower" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT em_active_power,data_time ,em_reactive_power from
+		data_electric_meter
+		where device_id=#{deviceId} and
+		FROM_UNIXTIME(data_time/1000,'%Y-%m-%d') =#{dataTime} order by
+		data_time
+	</select>
+	<select id="getBeforDataElectricForStorage" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT device_id,MAX(data_time)data_time
+		,MAX(em_pos_active_energy)em_pos_active_energy,MAX(em_neg_active_energy)em_neg_active_energy
+		from (
+		SELECT
+		device_id,data_time,em_pos_active_energy,em_neg_active_energy
+		from
+		data_electric_meter
+		where #{minTime}>data_time
+		<foreach collection="devices" item="deviceId"
+			open=" and device_id IN (" close=")" separator=",">
+			#{deviceId}
+		</foreach>
+		)a GROUP BY device_id
+	</select>
+	<select id="getDataElectricForStorage" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT device_id,MAX(data_time)data_time
+		,MAX(em_pos_active_energy)em_pos_active_energy,MAX(em_neg_active_energy)em_neg_active_energy
+		from (SELECT
+		device_id,data_time,em_pos_active_energy,em_neg_active_energy
+		from
+		data_electric_meter
+		where data_time>=#{minTime} and
+		#{maxTime}>=data_time
+		<foreach collection="devices" item="deviceId"
+			open=" and device_id IN (" close=")" separator=",">
+			#{deviceId}
+		</foreach>
+		)a GROUP BY device_id
+	</select>
+	<select id="getTotalDataElectric" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT device_id,MAX(data_time)data_time
+		,MAX(em_pos_active_energy)em_pos_active_energy,MAX(em_neg_active_energy)em_neg_active_energy
+		from (SELECT * from data_electric_meter
+		where #{maxTime}>=data_time
+		<foreach collection="list" item="dId"
+			open=" and device_id in (" close=")" separator=",">
+			#{dId}
+		</foreach>
+		)a GROUP BY device_id
+	</select>
+	<select id="getLastHistoryDataElectric" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT device_id,MAX(data_time)data_time
+		,MAX(em_pos_active_energy)em_pos_active_energy,MAX(em_neg_active_energy)em_neg_active_energy
+		from (SELECT * from data_electric_meter
+		where #{endTime}>=data_time and
+		data_time>=#{startTime}
+		<if test="devices!=null">
+			<foreach collection="devices" item="deviceId"
+				open=" and device_id IN (" close=")" separator=",">
+				#{deviceId}
+			</foreach>
+		</if>
+		)a GROUP BY device_id
+	</select>
+	<select id="getEnergyPlantDataForStorage"
+		resultMap="BaseResultMap">
+		select
+		em_pos_active_energy,em_neg_active_energy,device_id,data_time from
+		data_electric_meter
+		where data_time>=#{minTime} and
+		#{maxTime}>=data_time and
+		device_id=#{deviceId} order by data_time
+	</select>
+
+	<!--查询该时间段内的用电量 -->
+	<resultMap id="useElecMap" type="java.util.HashMap">
+		<result column="allEnergy" property="allEnergy"
+			jdbcType="VARCHAR" />
+		<result column="jEnergy" property="jEnergy" jdbcType="VARCHAR" />
+		<result column="fEnergy" property="fEnergy" jdbcType="VARCHAR" />
+		<result column="pEnergy" property="pEnergy" jdbcType="VARCHAR" />
+		<result column="gEnergy" property="gEnergy" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getEnergyByDeviceIdAndTime"
+		parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+		(IFNULL(maData.e-IFNULL(rData.e,eData.e),0))aEnergy,(IFNULL(maData.j-IFNULL(rData.j,eData.j),0))jEnergy,
+		(IFNULL(maData.j-IFNULL(rData.f,eData.f),0))fEnergy,(IFNULL(maData.p-IFNULL(rData.p,eData.p),0))pEnergy,
+		(IFNULL(maData.g-IFNULL(rData.g,eData.g),0))gEnergy
+		FROM((SELECT
+		em_pos_active_energy e,em_pos_jian_active_energy
+		j,em_pos_feng_active_energy f,
+		em_pos_ping_active_energy
+		p,em_pos_gu_active_energy g
+		FROM data_electric_meter WHERE device_id =
+		#{deviceId} AND data_time <![CDATA[<=]]>
+		#{startTime} ORDER BY data_time DESC LIMIT 0,1) rData
+		LEFT JOIN
+		(SELECT
+		em_pos_active_energy e,em_pos_jian_active_energy
+		j,em_pos_feng_active_energy f,
+		em_pos_ping_active_energy
+		p,em_pos_gu_active_energy g
+		FROM data_electric_meter WHERE device_id =
+		#{deviceId} AND data_time <![CDATA[>=]]>
+		#{startTime} ORDER BY data_time ASC LIMIT 0,1) eData
+		ON 1=1 LEFT JOIN
+		(SELECT em_pos_active_energy e,em_pos_jian_active_energy
+		j,em_pos_feng_active_energy f,
+		em_pos_ping_active_energy
+		p,em_pos_gu_active_energy g
+		FROM data_electric_meter WHERE device_id =
+		#{deviceId} AND data_time <![CDATA[>=]]>
+		#{startTime} ORDER BY data_time DESC LIMIT 0,1)
+		maData ON 1=1);
+	</select>
+
+	<select id="getNewestForFactor" parameterType="int"
+		resultType="java.util.Map">
+		SELECT em_pos_active_energy active,em_pos_reactive_energy
+		reactive FROM
+		data_electric_meter
+		WHERE device_id = #{deviceId} ORDER BY
+		data_time DESC LIMIT 0,1;
+	</select>
+
+	<select id="getElec" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT IFNULL(max(em_pos_active_energy)-min(em_pos_active_energy),0)
+		yg,
+		IFNULL(max(em_pos_reactive_energy)-min(em_pos_reactive_energy),0)
+		wg,
+		IFNULL(max(em_pos_jian_active_energy)-min(em_pos_jian_active_energy),0)
+		yjian,
+		IFNULL(max(em_pos_feng_active_energy)-min(em_pos_feng_active_energy),0)
+		yfeng,
+		IFNULL(max(em_pos_ping_active_energy)-min(em_pos_ping_active_energy),0)
+		yping,
+		IFNULL(max(em_pos_gu_active_energy)-min(em_pos_gu_active_energy),0)
+		ygu ,
+		IFNULL(max(em_pos_jian_reactive_energy)-min(em_pos_jian_reactive_energy),0)
+		wjian,
+		IFNULL(max(em_pos_feng_reactive_energy)-min(em_pos_feng_reactive_energy),0)
+		wfeng,
+		IFNULL(max(em_pos_ping_reactive_energy)-min(em_pos_ping_reactive_energy),0)
+		wping,
+		IFNULL(max(em_pos_gu_reactive_energy)-min(em_pos_gu_reactive_energy),0)
+		wgu
+		FROM
+		data_electric_meter
+		WHERE device_id = #{deviceId}
+		<if test="startTime!=null">
+			and data_time <![CDATA[>=]]>
+			#{startTime}
+		</if>
+		<if test="endTime!=null">
+			and data_time <![CDATA[<=]]>
+			#{endTime}
+		</if>
+	</select>
+
+	<select id="getPowerBydeviceList" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		FROM_UNIXTIME(
+		LEFT (data_time, 10),
+		"%Y-%m-%d %H:%i"
+		)
+		AS time,
+		sum(IFNULL(dem.em_active_power,0)) AS gl
+		FROM
+		data_electric_meter
+		AS dem
+		WHERE
+		dem.data_time  <![CDATA[>=]]>
+		#{startTime}
+		AND
+		dem.data_time  <![CDATA[<=]]>
+		#{endTime}
+		<if test="devices!=null">
+			<foreach collection="devices" item="deviceId"
+				open=" and dem.device_id IN (" close=")" separator=",">
+				#{deviceId}
+			</foreach>
+		</if>
+		GROUP BY
+		time
+	</select>
+
+	<select id="getMinAndMaxFactor" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		IFNULL(min(dem.em_power_factor),0) AS min,
+		IFNULL(max(dem.em_power_factor),0) AS max
+		FROM
+		data_electric_meter dem
+		WHERE
+		dem.data_time <![CDATA[>=]]>
+		#{startTime}
+		AND dem.data_time <![CDATA[<=]]>
+		#{endTime}
+		AND dem.device_id <![CDATA[=]]>
+		#{deviceId}
+	</select>
+
+</mapper>

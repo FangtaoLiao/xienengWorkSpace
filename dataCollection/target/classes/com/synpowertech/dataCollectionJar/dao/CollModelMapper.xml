@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.CollModelMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.CollModel">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="mode_name" jdbcType="VARCHAR" property="modeName" />
+    <result column="apply_to" jdbcType="VARCHAR" property="applyTo" />
+    <result column="device_model_id" jdbcType="INTEGER" property="deviceModelId" />
+    <result column="table_name" jdbcType="VARCHAR" property="tableName" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mode_name, apply_to, device_model_id, table_name, device_type, valid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_model
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coll_model
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.CollModel">
+    insert into coll_model (id, mode_name, apply_to, 
+      device_model_id, table_name, device_type, 
+      valid)
+    values (#{id,jdbcType=INTEGER}, #{modeName,jdbcType=VARCHAR}, #{applyTo,jdbcType=VARCHAR}, 
+      #{deviceModelId,jdbcType=INTEGER}, #{tableName,jdbcType=VARCHAR}, #{deviceType,jdbcType=INTEGER}, 
+      #{valid,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollModel">
+    insert into coll_model
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="modeName != null">
+        mode_name,
+      </if>
+      <if test="applyTo != null">
+        apply_to,
+      </if>
+      <if test="deviceModelId != null">
+        device_model_id,
+      </if>
+      <if test="tableName != null">
+        table_name,
+      </if>
+      <if test="deviceType != null">
+        device_type,
+      </if>
+      <if test="valid != null">
+        valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="modeName != null">
+        #{modeName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTo != null">
+        #{applyTo,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceModelId != null">
+        #{deviceModelId,jdbcType=INTEGER},
+      </if>
+      <if test="tableName != null">
+        #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null">
+        #{deviceType,jdbcType=INTEGER},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollModel">
+    update coll_model
+    <set>
+      <if test="modeName != null">
+        mode_name = #{modeName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTo != null">
+        apply_to = #{applyTo,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceModelId != null">
+        device_model_id = #{deviceModelId,jdbcType=INTEGER},
+      </if>
+      <if test="tableName != null">
+        table_name = #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null">
+        device_type = #{deviceType,jdbcType=INTEGER},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.CollModel">
+    update coll_model
+    set mode_name = #{modeName,jdbcType=VARCHAR},
+      apply_to = #{applyTo,jdbcType=VARCHAR},
+      device_model_id = #{deviceModelId,jdbcType=INTEGER},
+      table_name = #{tableName,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=INTEGER},
+      valid = #{valid,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 获取所有旧数采有效点表id -->
+  <select id="selectAllId"  resultType="java.lang.Integer">
+    select 
+    id 
+    from coll_model
+    where valid = '0'
+  </select>
+  
+</mapper>

@@ -9,15 +9,15 @@ import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
   
 public class Client {  
-  
+
     public static final String HOST = "tcp://116.62.60.33:1883";//"tcp://47.96.183.194:1883";//"tcp://116.62.60.33:1883";  
     public static final String TOPIC = "ncyt_pub_yc_ym_yx";  
     private static final String clientid = "SP0020";  
     private MqttClient client;  
-    private MqttConnectOptions options;  
+    private MqttConnectOptions options;
     private String userName = "admin";
     private String passWord = "Synpower-2017";
-  
+
     private ScheduledExecutorService scheduler;
   
     private void start() {  

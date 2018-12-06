@@ -50,6 +50,7 @@ public class SystemCache {
 	private static ElectricStorageDataMapper electricStorageDataMapper;
 	private static SysPowerPriceDetailMapper sysPowerPriceDetailMapper;
 	private static CollSignalLabelMapper collSignalLabelMapper;
+
 	/**
 	 * 电站实时功率和收益<br>
 	 * <电站id,<{energy,power,price},value>>

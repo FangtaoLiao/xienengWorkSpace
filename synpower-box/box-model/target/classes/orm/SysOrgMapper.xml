@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysOrgMapper">
+	<resultMap id="BaseResultMap" type="com.synpower.bean.SysOrg">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="org_name" jdbcType="VARCHAR" property="orgName" />
+		<result column="org_logo" jdbcType="VARCHAR" property="orgLogo" />
+		<result column="org_desc" jdbcType="VARCHAR" property="orgDesc" />
+		<result column="org_type" jdbcType="CHAR" property="orgType" />
+		<result column="org_photo" jdbcType="VARCHAR"
+			property="orgPhoto" />
+		<result column="father_id" jdbcType="INTEGER"
+			property="fatherId" />
+		<result column="last_modify_time" jdbcType="BIGINT"
+			property="lastModifyTime" />
+		<result column="last_modify_user" jdbcType="INTEGER"
+			property="lastModifyUser" />
+		<result column="org_code" jdbcType="VARCHAR" property="orgCode" />
+		<result column="org_vali_code" jdbcType="VARCHAR"
+			property="orgValiCode" />
+		<result column="org_agentor_name" jdbcType="VARCHAR"
+			property="orgAgentorName" />
+		<result column="org_angetor_id" jdbcType="INTEGER"
+			property="orgAngetorId" />
+		<result column="org_angetor_tel" jdbcType="VARCHAR"
+			property="orgAngetorTel" />
+		<result column="create_time" jdbcType="BIGINT"
+			property="createTime" />
+		<result column="create_user" jdbcType="INTEGER"
+			property="createUser" />
+		<result column="org_status" jdbcType="CHAR"
+			property="orgStatus" />
+		<result column="org_valid" jdbcType="CHAR" property="orgValid" />
+		<result column="control_name" jdbcType="VARCHAR"
+			property="controlName" />
+		<result column="control_num" jdbcType="VARCHAR"
+			property="controlNum" />
+		<result column="business_name" jdbcType="VARCHAR"
+			property="businessName" />
+		<result column="business_num" jdbcType="VARCHAR"
+			property="businessNum" />
+		<result column="service_name" jdbcType="VARCHAR"
+			property="serviceName" />
+		<result column="service_num" jdbcType="VARCHAR"
+			property="serviceNum" />
+		<result column="role_name" jdbcType="VARCHAR"
+			property="roleName" />
+		<result column="role_num" jdbcType="VARCHAR" property="roleNum" />
+		<result column="system_logo" jdbcType="VARCHAR"
+			property="systemLogo" />
+		<result column="system_name" jdbcType="VARCHAR"
+			property="systemName" />
+		<result column="screen_logo" jdbcType="VARCHAR"
+			property="screenLogo" />
+		<result column="screen_name" jdbcType="VARCHAR"
+			property="screenName" />
+		<result column="propaganda_photo" jdbcType="VARCHAR"
+			property="propagandaPhoto" />
+		<result column="system_logo_ee" jdbcType="VARCHAR"
+			property="systemLogoEe" />
+	</resultMap>
+	<select id="getSimilar" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		SELECT * from sys_org s WHERE s.org_name like
+		CONCAT(#{orgName},'%')
+	</select>
+	<select id="getAllOrg" resultMap="BaseResultMap">
+		select * from sys_org where
+		org_valid=0
+	</select>
+
+
+	<select id="getOrgInfoByUser" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		SELECT
+		o.id,
+		o.org_name,
+		o.org_code,
+		o.org_status,
+		o.org_type
+		from sys_org o
+		where o.id = #{org_id} and o.org_valid=0
+	</select>
+
+	<insert id="addOrgInfo" parameterType="sysOrg"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO sys_org (
+		org_name,
+		org_type,
+		father_id,
+		org_code,
+		org_status,
+		org_valid,
+		create_time,
+		create_user,
+		system_logo,
+		system_name,
+		screen_logo
+		)
+		VALUES (
+		#{orgName},
+		#{orgType},
+		#{fatherId},
+		#{orgCode},
+		#{orgStatus},
+		#{orgValid},
+		#{createTime},
+		#{createUser},
+		#{systemLogo},
+		#{systemName},
+		#{screenLogo}
+		)
+	</insert>
+
+	<update id="updateOrg" parameterType="sysOrg">
+		UPDATE sys_org SET
+		org_name
+		=#{orgName},
+		org_code=#{orgCode},
+		last_modify_time=#{lastModifyTime},
+		last_modify_user=#{lastModifyUser},
+		org_status=#{orgStatus}
+		WHERE
+		id=#{id}
+	</update>
+
+	<update id="deleteOrg" parameterType="java.util.Map">
+		UPDATE sys_org s SET s.org_valid = 1,s.last_modify_time =
+		#{lastModifyTime},s.last_modify_user = #{lastModifyUser} WHERE s.id in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+
+	<select id="getOrgAgentor" resultMap="BaseResultMap">
+		SELECT
+		o.org_angetor_id,o.org_agentor_name,o.org_angetor_tel from sys_org o
+		WHERE o.org_agentor_name LIKE CONCAT('%', #{0}, '%') and o.id = #{1}
+		and o.org_status=1
+	</select>
+
+	<select id="countOrg" resultType="int">
+		SELECT count(*) FROM sys_org o WHERE o.org_valid=0 and o.org_name like
+		CONCAT('%',#{orgName},'%') and o.id in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<sql id="orgDynaSql">
+		<if test="sort != null and sort != ''">
+			<choose>
+				<when test="order != null and order != ''">
+					order by #{sort} #{order}
+				</when>
+				<otherwise>
+					order by #{sort}
+				</otherwise>
+			</choose>
+		</if>
+	</sql>
+
+	<select id="listOrgInfo" parameterType="hashmap"
+		resultMap="BaseResultMap">
+		SELECT
+		o.org_name,o.org_code,o.org_vali_code,o.org_agentor_name,o.org_angetor_tel,o.org_status
+		FROM sys_org o WHERE o.org_valid=0 and o.org_name like
+		CONCAT('%',#{orgName},'%') and o.id in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<include refid="orgDynaSql" />
+		limit #{min},#{max};
+	</select>
+	<select id="getOrgName" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT so.id,so.org_name FROM sys_org so WHERE so.id = #{id}
+		and
+		so.org_valid=0
+	</select>
+	<select id="getSubsetOrg" parameterType="hashmap"
+		resultMap="BaseResultMap">
+		SELECT so.id,so.org_name FROM sys_org so WHERE so.id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getSubOrgs" parameterType="hashmap"
+		resultType="String">
+		SELECT so.org_name FROM sys_org so WHERE so.id IN
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="getRightsByUser" parameterType="integer"
+		resultMap="com.synpower.dao.SysRightsMapper.BaseResultMap">
+		SELECT ri.*
+		from sys_user u join sys_user_role ur on
+		u.id=ur.user_id
+		join sys_role r on ur.role_id=r.id
+		join sys_role_rights
+		rr on rr.role_id=r.id
+		join sys_rights ri on ri.id=rr.rights_id
+		where
+		rights_valid=0 and u.id=#{id}
+	</select>
+	<select id="getOrgIntroduction" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT so.id,so.org_name,so.org_desc,so.org_photo FROM
+		sys_org so WHERE
+		so.id = #{id}
+	</select>
+
+	<select id="getlogo" parameterType="String"
+		resultMap="BaseResultMap">
+		select * from sys_org o where o.id=#{id}
+	</select>
+	<select id="getEverryNum" parameterType="map"
+		resultMap="BaseResultMap">
+		<!-- select SUM(o.control_num) control_num,SUM(o.business_num) business_num,SUM(o.service_num) 
+			service_num,SUM(o.role_num) role_num -->
+		select *
+		from sys_org o where o.id=#{reList}
+	</select>
+
+	<select id="getRightsByRole" parameterType="List"
+		resultMap="com.synpower.dao.SysRightsMapper.BaseResultMap">
+		SELECT ri.rights_name FROM sys_role r join sys_role_rights rr on
+		rr.role_id=r.id
+		join sys_rights ri on ri.id=rr.rights_id
+		where
+		rights_valid=0 and r.id in
+		<foreach collection="list3" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getLogoAndName" parameterType="String"
+		resultMap="BaseResultMap">
+		select
+		so.id,
+		so.org_name,
+		so.org_logo,
+		so.control_name,
+		so.control_num,
+		so.business_name,
+		so.business_num,
+		so.service_name,
+		so.service_num,
+		so.role_name,
+		so.role_num
+		from sys_org so
+		where so.id =
+		#{id}
+	</select>
+	<update id="updateSystemInfo"
+		parameterType="com.synpower.bean.SysOrg">
+		UPDATE sys_org s SET
+		s.control_name = #{controlName},
+		s.control_num = #{controlNum},
+		s.business_name =#{businessName},
+		s.business_num =#{businessNum},
+		s.service_name=#{serviceName},
+		s.service_num=#{serviceNum},
+		s.role_name=#{roleName},
+		s.role_num=#{roleNum}
+		WHERE s.id = #{id}
+	</update>
+
+	<select id="getContacts" parameterType="List"
+		resultMap="BaseResultMap">
+		SELECT o.org_agentor_name,o.org_angetor_tel from sys_org o join
+		plant_info pi on pi.org_id=o.id
+		where org_valid=0 and pi.id in
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getPids" parameterType="map" resultType="integer">
+		SELECT pi.id from plant_info pi join sys_org o on pi.org_id=o.id
+		where
+		org_valid=0
+		<foreach collection="oreList" item="orgId"
+			open=" and o.id IN (" separator="," close=")">
+			#{orgId}
+		</foreach>
+	</select>
+	<select id="getOrgids" parameterType="map" resultType="String">
+		SELECT o.id from sys_org o where org_valid=0
+		and o.org_agentor_name
+		LIKE CONCAT('%',#{condition},'%') or
+		o.org_angetor_tel LIKE
+		CONCAT('%',#{condition},'%')
+		<foreach collection="reList" item="orgId"
+			open=" and o.id IN (" separator="," close=")">
+			#{orgId}
+		</foreach>
+	</select>
+	<select id="getOrgCode" resultMap="orgCodeMap">
+		SELECT sso.org_code FROM
+		sys_org sso
+	</select>
+	<resultMap id="orgCodeMap" type="java.util.HashMap">
+		<result column="sso.org_code" property="code"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getActualId" parameterType="String"
+		resultType="String">
+		SELECT o.id from sys_org o where org_valid=0 and
+		o.org_name=#{plantofOrg}
+	</select>
+	<select id="getOrgFatherId" parameterType="String"
+		resultMap="BaseResultMap">
+		select father_id from sys_org where id = #{orgId}
+	</select>
+	<select id="getOrgDesc" parameterType="String"
+		resultMap="BaseResultMap">
+		select org_desc from sys_org where id = #{orgId}
+	</select>
+	<update id="updateOrgDesc" parameterType="hashmap">
+		update sys_org set
+		org_desc = #{orgDesc} where id = #{orgId}
+	</update>
+	<update id="updateScreenLogoNull" parameterType="String">
+		UPDATE sys_org s
+		SET s.screen_logo = NULL WHERE s.id = #{orgId}
+	</update>
+	<update id="updateScreenLogo" parameterType="hashmap">
+		UPDATE sys_org s SET
+		s.screen_logo = #{screenLogo} WHERE s.id = #{orgId}
+	</update>
+	<update id="updateSystemLogoNull" parameterType="String">
+		UPDATE sys_org s
+		SET s.system_logo = NULL WHERE s.id = #{orgId}
+	</update>
+	<update id="updateSystemLogo" parameterType="hashmap">
+		UPDATE sys_org s SET
+		s.system_logo = #{systemLogo} WHERE s.id = #{orgId}
+	</update>
+	<update id="updateSystemName" parameterType="hashmap">
+		UPDATE sys_org s SET
+		s.system_name = #{systemName},s.screen_name =
+		#{screenName},s.org_desc
+		= #{orgDesc} WHERE s.id = #{orgId}
+	</update>
+	<select id="getOrgById" parameterType="String"
+		resultMap="BaseResultMap">
+		select * from sys_org where id = #{orgId}
+	</select>
+	<update id="updateOrgPhoto" parameterType="hashmap">
+		update sys_org set
+		org_photo = #{orgPhoto} where id = #{orgId}
+	</update>
+	<update id="updatePropagandaPhoto" parameterType="hashmap">
+		update sys_org
+		set propaganda_photo = #{propagandaPhoto} where id = #{orgId}
+	</update>
+	<update id="updateOrgPhotoNull" parameterType="String">
+		UPDATE sys_org s
+		SET s.org_photo = NULL WHERE s.id = #{orgId}
+	</update>
+	<select id="getOrgNameByIds" parameterType="list"
+		resultMap="BaseResultMap">
+		SELECT id,org_name from sys_org WHERE id IN
+		<foreach collection="list" item="item" open="(" separator=","
+			close=")">
+			#{item}
+		</foreach>
+	</select>
+</mapper>

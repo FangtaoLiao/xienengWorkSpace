@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+     http://www.springframework.org/schema/context 
+	 http://www.springframework.org/schema/context/spring-context.xsd
+     http://www.springframework.org/schema/rabbit  
+     http://www.springframework.org/schema/rabbit/spring-rabbit-1.2.xsd">
+
+	<context:property-placeholder location="classpath:spring-rabbitMq.properties"
+		ignore-unresolvable="true" />
+
+	<!--配置connection-factory，指定连接rabbit server参数 -->
+	<rabbit:connection-factory id="connectionFactory"
+		virtual-host="${Mq.vhost}" username="${Mq.username}" password="${Mq.password}"
+		host="${Mq.host}" port="${Mq.port}" />
+
+	<!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成 -->
+	<rabbit:admin id="connectAdmin" connection-factory="connectionFactory" />
+
+	<!--定义queue -->
+	<rabbit:queue name="${Mq.queneName}" durable="true"
+		auto-delete="false" exclusive="false" declared-by="connectAdmin" />
+
+	<!-- 定义路由 -->
+	<rabbit:fanout-exchange name="${amq.exchange}"
+		xmlns="http://www.springframework.org/schema/rabbit" durable="true"
+		auto-delete="false" declared-by="connectAdmin">
+	</rabbit:fanout-exchange>
+
+
+	<!--定义rabbit template用于数据的接收和发送 ，message-converter不配置会使用默认的converter -->
+	<rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
+		exchange="${amq.exchange}" message-converter="jsonMessageConverter" />
+
+	<!-- 初始化实现工具类功能 -->
+	<bean id="rabbitMqProducer"
+		class="com.synpowertech.dataCollectionJar.initialization.RabbitMqProducer">
+		<property name="amqpTemplate" ref="amqpTemplate"></property>
+	</bean>
+	
+		<!-- 不配置会使用默认的 -->
+	<bean id="jsonMessageConverter"
+		class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" />
+	
+	<!-- 消息接收者********** -->
+	
+	 <rabbit:queue name="test321queue" durable="true" />
+	 
+	<bean id="messageReceiver"
+		class="com.synpowertech.dataCollectionJar.initialization.RabbitMqConsumer4test"></bean>
+
+	<!-- queue litener 观察 监听模式 当有消息到达时会通知监听在对应的队列上的监听对象 -->
+    <rabbit:fanout-exchange name="${amq.exchange}" xmlns="http://www.springframework.org/schema/rabbit" durable="true">
+        <rabbit:bindings>
+            <rabbit:binding queue="test321queue"></rabbit:binding>
+        </rabbit:bindings> 
+    </rabbit:fanout-exchange> 
+	
+	<rabbit:listener-container
+		connection-factory="connectionFactory">
+		<rabbit:listener queue-names="test321queue" ref="messageReceiver"
+			method="onMessage" />
+	</rabbit:listener-container>
+	
+	<!-- 消息接收者********** -->
+	
+</beans>

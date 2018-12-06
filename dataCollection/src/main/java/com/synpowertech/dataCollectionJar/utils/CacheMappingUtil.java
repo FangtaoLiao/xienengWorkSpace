@@ -2,21 +2,15 @@ package com.synpowertech.dataCollectionJar.utils;
 
 
 //import static org.hamcrest.CoreMatchers.nullValue;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.synpowertech.dataCollectionJar.initialization.DeviceCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Stack;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.synpowertech.dataCollectionJar.initialization.DeviceCache;
-import com.synpowertech.dataCollectionJar.mqttJsonClient.MqttActiveConnectClient;
 /**
  * ***************************************************************************
  * @Package: com.synpowertech.utils
@@ -264,7 +258,7 @@ public class CacheMappingUtil {
 			Integer yxId = DeviceCache.signalGuid2yxId.get(signalGuid).get(Integer.parseInt(yxValue));
 			return yxId;
 		} catch (Exception e) {
-			logger.debug("can not get signalGuid2yxId:{}:{}:{}",signalGuid,yxValue,e.getClass());
+			logger.error("can not get signalGuid2yxId:{}:{}:{}", signalGuid, yxValue, e.getClass(), e);
 		}
 
 		return null;

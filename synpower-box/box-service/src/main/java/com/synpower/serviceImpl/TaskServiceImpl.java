@@ -1,11 +1,14 @@
 package com.synpower.serviceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.synpower.bean.AllParam;
 import com.synpower.bean.Task;
 import com.synpower.dao.TaskMapper;
 import com.synpower.msg.session.User;
+import com.synpower.service.SystemService;
 import com.synpower.service.TaskService;
 import com.synpower.util.CacheUtil0;
+import com.synpower.util.ServiceUtil;
 import com.synpower.util.Util;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.xmlbeans.impl.xb.xsdschema.All;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,20 +83,37 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.updateByPrimaryKeySelective(task) == 1 ? true : false;
     }
 
+    /**
+     * @method 获取任务管理列表
+     * @param parMap
+     * @return
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     @Override
-    public List<Map<String, Object>> getList(Map<String, Object> parMap) throws InvocationTargetException, IllegalAccessException {
+    public List<AllParam> getList(Map<String, Object> parMap) throws InvocationTargetException, IllegalAccessException {
         AllParam allParam = new AllParam();
         //allParam.setOrderName(Util.get);
         //List<Object> taskList = taskMapper.getTaskList(allParam);
         BeanUtils.populate(allParam,parMap);  //将map中与allParam属性名相同的键将值赋给allParam
+        // List list = (List)parMap.get("orderName");
+//        Object o = parMap.get("orderName");
+//        JSONObject jsonObject = JSONObject.parseObject(o.toString());
+//        allParam.setOrderName(jsonObject.getString("orderName"));
+//        allParam.setOrder(jsonObject.getString("order"));
+        HashMap hashMap = new HashMap();
+        hashMap = (HashMap) ServiceUtil.parseOrderName(parMap,hashMap);
+        System.out.print(hashMap.get("order"));
+        allParam.setOrder((String) hashMap.get("order"));
+        allParam.setOrderName((String) hashMap.get("orderName"));
         if(Util.isEmpty(allParam.getLength())){
-             allParam.setStart("10");
+             allParam.setLength(10);
         }
         if(Util.isEmpty(allParam.getStart())){
-            allParam.setStart("0");
+            allParam.setStart(0);
         }
+        return taskMapper.selectTaskListByStatus(allParam);
 
 
-        return null;
     }
 }

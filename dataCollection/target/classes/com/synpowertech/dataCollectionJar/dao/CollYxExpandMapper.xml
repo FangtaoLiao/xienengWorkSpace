@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.CollYxExpandMapper">
+  <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.CollYxExpand">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="signal_guid" jdbcType="VARCHAR" property="signalGuid" />
+    <result column="signal_name" jdbcType="VARCHAR" property="signalName" />
+    <result column="data_model" jdbcType="INTEGER" property="dataModel" />
+    <result column="yc_alarm" jdbcType="INTEGER" property="ycAlarm" />
+    <result column="alarm_bit" jdbcType="INTEGER" property="alarmBit" />
+    <result column="alarm_bit_length" jdbcType="INTEGER" property="alarmBitLength" />
+    <result column="alarm_type" jdbcType="CHAR" property="alarmType" />
+    <result column="status_name" jdbcType="VARCHAR" property="statusName" />
+    <result column="status_value" jdbcType="INTEGER" property="statusValue" />
+    <result column="alarm_level" jdbcType="VARCHAR" property="alarmLevel" />
+    <result column="suggest" jdbcType="VARCHAR" property="suggest" />
+    <result column="alarm_reason" jdbcType="VARCHAR" property="alarmReason" />
+    <result column="fault_point" jdbcType="CHAR" property="faultPoint" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, signal_guid, signal_name, data_model, yc_alarm, alarm_bit, alarm_bit_length, 
+    alarm_type, status_name, status_value, alarm_level, suggest, alarm_reason, fault_point, 
+    valid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_yx_expand
+    where id = #{id,jdbcType=INTEGER} and valid != '1'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coll_yx_expand
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.CollYxExpand">
+    insert into coll_yx_expand (id, signal_guid, signal_name, 
+      data_model, yc_alarm, alarm_bit, 
+      alarm_bit_length, alarm_type, status_name, 
+      status_value, alarm_level, suggest, 
+      alarm_reason, fault_point, valid
+      )
+    values (#{id,jdbcType=INTEGER}, #{signalGuid,jdbcType=VARCHAR}, #{signalName,jdbcType=VARCHAR}, 
+      #{dataModel,jdbcType=INTEGER}, #{ycAlarm,jdbcType=INTEGER}, #{alarmBit,jdbcType=INTEGER}, 
+      #{alarmBitLength,jdbcType=INTEGER}, #{alarmType,jdbcType=CHAR}, #{statusName,jdbcType=VARCHAR}, 
+      #{statusValue,jdbcType=INTEGER}, #{alarmLevel,jdbcType=VARCHAR}, #{suggest,jdbcType=VARCHAR}, 
+      #{alarmReason,jdbcType=VARCHAR}, #{faultPoint,jdbcType=CHAR}, #{valid,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollYxExpand">
+    insert into coll_yx_expand
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="signalGuid != null">
+        signal_guid,
+      </if>
+      <if test="signalName != null">
+        signal_name,
+      </if>
+      <if test="dataModel != null">
+        data_model,
+      </if>
+      <if test="ycAlarm != null">
+        yc_alarm,
+      </if>
+      <if test="alarmBit != null">
+        alarm_bit,
+      </if>
+      <if test="alarmBitLength != null">
+        alarm_bit_length,
+      </if>
+      <if test="alarmType != null">
+        alarm_type,
+      </if>
+      <if test="statusName != null">
+        status_name,
+      </if>
+      <if test="statusValue != null">
+        status_value,
+      </if>
+      <if test="alarmLevel != null">
+        alarm_level,
+      </if>
+      <if test="suggest != null">
+        suggest,
+      </if>
+      <if test="alarmReason != null">
+        alarm_reason,
+      </if>
+      <if test="faultPoint != null">
+        fault_point,
+      </if>
+      <if test="valid != null">
+        valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="signalGuid != null">
+        #{signalGuid,jdbcType=VARCHAR},
+      </if>
+      <if test="signalName != null">
+        #{signalName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataModel != null">
+        #{dataModel,jdbcType=INTEGER},
+      </if>
+      <if test="ycAlarm != null">
+        #{ycAlarm,jdbcType=INTEGER},
+      </if>
+      <if test="alarmBit != null">
+        #{alarmBit,jdbcType=INTEGER},
+      </if>
+      <if test="alarmBitLength != null">
+        #{alarmBitLength,jdbcType=INTEGER},
+      </if>
+      <if test="alarmType != null">
+        #{alarmType,jdbcType=CHAR},
+      </if>
+      <if test="statusName != null">
+        #{statusName,jdbcType=VARCHAR},
+      </if>
+      <if test="statusValue != null">
+        #{statusValue,jdbcType=INTEGER},
+      </if>
+      <if test="alarmLevel != null">
+        #{alarmLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="suggest != null">
+        #{suggest,jdbcType=VARCHAR},
+      </if>
+      <if test="alarmReason != null">
+        #{alarmReason,jdbcType=VARCHAR},
+      </if>
+      <if test="faultPoint != null">
+        #{faultPoint,jdbcType=CHAR},
+      </if>
+      <if test="valid != null">
+        #{valid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.CollYxExpand">
+    update coll_yx_expand
+    <set>
+      <if test="signalGuid != null">
+        signal_guid = #{signalGuid,jdbcType=VARCHAR},
+      </if>
+      <if test="signalName != null">
+        signal_name = #{signalName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataModel != null">
+        data_model = #{dataModel,jdbcType=INTEGER},
+      </if>
+      <if test="ycAlarm != null">
+        yc_alarm = #{ycAlarm,jdbcType=INTEGER},
+      </if>
+      <if test="alarmBit != null">
+        alarm_bit = #{alarmBit,jdbcType=INTEGER},
+      </if>
+      <if test="alarmBitLength != null">
+        alarm_bit_length = #{alarmBitLength,jdbcType=INTEGER},
+      </if>
+      <if test="alarmType != null">
+        alarm_type = #{alarmType,jdbcType=CHAR},
+      </if>
+      <if test="statusName != null">
+        status_name = #{statusName,jdbcType=VARCHAR},
+      </if>
+      <if test="statusValue != null">
+        status_value = #{statusValue,jdbcType=INTEGER},
+      </if>
+      <if test="alarmLevel != null">
+        alarm_level = #{alarmLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="suggest != null">
+        suggest = #{suggest,jdbcType=VARCHAR},
+      </if>
+      <if test="alarmReason != null">
+        alarm_reason = #{alarmReason,jdbcType=VARCHAR},
+      </if>
+      <if test="faultPoint != null">
+        fault_point = #{faultPoint,jdbcType=CHAR},
+      </if>
+      <if test="valid != null">
+        valid = #{valid,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.CollYxExpand">
+    update coll_yx_expand
+    set signal_guid = #{signalGuid,jdbcType=VARCHAR},
+      signal_name = #{signalName,jdbcType=VARCHAR},
+      data_model = #{dataModel,jdbcType=INTEGER},
+      yc_alarm = #{ycAlarm,jdbcType=INTEGER},
+      alarm_bit = #{alarmBit,jdbcType=INTEGER},
+      alarm_bit_length = #{alarmBitLength,jdbcType=INTEGER},
+      alarm_type = #{alarmType,jdbcType=CHAR},
+      status_name = #{statusName,jdbcType=VARCHAR},
+      status_value = #{statusValue,jdbcType=INTEGER},
+      alarm_level = #{alarmLevel,jdbcType=VARCHAR},
+      suggest = #{suggest,jdbcType=VARCHAR},
+      alarm_reason = #{alarmReason,jdbcType=VARCHAR},
+      fault_point = #{faultPoint,jdbcType=CHAR},
+      valid = #{valid,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_yx_expand where valid != '1'
+  </select>
+  
+   <select id="selectBySignalGuid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coll_yx_expand
+    where signal_guid = #{signalGuid,jdbcType=VARCHAR} and valid != '1'
+  </select>
+</mapper>

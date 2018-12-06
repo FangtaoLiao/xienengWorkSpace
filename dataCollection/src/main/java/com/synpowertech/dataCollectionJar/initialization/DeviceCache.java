@@ -1,52 +1,21 @@
 package com.synpowertech.dataCollectionJar.initialization;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeSet;
-
+import com.synpowertech.dataCollectionJar.dao.*;
+import com.synpowertech.dataCollectionJar.domain.*;
+import com.synpowertech.dataCollectionJar.mqttJsonClient.MqttActiveConnectClient;
+import com.synpowertech.dataCollectionJar.utils.AddressComparator;
+import com.synpowertech.dataCollectionJar.utils.CacheMappingUtil;
+import com.synpowertech.dataCollectionJar.utils.SunRiseSet;
+import com.synpowertech.dataCollectionJar.utils.Table2modelUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.synpowertech.dataCollectionJar.dao.CollJsonComSetMapper;
-import com.synpowertech.dataCollectionJar.dao.CollJsonDatacollSetMapper;
-import com.synpowertech.dataCollectionJar.dao.CollJsonDevSetMapper;
-import com.synpowertech.dataCollectionJar.dao.CollJsonModelDetailExtendMapper;
-import com.synpowertech.dataCollectionJar.dao.CollJsonTypeMapper;
-import com.synpowertech.dataCollectionJar.dao.CollModelDetailMqttMapper;
-import com.synpowertech.dataCollectionJar.dao.CollModelMapper;
-import com.synpowertech.dataCollectionJar.dao.CollSignalLabelMapper;
-import com.synpowertech.dataCollectionJar.dao.CollYxExpandMapper;
-import com.synpowertech.dataCollectionJar.dao.CollectorMessageStructureMapper;
-import com.synpowertech.dataCollectionJar.dao.DeviceMapper;
-import com.synpowertech.dataCollectionJar.dao.FieldSignalGuidMappingMapper;
-import com.synpowertech.dataCollectionJar.domain.AddressIdGuid;
-import com.synpowertech.dataCollectionJar.domain.CollDeviceLocation;
-import com.synpowertech.dataCollectionJar.domain.CollJsonDevSet;
-import com.synpowertech.dataCollectionJar.domain.CollJsonModelDetailExtend;
-import com.synpowertech.dataCollectionJar.domain.CollModelDetailMqtt;
-import com.synpowertech.dataCollectionJar.domain.CollSignalLabel;
-import com.synpowertech.dataCollectionJar.domain.CollYxExpand;
-import com.synpowertech.dataCollectionJar.domain.CollectorMessageStructure;
-import com.synpowertech.dataCollectionJar.domain.Device;
-import com.synpowertech.dataCollectionJar.domain.FieldSignalGuidMapping;
-import com.synpowertech.dataCollectionJar.mqttJsonClient.MqttActiveConnectClient;
-import com.synpowertech.dataCollectionJar.utils.AddressComparator;
-import com.synpowertech.dataCollectionJar.utils.CacheMappingUtil;
-import com.synpowertech.dataCollectionJar.utils.SunRiseSet;
-import com.synpowertech.dataCollectionJar.utils.Table2modelUtil;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DeviceCache implements InitializingBean {
 
@@ -201,13 +170,13 @@ public class DeviceCache implements InitializingBean {
 
     /**********************************************************/
     //23点天黑，记录使用60KTL的设备的今日总发电量数据,数据实现在对时任务一起，通用
-    public static HashMap<String, String> dailyEnergyMap = new HashMap<String, String>(5);
+    public static HashMap<String, String> dailyEnergyMap = new HashMap<>(5);
 
     /**
      * TODO 新数采动态订阅相关缓存，分组划分，Qos和订阅主题划分
      */
-    public static List<MqttActiveConnectClient> clientList = new ArrayList<MqttActiveConnectClient>(5);
-    public static Stack<MqttActiveConnectClient> clientStack = new Stack<MqttActiveConnectClient>();
+    public static List<MqttActiveConnectClient> clientList = new ArrayList<>(5);
+    public static Stack<MqttActiveConnectClient> clientStack = new Stack<>();
     public static List<String[]> subTopicList = null;
     public static List<int[]> subQosList = null;
     //新数采订阅所需要的连接数
@@ -265,14 +234,21 @@ public class DeviceCache implements InitializingBean {
     /**
      * 所有设备id用于定时判断redis中设备通讯状态缓存,List<devId>
      */
-    public static List<Integer> devIdList = new ArrayList<Integer>();
+    public static List<Integer> devIdList = null;
 
     /**
      * @Author lz
      * @Description: 用于特殊判断的设备, 当设备在此时, 无需判断状态, 直接设置状态为运行
      * @Date: 2018/10/25 19:54
      **/
-    public static List<Integer> devJoinIdList = new ArrayList<>();
+    public static List<Integer> devJoinIdList = null;
+
+    /**
+     * @Author lz
+     * @Description: 告警yxid:告警级别
+     * @Date: 2018/11/27 9:32
+     **/
+    public static Map<Integer, String> alramLevelMap = null;
 
     /**********************************************************/
     //TODO 畅洋数采手动合成点所需缓存,一般只在遥测出现
@@ -310,6 +286,7 @@ public class DeviceCache implements InitializingBean {
     private CollJsonModelDetailExtendMapper collJsonMDExtMapperTemp;
     @Autowired
     private CollJsonTypeMapper collJsonTypeMapperTemp;
+
 
     static CollModelDetailMqttMapper collModelDetailMqttMapper;
     static CollYxExpandMapper collYxExpandMapper;
@@ -991,6 +968,7 @@ public class DeviceCache implements InitializingBean {
 
         Map<String, Map<Integer, Integer>> signalGuid2yxIdTemp = new HashMap<String, Map<Integer, Integer>>();
         Map<Integer, Integer> signalGuid2yxIdMap = new HashMap<Integer, Integer>();
+        Map<Integer, String> alramLevelMapTemp = new HashMap<>();
 
         List<Integer> yxIdAlarmListTemp = new ArrayList<Integer>();
         //含所有型号遥测遥信等的对应状态
@@ -999,6 +977,11 @@ public class DeviceCache implements InitializingBean {
         if (yxResult != null) {
             String signalGuidTemp = "";
             for (CollYxExpand collYxExpand : yxResult) {
+                //告警缓存
+                if (collYxExpand.getYcAlarm() == 1) {
+                    alramLevelMapTemp.put(collYxExpand.getId(), collYxExpand.getAlarmLevel());
+                }
+
                 if (collYxExpand.getSignalGuid() == null) {
                     continue;
                 }
@@ -1016,8 +999,10 @@ public class DeviceCache implements InitializingBean {
                     // 不同的signalGuid，先存一次，第一次不存
                     if (!"".equals(signalGuidTemp)) {
                         //插入前先确认是否已有key,有就合并valueMap
-                        if (signalGuid2yxIdTemp.get(signalGuidTemp) != null) {
-                            Map<Integer, Integer> signalGuid2yxIdMapTemp = signalGuid2yxIdTemp.get(signalGuidTemp);
+                        //if (signalGuid2yxIdTemp.get(signalGuidTemp) != null) {
+                        //    Map<Integer, Integer> signalGuid2yxIdMapTemp = signalGuid2yxIdTemp.get(signalGuidTemp);
+                        Map<Integer, Integer> signalGuid2yxIdMapTemp = signalGuid2yxIdTemp.get(signalGuidTemp);
+                        if (signalGuid2yxIdMapTemp != null) {
                             signalGuid2yxIdMapTemp.putAll(signalGuid2yxIdMap);
                             signalGuid2yxIdMap = signalGuid2yxIdMapTemp;
                         }
@@ -1094,6 +1079,8 @@ public class DeviceCache implements InitializingBean {
             devId2plantId = devId2plantIdTemp;
             devId2dataModeMap = devId2dataModeMapTemp;
             devJoinIdList = devJoinIdListTemp;
+
+            alramLevelMap = alramLevelMapTemp;
             logger.debug("devId2plantId:" + devId2plantId.toString());
             logger.info("devId2dataModeMap:" + devId2dataModeMap.toString());
         }

@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.synpower.dao.DataEnvMonitorMapper" >
+	<resultMap id="BaseResultMap" type="com.synpower.bean.DataEnvMonitor" >
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="device_id" property="deviceId" jdbcType="INTEGER" />
+		<result column="plant" property="plant" jdbcType="INTEGER" />
+		<result column="data_time" property="dataTime" jdbcType="BIGINT" />
+		<result column="temp_ambient" property="tempAmbient" jdbcType="REAL" />
+		<result column="temp_one" property="tempOne" jdbcType="REAL" />
+		<result column="temp_two" property="tempTwo" jdbcType="REAL" />
+		<result column="temp_three" property="tempThree" jdbcType="REAL" />
+		<result column="temp_four" property="tempFour" jdbcType="REAL" />
+		<result column="temp_five" property="tempFive" jdbcType="REAL" />
+		<result column="dew_point" property="dewPoint" jdbcType="REAL" />
+		<result column="hum_ambient" property="humAmbient" jdbcType="REAL" />
+		<result column="hum_soil_one" property="humSoilOne" jdbcType="REAL" />
+		<result column="hum_soil_two" property="humSoilTwo" jdbcType="REAL" />
+		<result column="hum_soil_three" property="humSoilThree" jdbcType="REAL" />
+		<result column="carbon_dioxide" property="carbonDioxide" jdbcType="REAL" />
+		<result column="evaporation" property="evaporation" jdbcType="REAL" />
+		<result column="pressure" property="pressure" jdbcType="REAL" />
+		<result column="radiation_total_one" property="radiationTotalOne" jdbcType="REAL"
+			/>
+		<result column="radiation_scattering" property="radiationScattering" jdbcType="REAL"
+			/>
+		<result column="radiation_direct" property="radiationDirect" jdbcType="REAL" />
+		<result column="radiation_total_two" property="radiationTotalTwo" jdbcType="REAL"
+			/>
+		<result column="radiation_net" property="radiationNet" jdbcType="REAL" />
+		<result column="radiation_photosynthesis" property="radiationPhotosynthesis" jdbcType="REAL"
+			/>
+		<result column="radiation_ultraviolet" property="radiationUltraviolet" jdbcType="REAL"
+			/>
+		<result column="wind_direction" property="windDirection" jdbcType="REAL" />
+		<result column="wind_speed" property="windSpeed" jdbcType="REAL" />
+		<result column="wind_two_speed" property="windTwoSpeed" jdbcType="REAL" />
+		<result column="wind_ten_speed" property="windTenSpeed" jdbcType="REAL" />
+		<result column="time_rainfall" property="timeRainfall" jdbcType="REAL" />
+		<result column="time_sunshine" property="timeSunshine" jdbcType="REAL" />
+		<result column="time_radiation_total_one" property="timeRadiationTotalOne" jdbcType="REAL"
+			/>
+		<result column="time_radiation_scattering" property="timeRadiationScattering" jdbcType="REAL"
+			/>
+		<result column="time_radiation_direct" property="timeRadiationDirect" jdbcType="REAL"
+			/>
+		<result column="time_radiation_total_two" property="timeRadiationTotalTwo" jdbcType="REAL"
+			/>
+		<result column="time_radiation_net" property="timeRadiationNet" jdbcType="REAL" />
+		<result column="time_radiation_photosynthesis" property="timeRadiationPhotosynthesis"
+			jdbcType="REAL" />
+		<result column="time_radiation_ultraviolet" property="timeRadiationUltraviolet" jdbcType="REAL"
+			/>
+		<result column="day_rainfall" property="dayRainfall" jdbcType="REAL" />
+		<result column="day_sunshine" property="daySunshine" jdbcType="REAL" />
+		<result column="day_radiation_total_one" property="dayRadiationTotalOne" jdbcType="REAL"
+			/>
+		<result column="day_radiation_scattering" property="dayRadiationScattering" jdbcType="REAL"
+			/>
+		<result column="day_radiation_direct" property="dayRadiationDirect" jdbcType="REAL"
+			/>
+		<result column="day_radiation_total_two" property="dayRadiationTotalTwo" jdbcType="REAL"
+			/>
+		<result column="day_radiation_net" property="dayRadiationNet" jdbcType="REAL" />
+		<result column="day_radiation_photosynthesis" property="dayRadiationPhotosynthesis"
+			jdbcType="REAL" />
+		<result column="day_radiation_ultraviolet" property="dayRadiationUltraviolet" jdbcType="REAL"
+			/>
+	</resultMap>
+	<sql id="Base_Column_List" >
+		id, device_id, plant, data_time, temp_ambient, temp_one, temp_two, temp_three, temp_four,
+		temp_five, dew_point, hum_ambient, hum_soil_one, hum_soil_two, hum_soil_three, carbon_dioxide,
+		evaporation, pressure, radiation_total_one, radiation_scattering, radiation_direct,
+		radiation_total_two, radiation_net, radiation_photosynthesis, radiation_ultraviolet,
+		wind_direction, wind_speed, wind_two_speed, wind_ten_speed, time_rainfall, time_sunshine,
+		time_radiation_total_one, time_radiation_scattering, time_radiation_direct, time_radiation_total_two,
+		time_radiation_net, time_radiation_photosynthesis, time_radiation_ultraviolet, day_rainfall,
+		day_sunshine, day_radiation_total_one, day_radiation_scattering, day_radiation_direct,
+		day_radiation_total_two, day_radiation_net, day_radiation_photosynthesis, day_radiation_ultraviolet
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer"
+		>
+		select
+		<include refid="Base_Column_List" />
+		from data_env_monitor
+    where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >delete from data_env_monitor
+    where id = #{id,jdbcType=INTEGER}</delete>
+	<insert id="insert" parameterType="com.synpower.bean.DataEnvMonitor" >
+		insert into data_env_monitor (id, device_id, plant, data_time, temp_ambient, temp_one,
+		temp_two, temp_three, temp_four, temp_five, dew_point, hum_ambient, hum_soil_one,
+		hum_soil_two, hum_soil_three, carbon_dioxide, evaporation, pressure, radiation_total_one,
+		radiation_scattering, radiation_direct, radiation_total_two, radiation_net, radiation_photosynthesis,
+		radiation_ultraviolet, wind_direction, wind_speed, wind_two_speed, wind_ten_speed,
+		time_rainfall, time_sunshine, time_radiation_total_one, time_radiation_scattering,
+		time_radiation_direct, time_radiation_total_two, time_radiation_net, time_radiation_photosynthesis,
+		time_radiation_ultraviolet, day_rainfall, day_sunshine, day_radiation_total_one,
+		day_radiation_scattering, day_radiation_direct, day_radiation_total_two, day_radiation_net,
+		day_radiation_photosynthesis, day_radiation_ultraviolet) values (#{id,jdbcType=INTEGER},
+		#{deviceId,jdbcType=INTEGER}, #{plant,jdbcType=INTEGER}, #{dataTime,jdbcType=BIGINT},
+		#{tempAmbient,jdbcType=REAL}, #{tempOne,jdbcType=REAL}, #{tempTwo,jdbcType=REAL},
+		#{tempThree,jdbcType=REAL}, #{tempFour,jdbcType=REAL}, #{tempFive,jdbcType=REAL},
+		#{dewPoint,jdbcType=REAL}, #{humAmbient,jdbcType=REAL}, #{humSoilOne,jdbcType=REAL},
+		#{humSoilTwo,jdbcType=REAL}, #{humSoilThree,jdbcType=REAL}, #{carbonDioxide,jdbcType=REAL},
+		#{evaporation,jdbcType=REAL}, #{pressure,jdbcType=REAL}, #{radiationTotalOne,jdbcType=REAL},
+		#{radiationScattering,jdbcType=REAL}, #{radiationDirect,jdbcType=REAL}, #{radiationTotalTwo,jdbcType=REAL},
+		#{radiationNet,jdbcType=REAL}, #{radiationPhotosynthesis,jdbcType=REAL}, #{radiationUltraviolet,jdbcType=REAL},
+		#{windDirection,jdbcType=REAL}, #{windSpeed,jdbcType=REAL}, #{windTwoSpeed,jdbcType=REAL},
+		#{windTenSpeed,jdbcType=REAL}, #{timeRainfall,jdbcType=REAL}, #{timeSunshine,jdbcType=REAL},
+		#{timeRadiationTotalOne,jdbcType=REAL}, #{timeRadiationScattering,jdbcType=REAL},
+		#{timeRadiationDirect,jdbcType=REAL}, #{timeRadiationTotalTwo,jdbcType=REAL}, #{timeRadiationNet,jdbcType=REAL},
+		#{timeRadiationPhotosynthesis,jdbcType=REAL}, #{timeRadiationUltraviolet,jdbcType=REAL},
+		#{dayRainfall,jdbcType=REAL}, #{daySunshine,jdbcType=REAL}, #{dayRadiationTotalOne,jdbcType=REAL},
+		#{dayRadiationScattering,jdbcType=REAL}, #{dayRadiationDirect,jdbcType=REAL}, #{dayRadiationTotalTwo,jdbcType=REAL},
+		#{dayRadiationNet,jdbcType=REAL}, #{dayRadiationPhotosynthesis,jdbcType=REAL}, #{dayRadiationUltraviolet,jdbcType=REAL})
+	</insert>
+	<insert id="insertSelective" parameterType="com.synpower.bean.DataEnvMonitor" >
+		insert into data_env_monitor
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null" >id,</if>
+			<if test="deviceId != null" >device_id,</if>
+			<if test="plant != null" >plant,</if>
+			<if test="dataTime != null" >data_time,</if>
+			<if test="tempAmbient != null" >temp_ambient,</if>
+			<if test="tempOne != null" >temp_one,</if>
+			<if test="tempTwo != null" >temp_two,</if>
+			<if test="tempThree != null" >temp_three,</if>
+			<if test="tempFour != null" >temp_four,</if>
+			<if test="tempFive != null" >temp_five,</if>
+			<if test="dewPoint != null" >dew_point,</if>
+			<if test="humAmbient != null" >hum_ambient,</if>
+			<if test="humSoilOne != null" >hum_soil_one,</if>
+			<if test="humSoilTwo != null" >hum_soil_two,</if>
+			<if test="humSoilThree != null" >hum_soil_three,</if>
+			<if test="carbonDioxide != null" >carbon_dioxide,</if>
+			<if test="evaporation != null" >evaporation,</if>
+			<if test="pressure != null" >pressure,</if>
+			<if test="radiationTotalOne != null" >radiation_total_one,</if>
+			<if test="radiationScattering != null" >radiation_scattering,</if>
+			<if test="radiationDirect != null" >radiation_direct,</if>
+			<if test="radiationTotalTwo != null" >radiation_total_two,</if>
+			<if test="radiationNet != null" >radiation_net,</if>
+			<if test="radiationPhotosynthesis != null" >radiation_photosynthesis,</if>
+			<if test="radiationUltraviolet != null" >radiation_ultraviolet,</if>
+			<if test="windDirection != null" >wind_direction,</if>
+			<if test="windSpeed != null" >wind_speed,</if>
+			<if test="windTwoSpeed != null" >wind_two_speed,</if>
+			<if test="windTenSpeed != null" >wind_ten_speed,</if>
+			<if test="timeRainfall != null" >time_rainfall,</if>
+			<if test="timeSunshine != null" >time_sunshine,</if>
+			<if test="timeRadiationTotalOne != null" >time_radiation_total_one,</if>
+			<if test="timeRadiationScattering != null" >time_radiation_scattering,</if>
+			<if test="timeRadiationDirect != null" >time_radiation_direct,</if>
+			<if test="timeRadiationTotalTwo != null" >time_radiation_total_two,</if>
+			<if test="timeRadiationNet != null" >time_radiation_net,</if>
+			<if test="timeRadiationPhotosynthesis != null" >time_radiation_photosynthesis,</if>
+			<if test="timeRadiationUltraviolet != null" >time_radiation_ultraviolet,</if>
+			<if test="dayRainfall != null" >day_rainfall,</if>
+			<if test="daySunshine != null" >day_sunshine,</if>
+			<if test="dayRadiationTotalOne != null" >day_radiation_total_one,</if>
+			<if test="dayRadiationScattering != null" >day_radiation_scattering,</if>
+			<if test="dayRadiationDirect != null" >day_radiation_direct,</if>
+			<if test="dayRadiationTotalTwo != null" >day_radiation_total_two,</if>
+			<if test="dayRadiationNet != null" >day_radiation_net,</if>
+			<if test="dayRadiationPhotosynthesis != null" >day_radiation_photosynthesis,</if>
+			<if test="dayRadiationUltraviolet != null" >day_radiation_ultraviolet,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null" >#{id,jdbcType=INTEGER},</if>
+			<if test="deviceId != null" >#{deviceId,jdbcType=INTEGER},</if>
+			<if test="plant != null" >#{plant,jdbcType=INTEGER},</if>
+			<if test="dataTime != null" >#{dataTime,jdbcType=BIGINT},</if>
+			<if test="tempAmbient != null" >#{tempAmbient,jdbcType=REAL},</if>
+			<if test="tempOne != null" >#{tempOne,jdbcType=REAL},</if>
+			<if test="tempTwo != null" >#{tempTwo,jdbcType=REAL},</if>
+			<if test="tempThree != null" >#{tempThree,jdbcType=REAL},</if>
+			<if test="tempFour != null" >#{tempFour,jdbcType=REAL},</if>
+			<if test="tempFive != null" >#{tempFive,jdbcType=REAL},</if>
+			<if test="dewPoint != null" >#{dewPoint,jdbcType=REAL},</if>
+			<if test="humAmbient != null" >#{humAmbient,jdbcType=REAL},</if>
+			<if test="humSoilOne != null" >#{humSoilOne,jdbcType=REAL},</if>
+			<if test="humSoilTwo != null" >#{humSoilTwo,jdbcType=REAL},</if>
+			<if test="humSoilThree != null" >#{humSoilThree,jdbcType=REAL},</if>
+			<if test="carbonDioxide != null" >#{carbonDioxide,jdbcType=REAL},</if>
+			<if test="evaporation != null" >#{evaporation,jdbcType=REAL},</if>
+			<if test="pressure != null" >#{pressure,jdbcType=REAL},</if>
+			<if test="radiationTotalOne != null" >#{radiationTotalOne,jdbcType=REAL},</if>
+			<if test="radiationScattering != null" >#{radiationScattering,jdbcType=REAL},</if>
+			<if test="radiationDirect != null" >#{radiationDirect,jdbcType=REAL},</if>
+			<if test="radiationTotalTwo != null" >#{radiationTotalTwo,jdbcType=REAL},</if>
+			<if test="radiationNet != null" >#{radiationNet,jdbcType=REAL},</if>
+			<if test="radiationPhotosynthesis != null" >#{radiationPhotosynthesis,jdbcType=REAL},</if>
+			<if test="radiationUltraviolet != null" >#{radiationUltraviolet,jdbcType=REAL},</if>
+			<if test="windDirection != null" >#{windDirection,jdbcType=REAL},</if>
+			<if test="windSpeed != null" >#{windSpeed,jdbcType=REAL},</if>
+			<if test="windTwoSpeed != null" >#{windTwoSpeed,jdbcType=REAL},</if>
+			<if test="windTenSpeed != null" >#{windTenSpeed,jdbcType=REAL},</if>
+			<if test="timeRainfall != null" >#{timeRainfall,jdbcType=REAL},</if>
+			<if test="timeSunshine != null" >#{timeSunshine,jdbcType=REAL},</if>
+			<if test="timeRadiationTotalOne != null" >#{timeRadiationTotalOne,jdbcType=REAL},</if>
+			<if test="timeRadiationScattering != null" >#{timeRadiationScattering,jdbcType=REAL},</if>
+			<if test="timeRadiationDirect != null" >#{timeRadiationDirect,jdbcType=REAL},</if>
+			<if test="timeRadiationTotalTwo != null" >#{timeRadiationTotalTwo,jdbcType=REAL},</if>
+			<if test="timeRadiationNet != null" >#{timeRadiationNet,jdbcType=REAL},</if>
+			<if test="timeRadiationPhotosynthesis != null" >#{timeRadiationPhotosynthesis,jdbcType=REAL},</if>
+			<if test="timeRadiationUltraviolet != null" >#{timeRadiationUltraviolet,jdbcType=REAL},</if>
+			<if test="dayRainfall != null" >#{dayRainfall,jdbcType=REAL},</if>
+			<if test="daySunshine != null" >#{daySunshine,jdbcType=REAL},</if>
+			<if test="dayRadiationTotalOne != null" >#{dayRadiationTotalOne,jdbcType=REAL},</if>
+			<if test="dayRadiationScattering != null" >#{dayRadiationScattering,jdbcType=REAL},</if>
+			<if test="dayRadiationDirect != null" >#{dayRadiationDirect,jdbcType=REAL},</if>
+			<if test="dayRadiationTotalTwo != null" >#{dayRadiationTotalTwo,jdbcType=REAL},</if>
+			<if test="dayRadiationNet != null" >#{dayRadiationNet,jdbcType=REAL},</if>
+			<if test="dayRadiationPhotosynthesis != null" >#{dayRadiationPhotosynthesis,jdbcType=REAL},</if>
+			<if test="dayRadiationUltraviolet != null" >#{dayRadiationUltraviolet,jdbcType=REAL},</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.synpower.bean.DataEnvMonitor"
+		>
+		update data_env_monitor
+		<set >
+			<if test="deviceId != null" >device_id = #{deviceId,jdbcType=INTEGER},</if>
+			<if test="plant != null" >plant = #{plant,jdbcType=INTEGER},</if>
+			<if test="dataTime != null" >data_time = #{dataTime,jdbcType=BIGINT},</if>
+			<if test="tempAmbient != null" >temp_ambient = #{tempAmbient,jdbcType=REAL},</if>
+			<if test="tempOne != null" >temp_one = #{tempOne,jdbcType=REAL},</if>
+			<if test="tempTwo != null" >temp_two = #{tempTwo,jdbcType=REAL},</if>
+			<if test="tempThree != null" >temp_three = #{tempThree,jdbcType=REAL},</if>
+			<if test="tempFour != null" >temp_four = #{tempFour,jdbcType=REAL},</if>
+			<if test="tempFive != null" >temp_five = #{tempFive,jdbcType=REAL},</if>
+			<if test="dewPoint != null" >dew_point = #{dewPoint,jdbcType=REAL},</if>
+			<if test="humAmbient != null" >hum_ambient = #{humAmbient,jdbcType=REAL},</if>
+			<if test="humSoilOne != null" >hum_soil_one = #{humSoilOne,jdbcType=REAL},</if>
+			<if test="humSoilTwo != null" >hum_soil_two = #{humSoilTwo,jdbcType=REAL},</if>
+			<if test="humSoilThree != null" >hum_soil_three = #{humSoilThree,jdbcType=REAL},</if>
+			<if test="carbonDioxide != null" >carbon_dioxide = #{carbonDioxide,jdbcType=REAL},</if>
+			<if test="evaporation != null" >evaporation = #{evaporation,jdbcType=REAL},</if>
+			<if test="pressure != null" >pressure = #{pressure,jdbcType=REAL},</if>
+			<if test="radiationTotalOne != null" >radiation_total_one = #{radiationTotalOne,jdbcType=REAL},</if>
+			<if test="radiationScattering != null" >radiation_scattering = #{radiationScattering,jdbcType=REAL},</if>
+			<if test="radiationDirect != null" >radiation_direct = #{radiationDirect,jdbcType=REAL},</if>
+			<if test="radiationTotalTwo != null" >radiation_total_two = #{radiationTotalTwo,jdbcType=REAL},</if>
+			<if test="radiationNet != null" >radiation_net = #{radiationNet,jdbcType=REAL},</if>
+			<if test="radiationPhotosynthesis != null" >radiation_photosynthesis = #{radiationPhotosynthesis,jdbcType=REAL},</if>
+			<if test="radiationUltraviolet != null" >radiation_ultraviolet = #{radiationUltraviolet,jdbcType=REAL},</if>
+			<if test="windDirection != null" >wind_direction = #{windDirection,jdbcType=REAL},</if>
+			<if test="windSpeed != null" >wind_speed = #{windSpeed,jdbcType=REAL},</if>
+			<if test="windTwoSpeed != null" >wind_two_speed = #{windTwoSpeed,jdbcType=REAL},</if>
+			<if test="windTenSpeed != null" >wind_ten_speed = #{windTenSpeed,jdbcType=REAL},</if>
+			<if test="timeRainfall != null" >time_rainfall = #{timeRainfall,jdbcType=REAL},</if>
+			<if test="timeSunshine != null" >time_sunshine = #{timeSunshine,jdbcType=REAL},</if>
+			<if test="timeRadiationTotalOne != null" >time_radiation_total_one = #{timeRadiationTotalOne,jdbcType=REAL},</if>
+			<if test="timeRadiationScattering != null" >time_radiation_scattering = #{timeRadiationScattering,jdbcType=REAL},</if>
+			<if test="timeRadiationDirect != null" >time_radiation_direct = #{timeRadiationDirect,jdbcType=REAL},</if>
+			<if test="timeRadiationTotalTwo != null" >time_radiation_total_two = #{timeRadiationTotalTwo,jdbcType=REAL},</if>
+			<if test="timeRadiationNet != null" >time_radiation_net = #{timeRadiationNet,jdbcType=REAL},</if>
+			<if test="timeRadiationPhotosynthesis != null" >time_radiation_photosynthesis = #{timeRadiationPhotosynthesis,jdbcType=REAL},</if>
+			<if test="timeRadiationUltraviolet != null" >time_radiation_ultraviolet = #{timeRadiationUltraviolet,jdbcType=REAL},</if>
+			<if test="dayRainfall != null" >day_rainfall = #{dayRainfall,jdbcType=REAL},</if>
+			<if test="daySunshine != null" >day_sunshine = #{daySunshine,jdbcType=REAL},</if>
+			<if test="dayRadiationTotalOne != null" >day_radiation_total_one = #{dayRadiationTotalOne,jdbcType=REAL},</if>
+			<if test="dayRadiationScattering != null" >day_radiation_scattering = #{dayRadiationScattering,jdbcType=REAL},</if>
+			<if test="dayRadiationDirect != null" >day_radiation_direct = #{dayRadiationDirect,jdbcType=REAL},</if>
+			<if test="dayRadiationTotalTwo != null" >day_radiation_total_two = #{dayRadiationTotalTwo,jdbcType=REAL},</if>
+			<if test="dayRadiationNet != null" >day_radiation_net = #{dayRadiationNet,jdbcType=REAL},</if>
+			<if test="dayRadiationPhotosynthesis != null" >day_radiation_photosynthesis = #{dayRadiationPhotosynthesis,jdbcType=REAL},</if>
+			<if test="dayRadiationUltraviolet != null" >day_radiation_ultraviolet = #{dayRadiationUltraviolet,jdbcType=REAL},</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.synpower.bean.DataEnvMonitor" >
+		update data_env_monitor set device_id = #{deviceId,jdbcType=INTEGER}, plant = #{plant,jdbcType=INTEGER},
+		data_time = #{dataTime,jdbcType=BIGINT}, temp_ambient = #{tempAmbient,jdbcType=REAL},
+		temp_one = #{tempOne,jdbcType=REAL}, temp_two = #{tempTwo,jdbcType=REAL}, temp_three
+		= #{tempThree,jdbcType=REAL}, temp_four = #{tempFour,jdbcType=REAL}, temp_five =
+		#{tempFive,jdbcType=REAL}, dew_point = #{dewPoint,jdbcType=REAL}, hum_ambient =
+		#{humAmbient,jdbcType=REAL}, hum_soil_one = #{humSoilOne,jdbcType=REAL}, hum_soil_two
+		= #{humSoilTwo,jdbcType=REAL}, hum_soil_three = #{humSoilThree,jdbcType=REAL}, carbon_dioxide
+		= #{carbonDioxide,jdbcType=REAL}, evaporation = #{evaporation,jdbcType=REAL}, pressure
+		= #{pressure,jdbcType=REAL}, radiation_total_one = #{radiationTotalOne,jdbcType=REAL},
+		radiation_scattering = #{radiationScattering,jdbcType=REAL}, radiation_direct =
+		#{radiationDirect,jdbcType=REAL}, radiation_total_two = #{radiationTotalTwo,jdbcType=REAL},
+		radiation_net = #{radiationNet,jdbcType=REAL}, radiation_photosynthesis = #{radiationPhotosynthesis,jdbcType=REAL},
+		radiation_ultraviolet = #{radiationUltraviolet,jdbcType=REAL}, wind_direction =
+		#{windDirection,jdbcType=REAL}, wind_speed = #{windSpeed,jdbcType=REAL}, wind_two_speed
+		= #{windTwoSpeed,jdbcType=REAL}, wind_ten_speed = #{windTenSpeed,jdbcType=REAL},
+		time_rainfall = #{timeRainfall,jdbcType=REAL}, time_sunshine = #{timeSunshine,jdbcType=REAL},
+		time_radiation_total_one = #{timeRadiationTotalOne,jdbcType=REAL}, time_radiation_scattering
+		= #{timeRadiationScattering,jdbcType=REAL}, time_radiation_direct = #{timeRadiationDirect,jdbcType=REAL},
+		time_radiation_total_two = #{timeRadiationTotalTwo,jdbcType=REAL}, time_radiation_net
+		= #{timeRadiationNet,jdbcType=REAL}, time_radiation_photosynthesis = #{timeRadiationPhotosynthesis,jdbcType=REAL},
+		time_radiation_ultraviolet = #{timeRadiationUltraviolet,jdbcType=REAL}, day_rainfall
+		= #{dayRainfall,jdbcType=REAL}, day_sunshine = #{daySunshine,jdbcType=REAL}, day_radiation_total_one
+		= #{dayRadiationTotalOne,jdbcType=REAL}, day_radiation_scattering = #{dayRadiationScattering,jdbcType=REAL},
+		day_radiation_direct = #{dayRadiationDirect,jdbcType=REAL}, day_radiation_total_two
+		= #{dayRadiationTotalTwo,jdbcType=REAL}, day_radiation_net = #{dayRadiationNet,jdbcType=REAL},
+		day_radiation_photosynthesis = #{dayRadiationPhotosynthesis,jdbcType=REAL}, day_radiation_ultraviolet
+		= #{dayRadiationUltraviolet,jdbcType=REAL} where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="getCurrentRadiationAndTemp" resultType="Map" parameterType="Map">
+		select ifnull(dem.radiation_total_one,0) radiation_total_one, ifnull(dem.temp_ambient,0)
+		temp_ambient, FROM_UNIXTIME(left(dem.data_time,10),'%H:%i') data_time from data_env_monitor
+		dem where dem.device_id = ${deviceId} and dem.data_time
+		<![CDATA[>=]]>
+		${startTime}
+		and dem.data_time
+		<![CDATA[<=]]>
+		${endTime}
+		ORDER BY dem.data_time
+	</select>
+</mapper>

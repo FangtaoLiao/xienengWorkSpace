@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.synpower.dao.TaskMapper" >
+  <resultMap id="BaseResultMap" type="com.synpower.bean.Task" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+    <result column="yx_id" property="yxId" jdbcType="INTEGER" />
+    <result column="alarm_id" property="alarmId" jdbcType="INTEGER" />
+    <result column="user_up_id" property="userUpId" jdbcType="INTEGER" />
+    <result column="user_down_id" property="userDownId" jdbcType="INTEGER" />
+    <result column="last_modify_user" property="lastModifyUser" jdbcType="INTEGER" />
+    <result column="plant_id" property="plantId" jdbcType="INTEGER" />
+    <result column="device_id" property="deviceId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    <result column="task_status" property="taskStatus" jdbcType="CHAR" />
+    <result column="task_valid" property="taskValid" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, task_name, yx_id, alarm_id, user_up_id, user_down_id, last_modify_user, plant_id, 
+    device_id, create_time, update_time, task_status, task_valid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from task
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectTaskListByStatus" resultType="com.synpower.bean.AllParam" parameterType="com.synpower.bean.AllParam">
+    select (select count(id) from task where task_status=#{taskStatus})as total,a.task_name as taskName,a.create_time as breakTime,
+    case when  ISNULL(a.update_time) then '-' end as update_time,b.plant_addr as addr,b.plant_name as plantName,
+    b.plant_status as plantStatus,c.device_name as devName,c.device_status as devStatus,d.status_name ,
+    d.alarm_level as level,case when ISNULL(e.user_name)then '-' end as userName,e.user_tel as userTell,
+		e.icon_url as avaTar from task a
+    left join plant_info b
+    on a.plant_id=b.id
+    left join coll_device c
+    on a.device_id=c.id and b.id=c.plant_id
+	left join coll_yx_expand d
+    on a.yx_id=d.id
+    left join sys_user e
+    on a.user_down_id=e.id
+    where a.task_status=#{taskStatus}
+    order by
+    ${orderName} ${order} limit #{start} ,#{length}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from task
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.synpower.bean.Task" >
+    insert into task (id, task_name, yx_id, 
+      alarm_id, user_up_id, user_down_id, 
+      last_modify_user, plant_id, device_id, 
+      create_time, update_time, task_status, 
+      task_valid)
+    values (#{id,jdbcType=INTEGER}, #{taskName,jdbcType=VARCHAR}, #{yxId,jdbcType=INTEGER}, 
+      #{alarmId,jdbcType=INTEGER}, #{userUpId,jdbcType=INTEGER}, #{userDownId,jdbcType=INTEGER}, 
+      #{lastModifyUser,jdbcType=INTEGER}, #{plantId,jdbcType=INTEGER}, #{deviceId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{taskStatus,jdbcType=CHAR}, 
+      #{taskValid,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.synpower.bean.Task" >
+    insert into task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="taskName != null" >
+        task_name,
+      </if>
+      <if test="yxId != null" >
+        yx_id,
+      </if>
+      <if test="alarmId != null" >
+        alarm_id,
+      </if>
+      <if test="userUpId != null" >
+        user_up_id,
+      </if>
+      <if test="userDownId != null" >
+        user_down_id,
+      </if>
+      <if test="lastModifyUser != null" >
+        last_modify_user,
+      </if>
+      <if test="plantId != null" >
+        plant_id,
+      </if>
+      <if test="deviceId != null" >
+        device_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="taskStatus != null" >
+        task_status,
+      </if>
+      <if test="taskValid != null" >
+        task_valid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="taskName != null" >
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="yxId != null" >
+        #{yxId,jdbcType=INTEGER},
+      </if>
+      <if test="alarmId != null" >
+        #{alarmId,jdbcType=INTEGER},
+      </if>
+      <if test="userUpId != null" >
+        #{userUpId,jdbcType=INTEGER},
+      </if>
+      <if test="userDownId != null" >
+        #{userDownId,jdbcType=INTEGER},
+      </if>
+      <if test="lastModifyUser != null" >
+        #{lastModifyUser,jdbcType=INTEGER},
+      </if>
+      <if test="plantId != null" >
+        #{plantId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null" >
+        #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="taskStatus != null" >
+        #{taskStatus,jdbcType=CHAR},
+      </if>
+      <if test="taskValid != null" >
+        #{taskValid,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.synpower.bean.Task" >
+    update task
+    <set >
+      <if test="taskName != null" >
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="yxId != null" >
+        yx_id = #{yxId,jdbcType=INTEGER},
+      </if>
+      <if test="alarmId != null" >
+        alarm_id = #{alarmId,jdbcType=INTEGER},
+      </if>
+      <if test="userUpId != null" >
+        user_up_id = #{userUpId,jdbcType=INTEGER},
+      </if>
+      <if test="userDownId != null" >
+        user_down_id = #{userDownId,jdbcType=INTEGER},
+      </if>
+      <if test="lastModifyUser != null" >
+        last_modify_user = #{lastModifyUser,jdbcType=INTEGER},
+      </if>
+      <if test="plantId != null" >
+        plant_id = #{plantId,jdbcType=INTEGER},
+      </if>
+      <if test="deviceId != null" >
+        device_id = #{deviceId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="taskStatus != null" >
+        task_status = #{taskStatus,jdbcType=CHAR},
+      </if>
+      <if test="taskValid != null" >
+        task_valid = #{taskValid,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.synpower.bean.Task" >
+    update task
+    set task_name = #{taskName,jdbcType=VARCHAR},
+      yx_id = #{yxId,jdbcType=INTEGER},
+      alarm_id = #{alarmId,jdbcType=INTEGER},
+      user_up_id = #{userUpId,jdbcType=INTEGER},
+      user_down_id = #{userDownId,jdbcType=INTEGER},
+      last_modify_user = #{lastModifyUser,jdbcType=INTEGER},
+      plant_id = #{plantId,jdbcType=INTEGER},
+      device_id = #{deviceId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      task_status = #{taskStatus,jdbcType=CHAR},
+      task_valid = #{taskValid,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

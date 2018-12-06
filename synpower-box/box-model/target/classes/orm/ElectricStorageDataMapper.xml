@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.ElectricStorageDataMapper">
+
+
+	<select id="getEMonByplantIdAndTime"
+		parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+		sum(pos_pow)
+		monthElec,
+		sum(pos_price) monthElecPrice
+		FROM electric_storage_data
+		WHERE
+		plant_id =
+		#{plantId} AND data_time
+		&gt; #{startTime}
+		AND data_time &lt;
+		#{endTime}
+	</select>
+
+
+	<select id="getElecKPI" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		IFNULL(sum(IFNULL(neg_pow,0)),0) wg,
+		IFNULL(sum(IFNULL(pos_pow,0)),0) yg,
+		IFNULL(sum(IFNULL(pos_price,0)),0) price,
+		IFNULL(sum(IFNULL(em_pos_jian_pow,0)),0) yjian,
+		IFNULL(sum(IFNULL(em_pos_feng_pow,0)),0) yfeng,
+		IFNULL(sum(IFNULL(em_pos_ping_pow,0)),0) yping,
+		IFNULL(sum(IFNULL(em_pos_gu_pow,0)),0) ygu
+		FROM
+		electric_storage_data esd
+		WHERE
+		esd.plant_id = #{plantId}
+		AND
+		esd.data_time  <![CDATA[>=]]>
+		#{curr}
+		AND esd.data_time  <![CDATA[<]]>
+		#{next}
+	</select>
+
+	<select id="getTotalEnergy" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		sum(neg_pow) AS wg,
+		sum(pos_pow) AS yg
+		FROM
+		electric_storage_data
+		esd
+		WHERE
+		esd.plant_id = #{plantId}
+		AND
+		esd.data_time  <![CDATA[>=]]>
+		#{curr}
+		AND esd.data_time  <![CDATA[<]]>
+		#{next}
+	</select>
+
+	<select id="getEUKByPlantIdAndTime"
+		parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+		FROM_UNIXTIME(LEFT(data_time, 10), #{exp}) fdata_time,
+		ifnull(SUM(pos_pow), 0) pow,
+		ifnull(SUM(pos_price), 0) price
+		FROM
+		electric_storage_data
+		WHERE plant_id = #{plantId} AND data_time <![CDATA[>=]]>
+		#{startTime}
+		AND data_time<![CDATA[ <]]>
+		#{endTime}
+		GROUP BY fdata_time
+		ORDER BY fdata_time ASC;
+	</select>
+	<delete id="deteleDataForStotage" parameterType="Map">
+		delete from electric_storage_data where data_time>=#{minTime} and
+		#{maxTime}>=data_time
+		<foreach collection="plants" item="plantId"
+			open=" and plant_id IN (" close=")" separator=",">
+			#{plantId}
+		</foreach>
+	</delete>
+	<insert id="insertDataForStotage" parameterType="list">
+		insert into electric_storage_data (
+		em_pos_jian_pow,
+		em_pos_jian_price,
+		em_pos_feng_pow,
+		em_pos_feng_price,
+		em_pos_ping_pow,
+		em_pos_ping_price,
+		em_pos_gu_pow,
+		em_pos_gu_price,
+		pos_pow,
+		pos_price,
+		neg_pow,
+		data_time,
+		plant_id,
+		em_neg_jian_pow,
+		em_neg_feng_pow,
+		em_neg_ping_pow,
+		em_neg_gu_pow)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			( #{item.emPosJianPow,jdbcType=DOUBLE},
+			#{item.emPosJianPrice,jdbcType=DOUBLE},
+			#{item.emPosFengPow,jdbcType=DOUBLE},
+			#{item.emPosFengPrice,jdbcType=DOUBLE},
+			#{item.emPosPingPow,jdbcType=DOUBLE},
+			#{item.emPosPingPrice,jdbcType=DOUBLE},
+			#{item.emPosGuPow,jdbcType=DOUBLE},
+			#{item.emPosGuPrice,jdbcType=DOUBLE},
+			#{item.posPow,jdbcType=DOUBLE},
+			#{item.posPrice,jdbcType=DOUBLE},
+			#{item.negPow,jdbcType=DOUBLE},
+			#{item.dataTime,jdbcType=BIGINT},
+			#{item.plantId,jdbcType=INTEGER},
+			#{item.emNegJianPow,jdbcType=DOUBLE},
+			#{item.emNegFengPow,jdbcType=DOUBLE},
+			#{item.emNegPingPow,jdbcType=DOUBLE},
+			#{item.emNegGuPow,jdbcType=DOUBLE})
+		</foreach>
+	</insert>
+</mapper>

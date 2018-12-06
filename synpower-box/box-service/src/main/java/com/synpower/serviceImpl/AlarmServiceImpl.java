@@ -1,6 +1,6 @@
 package com.synpower.serviceImpl;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.synpower.bean.*;
 import com.synpower.dao.*;
 import com.synpower.lang.ConfigParam;
@@ -552,37 +552,259 @@ public class AlarmServiceImpl implements AlarmService {
 
     //获取实时告警列表
     @Override
-    public Map<String, Object> recentAlarmList(Map<String, Object> jsonMap) {
+    public MessageBean recentAlarmList(Map<String, Object> jsonMap) {
+		List<Map<String, String>> listMap = (List<Map<String, String>>) jsonMap.get("orderName");
+        Map orderMap = new HashMap();
+        orderMap = listMap.get(0);
+		List<String> list = null;
+		List<Integer> plantIds = null;
+		if(jsonMap.get("plantIds")!=null||jsonMap.get("plantIds")!="") {
+			list = (List<String>) jsonMap.get("plantIds");
+			plantIds = list.stream().map(Integer::parseInt).collect(Collectors.toList());//转为integer数组
+		}
+//		for (Integer i: plantIds){
+//			System.out.print(i);
+//		}
+		//根据电站Id排序并获取告警列表
+		System.out.print(jsonMap.toString());
+		String s = (String) jsonMap.get("start");
+		Integer start = Integer.parseInt(s);
+		String l = (String) jsonMap.get("length");
+		Integer length = Integer.parseInt(l);
+        if(list.size()>0) {
+        	List<Map<String,Object>> subList = recentAlarmListByplantId(plantIds, orderMap);
+			Integer total = subList.size();
+            return returnSubList(subList,total,length,start);
+        }
+	  	List<Map<String,Object>> subList =recentAllAlarmList(orderMap);
+        Integer total = subList.size();
+		return returnSubList(subList,total,length,start);
+	}
 
-        return null;
+    /**
+     * @@Description 返回分页后的告警列表信息
+     * @param subList
+     * @param total
+     * @param length
+     * @param start
+     * @return
+     */
+	public MessageBean returnSubList(List<Map<String,Object>> subList,Integer total,Integer length,Integer start){
+	    System.out.print(total+""+length+""+start+"");
+	    if((start*length)<total) {
+            subList = subList.subList((start - 1) * length, (start * length));
+            Map<String,Object> result = new HashMap<>();
+            Integer page = total / length + 1;
+            result.put("data",subList);
+            result.put("recordsTotal",total);
+            result.put("recordsPage",page);
+            MessageBean messageBean = MessageBeanUtil.getOkMB(result);
+            return messageBean;
+        }
+        subList = subList.subList((start - 1) * length, total);
+	    Map<String,Object> result = new HashMap<>();
+	    result.put("data",subList);
+	    result.put("recordsTotal",total);
+        Integer page = total / length + 1;
+	    result.put("recordsPage",page);
+        MessageBean messageBean = MessageBeanUtil.getOkMB(result);
+        return messageBean;
     }
 
     /**
-     * @Author lz
+     * @Author lz,SP0025
      * @Description: 根据电站id, 和排序获取实时告警列表
      * @param: [plantIds, orderMap]
      * @return: {java.util.List<java.util.Map<java.lang.String,java.lang.Object>>}
      * @Date: 2018/11/30 13:41
      **/
     private List<Map<String, Object>> recentAlarmListByplantId(List<Integer> plantIds, Map<String, String> orderMap) {
+        //list<设备编号>
         List<Integer> allDevIds = new ArrayList<>();
-        Map<Integer, Map<Integer, List<Integer>>> deviceOfPlant = SystemCache.deviceOfPlant;
+        //map<电站编号,map<设备类型，list<设备编号>>
+        Map<Integer, Map<Integer, List<Integer>>> deviceOfPlant = SystemCache.deviceOfPlant;  //从设备缓存取出设备id
         for (Integer plantId : plantIds) {
             for (List<Integer> devIds : deviceOfPlant.get(plantId).values()) {
                 allDevIds.addAll(devIds);
             }
         }
         List<String> strDevs = allDevIds.stream().map(String::valueOf).collect(Collectors.toList());
-        Map<String, Map<String, String>> allKeysMapValue = cacheUtil0.getAllKeysMapValue(strDevs);
-        for (Map<String, String> stringStringMap : allKeysMapValue.values()) {
-
-        }
-        return null;
+        return getAlarmListMap(strDevs,orderMap);
     }
 
+	/**
+	 * @Description  获取全部电站全部设备的告警信息列表
+	 * @param orderMap
+	 * @return
+	 */
+	private List<Map<String, Object>> recentAllAlarmList(Map<String, String> orderMap) {
+		//list<设备编号>
+		System.out.println("all");
+		List<Integer> allDevIds = new ArrayList<>();
+		//map<电站编号,map<设备类型，list<设备编号>>
+		Map<Integer, Map<Integer, List<Integer>>> deviceOfPlant = SystemCache.deviceOfPlant;  //从设备缓存取出设备id
+		for(Integer plantIds:deviceOfPlant.keySet()){
+			for(List<Integer> devIds : deviceOfPlant.get(plantIds).values()){
+				allDevIds.addAll(devIds);
+			}
+		}
+		List<String> strDevs = allDevIds.stream().map(String::valueOf).collect(Collectors.toList());
+		System.out.println(strDevs.toString());
+		return getAlarmListMap(strDevs,orderMap);
+	}
+
+
+
+	/**
+	 * @Description  获取告警列表
+	 * @param strDevs
+	 * @param orderMap
+	 * @return
+	 */
+	public List<Map<String, Object>> getAlarmListMap(List<String> strDevs,Map<String, String> orderMap){
+		//map<设备编号,map<遥信id,告警json>>
+		Map<String, Map<String, String>> allKeysMapValue = cacheUtil0.getAllKeysMapValue(strDevs);//根据设备id取出redis中的告警列表
+		Map<String,List<Map<String,Object>>> listMap = new HashMap<>();
+
+		//先遍历告警列表的键，键为设备id
+		Map<String, String> stringStringMap = new HashMap<>() ;
+		List<Map<String,Object>> list = new ArrayList<>();
+		for(String keys : allKeysMapValue.keySet()) {
+			//List<Map<String,Object>> list = new ArrayList<>();
+			stringStringMap.clear();
+			stringStringMap	= allKeysMapValue.get(keys);
+			//map转list<map>
+			//取出该设备所有遥信信息
+
+			for (Map.Entry<String, String> entry : stringStringMap.entrySet()) {
+				Map<String, Object> listGetMap = new HashMap<>();
+				//listGetMap.put(entry.getKey(), entry.getValue());
+				listGetMap.put("yx_id", entry.getKey());
+				JSONObject jsonObject = JSONObject.parseObject(entry.getValue());
+				listGetMap.put("task_status", jsonObject.get("task_status"));
+				listGetMap.put("data_time_f", jsonObject.get("data_time_f"));
+				listGetMap.put("data_time", jsonObject.get("data_time"));
+				listGetMap.put("level", jsonObject.get("level"));
+				listGetMap.put("status_value", jsonObject.get("status_value"));
+				listGetMap.put("sys_time", jsonObject.get("sys_time"));
+				listGetMap.put("device_id", jsonObject.get("device_id"));
+				listGetMap.put("signal_name", jsonObject.get("signal_name"));
+				listGetMap.put("plant_id", jsonObject.get("plant_id"));
+				listGetMap.put("plant_name", jsonObject.get("plant_name"));
+				listGetMap.put("device_name", jsonObject.get("device_name"));
+				list.add(listGetMap);
+
+			}
+			System.out.println("keys:"+keys+" v:"+list);
+			//将设备id与该设备遥信信息列表存入map
+			list = sortList(list,orderMap);
+		}
+		return list;
+	}
+
+
+    /**
+     * @@Description 返回重要、次要、提示告警信息列表
+     * @param
+     * @param
+     * @return
+     */
+    public MessageBean recentAlarmListByLevel(Map<String, Object> jsonMap) {
+        List<Map<String, String>> listMap = (List<Map<String, String>>) jsonMap.get("orderName");
+        Map orderMap = new HashMap();
+        orderMap = listMap.get(0);
+        List<String> list = null;
+        List<Integer> plantIds = null;
+        if(jsonMap.get("plantIds")!=null||jsonMap.get("plantIds")!="") {
+            list = (List<String>) jsonMap.get("plantIds");
+            plantIds = list.stream().map(Integer::parseInt).collect(Collectors.toList());//转为integer数组
+        }
+        //根据电站Id排序并获取告警列表
+        System.out.print(jsonMap.toString());
+        String s = (String) jsonMap.get("start");
+        Integer start = Integer.parseInt(s);
+        String l = (String) jsonMap.get("length");
+        Integer length = Integer.parseInt(l);
+        List<Map<String,Object>> subList = getAlarmListByLevel(plantIds, orderMap,jsonMap.get("level").toString());
+        Integer total = subList.size();
+        return returnSubList(subList,total,length,start);
+
+    }
+    public List<Map<String,Object>> getAlarmListByLevel(List<Integer> plantIds,Map<String,String> orderMap,String level){
+        List<Integer> allDevIds = new ArrayList<>();
+        //map<电站编号,map<设备类型，list<设备编号>>
+        Map<Integer, Map<Integer, List<Integer>>> deviceOfPlant = SystemCache.deviceOfPlant;  //从设备缓存取出设备id
+        //根据电站id获取该电站的所有设备告警信息
+        if(plantIds.size()>0){
+            System.out.print("第几："+plantIds.get(0));
+            for(Integer plantId:plantIds){
+                for(List<Integer> devIds : deviceOfPlant.get(plantId).values()){
+                    allDevIds.addAll(devIds);
+                }
+            }
+            List<String> strDevs = allDevIds.stream().map(String::valueOf).collect(Collectors.toList());
+            System.out.println(strDevs.toString());
+            return getAlarmListMap(strDevs,orderMap,level);
+        }
+        //全部电站
+        System.out.println("全部");
+            for(Integer plantId:deviceOfPlant.keySet()){
+                for(List<Integer> devIds : deviceOfPlant.get(plantId).values()){
+                    allDevIds.addAll(devIds);
+                }
+            }
+            List<String> strDevs = allDevIds.stream().map(String::valueOf).collect(Collectors.toList());
+            System.out.println(strDevs.toString());
+            return getAlarmListMap(strDevs,orderMap,level);
+    }
+
+    //获取不同等级的告警列表
+    public List<Map<String, Object>> getAlarmListMap(List<String> strDevs,Map<String, String> orderMap,String level){
+        //map<设备编号,map<遥信id,告警json>>
+        Map<String, Map<String, String>> allKeysMapValue = cacheUtil0.getAllKeysMapValue(strDevs);//根据设备id取出redis中的告警列表
+        Map<String,List<Map<String,Object>>> listMap = new HashMap<>();
+
+        //先遍历告警列表的键，键为设备id
+        Map<String, String> stringStringMap = new HashMap<>() ;
+        List<Map<String,Object>> list = new ArrayList<>();
+        for(String keys : allKeysMapValue.keySet()) {
+            //List<Map<String,Object>> list = new ArrayList<>();
+            stringStringMap.clear();
+            stringStringMap	= allKeysMapValue.get(keys);
+            //map转list<map>
+            //取出该设备所有遥信信息
+
+            for (Map.Entry<String, String> entry : stringStringMap.entrySet()) {
+                Map<String, Object> listGetMap = new HashMap<>();
+                //listGetMap.put(entry.getKey(), entry.getValue());
+                listGetMap.put("yx_id", entry.getKey());
+                JSONObject jsonObject = JSONObject.parseObject(entry.getValue());
+                if(level.equals(jsonObject.get("level"))) {
+                    listGetMap.put("task_status", jsonObject.get("task_status"));
+                    listGetMap.put("data_time_f", jsonObject.get("data_time_f"));
+                    listGetMap.put("data_time", jsonObject.get("data_time"));
+                    listGetMap.put("level", jsonObject.get("level"));
+                    listGetMap.put("status_value", jsonObject.get("status_value"));
+                    listGetMap.put("sys_time", jsonObject.get("sys_time"));
+                    listGetMap.put("device_id", jsonObject.get("device_id"));
+                    listGetMap.put("signal_name", jsonObject.get("signal_name"));
+                    listGetMap.put("plant_id", jsonObject.get("plant_id"));
+                    listGetMap.put("plant_name", jsonObject.get("plant_name"));
+                    listGetMap.put("device_name", jsonObject.get("device_name"));
+                    list.add(listGetMap);
+                }
+            }
+            System.out.println("keys:"+keys+" v:"+list);
+            //将设备id与该设备遥信信息列表存入map
+            list = sortList(list,orderMap);
+        }
+        return list;
+    }
+	//按照时间排序
     private List<Map<String, Object>> sortList(List<Map<String, Object>> list, Map<String, String> orderMap) {
         if (!CollectionUtils.isEmpty(orderMap)) {
             String orderName = orderMap.get("orderName");
+            System.out.print(orderName);
             if (!Util.isEmpty(orderName)) {
                 String order = null;
                 String orderTemp = orderMap.get("order");
@@ -598,4 +820,49 @@ public class AlarmServiceImpl implements AlarmService {
         }
         return list;
     }
+
+    /**
+     * @author SP0025
+     *@Description 获取所有电站信息
+     *
+     */
+    public MessageBean getPlantInfo(){
+        List<Integer> allDevIds = new ArrayList<>();
+        //map<电站编号,map<设备类型，list<设备编号>>
+        Map<Integer, Map<Integer, List<Integer>>> deviceOfPlant = SystemCache.deviceOfPlant;  //从设备缓存取出设备id
+        for(Integer plantIds:deviceOfPlant.keySet()){
+            for(List<Integer> devIds : deviceOfPlant.get(plantIds).values()){
+                allDevIds.addAll(devIds);
+            }
+        }
+        List<String> strDevs = allDevIds.stream().map(String::valueOf).collect(Collectors.toList());
+        Map<String, Map<String, String>> allKeysMapValue = cacheUtil0.getAllKeysMapValue(strDevs);//根据设备id取出redis中的告警列表
+        //先遍历告警列表的键，键为设备id
+        Map<String, String> stringStringMap = new HashMap<>() ;
+        List<Map<String,Object>> list = new ArrayList<>();
+        for(String keys : allKeysMapValue.keySet()) {
+            //List<Map<String,Object>> list = new ArrayList<>();
+            stringStringMap.clear();
+            stringStringMap	= allKeysMapValue.get(keys);
+            //map转list<map>
+            //取出该设备的所有信息
+            for (Map.Entry<String, String> entry : stringStringMap.entrySet()) {
+                Map<String, Object> listGetMap = new HashMap<>();
+                //listGetMap.put(entry.getKey(), entry.getValue());
+                listGetMap.put("yx_id", entry.getKey());
+                JSONObject jsonObject = JSONObject.parseObject(entry.getValue());
+                    listGetMap.put("device_id", jsonObject.get("device_id"));
+                    listGetMap.put("signal_name", jsonObject.get("signal_name"));
+                    listGetMap.put("plant_id", jsonObject.get("plant_id"));
+                    listGetMap.put("plant_name", jsonObject.get("plant_name"));
+                    listGetMap.put("device_name", jsonObject.get("device_name"));
+                    list.add(listGetMap);
+                }
+    }
+    Map<String,Object> result = new HashMap();
+        result.put("data",list);
+        result.put("total",list.size());
+    MessageBean messageBean = MessageBeanUtil.getOkMB(result);
+    return messageBean;
+}
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.YxInfoMapper">
+    <select id="getInfo" resultType="java.util.HashMap" >
+select DISTINCT a.id as device_id,a.plant_id,a.device_name,b.plant_name ,c.yx_id ,d.signal_name
+        from coll_device a
+        left join plant_info b on a.plant_id=b.id
+        left join data_yx c on a.id = c.device_id
+        left join coll_yx_expand d on c.yx_id = d.id
+		where d.signal_name is not NULL
+    </select>
+
+</mapper>

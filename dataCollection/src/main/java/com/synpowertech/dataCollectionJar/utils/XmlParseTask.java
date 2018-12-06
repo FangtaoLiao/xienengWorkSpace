@@ -48,7 +48,6 @@ public class XmlParseTask implements Runnable{
 		} else {
 			try {
 				XmlParseUtil.xmlResultStr2Map(xmlStr);
-				
 			} catch (IOException e) {
 				logger.error("xmlResultStr2Map get an exception:{}",e);
 			}

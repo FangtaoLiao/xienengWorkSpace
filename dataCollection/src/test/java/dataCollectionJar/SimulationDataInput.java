@@ -1,12 +1,13 @@
 package dataCollectionJar;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.synpowertech.dataCollectionJar.initialization.JedisUtil;
+import com.synpowertech.dataCollectionJar.dao.*;
+import com.synpowertech.dataCollectionJar.domain.*;
+import com.synpowertech.dataCollectionJar.utils.TimeUtil4Xml;
+import com.synpowertech.dataCollectionJar.utils.XmlParseUtil;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -18,44 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.synpowertech.dataCollectionJar.dao.CollJsonModelDetailExtendMapper;
-import com.synpowertech.dataCollectionJar.dao.CollModelDetailMqttMapper;
-import com.synpowertech.dataCollectionJar.dao.CollSignalLabelMapper;
-import com.synpowertech.dataCollectionJar.dao.CollYkytExpandMapper;
-import com.synpowertech.dataCollectionJar.dao.CollYxExpandMapper;
-import com.synpowertech.dataCollectionJar.dao.CollectorMessageStructureMapper;
-import com.synpowertech.dataCollectionJar.dao.DataYxMapper;
-import com.synpowertech.dataCollectionJar.dao.DeviceMapper;
-import com.synpowertech.dataCollectionJar.dao.FieldSignalGuidMappingMapper;
-import com.synpowertech.dataCollectionJar.dao.PointHw10ktlAMapper;
-import com.synpowertech.dataCollectionJar.dao.PointHw12ktlAMapper;
-import com.synpowertech.dataCollectionJar.dao.PointHw20ktlAMapper;
-import com.synpowertech.dataCollectionJar.dao.PointHw33ktlAMapper;
-import com.synpowertech.dataCollectionJar.dao.PointHw36ktlAMapper;
-import com.synpowertech.dataCollectionJar.dao.PointHw36ktlBMapper;
-import com.synpowertech.dataCollectionJar.dao.PointHw60ktlAMapper;
-import com.synpowertech.dataCollectionJar.domain.CollJsonModelDetailExtend;
-import com.synpowertech.dataCollectionJar.domain.CollModelDetailMqtt;
-import com.synpowertech.dataCollectionJar.domain.CollSignalLabel;
-import com.synpowertech.dataCollectionJar.domain.CollYkytExpand;
-import com.synpowertech.dataCollectionJar.domain.CollYxExpand;
-import com.synpowertech.dataCollectionJar.domain.CollectorMessageStructure;
-import com.synpowertech.dataCollectionJar.domain.Device;
-import com.synpowertech.dataCollectionJar.domain.FieldSignalGuidMapping;
-import com.synpowertech.dataCollectionJar.domain.PointHw10ktlA;
-import com.synpowertech.dataCollectionJar.domain.PointHw12ktlA;
-import com.synpowertech.dataCollectionJar.domain.PointHw20ktlA;
-import com.synpowertech.dataCollectionJar.domain.PointHw33ktlA;
-import com.synpowertech.dataCollectionJar.domain.PointHw36ktlA;
-import com.synpowertech.dataCollectionJar.domain.PointHw36ktlB;
-import com.synpowertech.dataCollectionJar.domain.PointHw60ktlA;
-import com.synpowertech.dataCollectionJar.utils.TimeUtil4Xml;
-import com.synpowertech.dataCollectionJar.utils.XmlParseUtil;
-
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext.xml")
@@ -103,10 +71,11 @@ public class SimulationDataInput {
 
 	@Test
 	public void test() throws InterruptedException {
-		//collModelDetailMqttMapper();
+		collModelDetailMqttMapper();
 		//collYxExpandMapper();
 		//collYkytExpandMapper();
-		//fieldSignalGuidMappingMapper();
+		collSignalLabelMapper();
+		fieldSignalGuidMappingMapper();
 	}
 
 	

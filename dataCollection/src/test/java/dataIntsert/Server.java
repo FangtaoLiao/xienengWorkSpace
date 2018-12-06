@@ -57,8 +57,8 @@ public class Server {
     public void publish(MqttTopic topic , MqttMessage message) throws MqttPersistenceException,
             MqttException {
         MqttDeliveryToken token = topic.publish(message);
-        token.waitForCompletion();
         if(token.isComplete())
+            token.waitForCompletion();
         	System.out.println("消息发布成功! ");
     }
 

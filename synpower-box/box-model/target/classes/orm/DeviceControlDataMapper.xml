@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DeviceControlDataMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DeviceControlData">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="operation_time" jdbcType="BIGINT" property="operationTime" />
+    <result column="signal_guid" jdbcType="VARCHAR" property="signalGuid" />
+    <result column="signal_name" jdbcType="VARCHAR" property="signalName" />
+    <result column="value" jdbcType="INTEGER" property="value" />
+    <result column="operator" jdbcType="INTEGER" property="operator" />
+  </resultMap>
+  <select id="getValueOfYKGuid" parameterType="Map" resultMap="BaseResultMap">
+  SELECT * from device_control_data where 
+ 	 <foreach collection="list" index="index" item="item" open="  signal_guid in(" separator="," close=")">
+  		#{item}
+  	</foreach>
+	  	ORDER BY operation_time desc limit 0,1
+  </select>
+   <select id="getValueOfGuid" parameterType="String" resultMap="BaseResultMap">
+  SELECT * from device_control_data where signal_guid=#{signalGuid} ORDER BY operation_time desc limit 0,1
+  </select>
+  <insert id="saveControl" parameterType="deviceControlData">
+  	insert into device_control_data (device_id,operation_time,signal_guid,signal_name,value,operator)
+	values(#{deviceId},#{operationTime},#{signalGuid},#{signalName},#{value},#{operator})
+  </insert>
+</mapper>

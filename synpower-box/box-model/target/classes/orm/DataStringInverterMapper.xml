@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DataStringInverterMapper">
+	<resultMap id="BaseResultMap"
+		type="com.synpower.bean.DataStringInverter">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="device_id" jdbcType="INTEGER"
+			property="deviceId" />
+		<result column="plant" jdbcType="INTEGER" property="plant" />
+		<result column="data_time" jdbcType="BIGINT"
+			property="dataTime" />
+		<result column="u_ac_a" jdbcType="REAL" property="uAcA" />
+		<result column="u_ac_b" jdbcType="REAL" property="uAcB" />
+		<result column="u_ac_c" jdbcType="REAL" property="uAcC" />
+		<result column="i_ac_a" jdbcType="REAL" property="iAcA" />
+		<result column="i_ac_b" jdbcType="REAL" property="iAcB" />
+		<result column="i_ac_c" jdbcType="REAL" property="iAcC" />
+		<result column="running_status" jdbcType="TINYINT"
+			property="runningStatus" />
+		<result column="turn_on_time" jdbcType="BIGINT"
+			property="turnOnTime" />
+		<result column="turn_off_time" jdbcType="BIGINT"
+			property="turnOffTime" />
+		<result column="frequency" jdbcType="REAL" property="frequency" />
+		<result column="active_power" jdbcType="REAL"
+			property="activePower" />
+		<result column="reactive_power" jdbcType="REAL"
+			property="reactivePower" />
+		<result column="transfer_efficiency" jdbcType="REAL"
+			property="transferEfficiency" />
+		<result column="power_factor" jdbcType="REAL"
+			property="powerFactor" />
+		<result column="inner_temperature" jdbcType="REAL"
+			property="innerTemperature" />
+		<result column="mppt_power" jdbcType="REAL"
+			property="mpptPower" />
+		<result column="mppt_total_energy" jdbcType="REAL"
+			property="mpptTotalEnergy" />
+		<result column="mppt1_total_energy" jdbcType="REAL"
+			property="mppt1TotalEnergy" />
+		<result column="mppt2_total_energy" jdbcType="REAL"
+			property="mppt2TotalEnergy" />
+		<result column="mppt3_total_energy" jdbcType="REAL"
+			property="mppt3TotalEnergy" />
+		<result column="mppt4_total_energy" jdbcType="REAL"
+			property="mppt4TotalEnergy" />
+		<result column="u_pv1" jdbcType="REAL" property="uPv1" />
+		<result column="u_pv2" jdbcType="REAL" property="uPv2" />
+		<result column="u_pv3" jdbcType="REAL" property="uPv3" />
+		<result column="u_pv4" jdbcType="REAL" property="uPv4" />
+		<result column="u_pv5" jdbcType="REAL" property="uPv5" />
+		<result column="u_pv6" jdbcType="REAL" property="uPv6" />
+		<result column="u_pv7" jdbcType="REAL" property="uPv7" />
+		<result column="u_pv8" jdbcType="REAL" property="uPv8" />
+		<result column="u_pv9" jdbcType="REAL" property="uPv9" />
+		<result column="u_pv10" jdbcType="REAL" property="uPv10" />
+		<result column="u_pv11" jdbcType="REAL" property="uPv11" />
+		<result column="u_pv12" jdbcType="REAL" property="uPv12" />
+		<result column="u_pv13" jdbcType="REAL" property="uPv13" />
+		<result column="u_pv14" jdbcType="REAL" property="uPv14" />
+		<result column="u_pv15" jdbcType="REAL" property="uPv15" />
+		<result column="u_pv16" jdbcType="REAL" property="uPv16" />
+		<result column="u_pv17" jdbcType="REAL" property="uPv17" />
+		<result column="u_pv18" jdbcType="REAL" property="uPv18" />
+		<result column="i_pv1" jdbcType="REAL" property="iPv1" />
+		<result column="i_pv2" jdbcType="REAL" property="iPv2" />
+		<result column="i_pv3" jdbcType="REAL" property="iPv3" />
+		<result column="i_pv4" jdbcType="REAL" property="iPv4" />
+		<result column="i_pv5" jdbcType="REAL" property="iPv5" />
+		<result column="i_pv6" jdbcType="REAL" property="iPv6" />
+		<result column="i_pv7" jdbcType="REAL" property="iPv7" />
+		<result column="i_pv8" jdbcType="REAL" property="iPv8" />
+		<result column="i_pv9" jdbcType="REAL" property="iPv9" />
+		<result column="i_pv10" jdbcType="REAL" property="iPv10" />
+		<result column="i_pv11" jdbcType="REAL" property="iPv11" />
+		<result column="i_pv12" jdbcType="REAL" property="iPv12" />
+		<result column="i_pv13" jdbcType="REAL" property="iPv13" />
+		<result column="i_pv14" jdbcType="REAL" property="iPv14" />
+		<result column="i_pv15" jdbcType="REAL" property="iPv15" />
+		<result column="i_pv16" jdbcType="REAL" property="iPv16" />
+		<result column="daily_energy" jdbcType="REAL"
+			property="dailyEnergy" />
+		<result column="total_energy" jdbcType="REAL"
+			property="totalEnergy" />
+	</resultMap>
+	<select id="getTimesPower" parameterType="Map"
+		resultMap="BaseResultMap">
+		SELECT sum(active_power) active_power,data_time from(
+		SELECT DISTINCT
+		device_id,data_time,active_power from data_string_inverter
+		where
+		data_time>=#{minTime} and #{maxTime}>=data_time
+		<foreach collection="devices" item="deviceId"
+			open=" and device_id IN (" close=")" separator=",">
+			#{deviceId}
+		</foreach>
+		)a
+		GROUP BY data_time
+	</select>
+</mapper>

@@ -1,0 +1,1071 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.SysUserMapper">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="BaseResultMap"
+		type="com.synpower.bean.SysUser">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="login_id" jdbcType="VARCHAR" property="loginId" />
+		<result column="password" jdbcType="VARCHAR"
+			property="password" />
+		<result column="work_code" jdbcType="VARCHAR"
+			property="workCode" />
+		<result column="user_name" jdbcType="VARCHAR"
+			property="userName" />
+		<result column="icon_url" jdbcType="VARCHAR" property="iconUrl" />
+		<result column="gender" jdbcType="CHAR" property="gender" />
+		<result column="user_tel" jdbcType="VARCHAR" property="userTel" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="user_post" jdbcType="INTEGER"
+			property="userPost" />
+		<result column="org_id" jdbcType="INTEGER" property="orgId" />
+		<result column="pinyin_search" jdbcType="VARCHAR"
+			property="pinyinSearch" />
+		<result column="last_modify_time" jdbcType="BIGINT"
+			property="lastModifyTime" />
+		<result column="last_modify_user" jdbcType="INTEGER"
+			property="lastModifyUser" />
+		<result column="last_login_time" jdbcType="BIGINT"
+			property="lastLoginTime" />
+		<result column="create_time" jdbcType="BIGINT"
+			property="createTime" />
+		<result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
+		<result column="user_valid" jdbcType="CHAR"
+			property="userValid" />
+		<result column="user_status" jdbcType="CHAR"
+			property="userStatus" />
+		<result column="user_type" jdbcType="CHAR" property="userType" />
+		<result column="user_weixin" jdbcType="VARCHAR"
+			property="userWeixin" />
+		<result column="default_type" jdbcType="CHAR"
+			property="defaultType" />
+		<result column="weixin_uuid" jdbcType="VARCHAR"
+			property="weixinUUID" />
+		<result column="use_tel" jdbcType="CHAR" property="useTel" />
+		<association property="userRole" javaType="SysRole"
+			select="getRoleByUid" column="id">
+		</association>
+		<association property="userOrg" javaType="SysOrg"
+			select="getOrgByUid" column="id">
+		</association>
+		<collection property="rightList" ofType="SysRightsMapper"
+			select="getRightsByUid" column="id">
+		</collection>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, login_id, password, work_code, user_name, icon_url,
+		gender, user_tel,
+		email,
+		user_post, org_id, pinyin_search,
+		last_modify_time, last_modify_user,
+		last_login_time,
+		create_time,
+		login_ip, user_valid, user_status, user_type ,weixin_uuid
+	</sql>
+	<select id="getUserByIdAndPsw" parameterType="sysuser"
+		resultMap="BaseResultMap">
+		<if test=" requestType==1">
+			select u.* from sys_user u
+			join sys_user_role ur on
+			u.id=ur.user_id
+			join sys_role r on ur.role_id=r.id
+			where
+			password=#{password} and
+			user_tel=#{loginId}
+			and user_valid=0 and
+			role_valid=0
+			UNION
+			select u.* from sys_user u
+			join sys_user_role ur on
+			u.id=ur.user_id
+			join sys_role r on ur.role_id=r.id
+
+			where
+			password=#{password} and email=#{loginId}
+			and user_valid=0 and
+			role_valid=0
+			UNION
+			select u.* from sys_user u
+			join sys_user_role ur on
+			u.id=ur.user_id
+			join sys_role r on ur.role_id=r.id
+
+			where
+			password=#{password} and login_id=#{loginId}
+			and user_valid=0 and
+			role_valid=0
+		</if>
+		<if test=" requestType==2 or requestType==3">
+			select u.* from sys_user u
+			join sys_user_role ur on
+			u.id=ur.user_id
+			join sys_role r on ur.role_id=r.id
+			where
+			weixin_uuid=#{loginId}
+			and user_valid=0 and role_valid=0
+		</if>
+	</select>
+	<select id="getRoleByUid" parameterType="integer"
+		resultMap="com.synpower.dao.SysRoleMapper.BaseResultMap">
+		SELECT r.*
+		from sys_user u
+		join sys_user_role ur on
+		u.id=ur.user_id
+		join sys_role r on ur.role_id=r.id
+		where u.id=#{id}
+	</select>
+	<select id="getOrgByUid" parameterType="integer"
+		resultMap="com.synpower.dao.SysOrgMapper.BaseResultMap">
+		SELECT o.* from sys_user u
+		join sys_org o on u.org_id = o.id
+		where u.id=#{id}
+	</select>
+	<select id="getRightsByUid" parameterType="integer"
+		resultMap="com.synpower.dao.SysRightsMapper.BaseResultMap">
+		SELECT ri.*
+		from sys_user u join sys_user_role ur on
+		u.id=ur.user_id
+		join sys_role r on ur.role_id=r.id
+		join sys_role_rights
+		rr on rr.role_id=r.id
+		join sys_rights ri on ri.id=rr.rights_id
+		where
+		rights_valid=0 and u.id=#{id}
+	</select>
+	<insert id="insertUserInfo" parameterType="sysuser"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		sys_user(login_id,password,user_name,gender,user_tel,pinyin_search,
+		create_time,user_valid,user_status,user_weixin,user_type,weixin_uuid)
+		VALUES
+		(#{userTel},#{password},#{userName},#{gender},#{userTel},#{pinyinSearch},#{createTime},#{userValid},#{userStatus},#{userWeixin},#{userType},#{weixinUUID})
+	</insert>
+	<insert id="insertPlantUser" parameterType="sysuser"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		sys_user(login_id,user_name,org_id,gender,user_tel,pinyin_search,
+		create_time,user_valid,user_status,user_type) VALUES
+		(#{userTel},#{userName},#{orgId},#{gender},#{userTel},#{pinyinSearch},#{createTime},#{userValid},#{userStatus},#{userType})
+	</insert>
+	<select id="getUserByLoginId" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * FROM sys_user s WHERE s.login_id = #{loginId}
+	</select>
+	<select id="getUserByWeixin" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * FROM sys_user s WHERE s.user_weixin = #{weixin}
+	</select>
+	<select id="getUserByTel" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * FROM sys_user s WHERE s.user_tel = #{tel} and
+		user_valid!=1
+	</select>
+	<select id="getWXUserByTel" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * FROM sys_user s WHERE s.user_tel = #{tel} and
+		user_valid!=1 and
+		user_weixin is not null and user_weixin!=''
+	</select>
+	<select id="getUserByEmail" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * FROM sys_user s WHERE s.email = #{email} and
+		user_status!=2
+	</select>
+	<select id="getUnactiveUser" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT * FROM sys_user s WHERE s.user_tel = #{tel} and
+		user_valid !=1
+	</select>
+	<update id="updateLoginInfo" parameterType="sysuser">
+		update sys_user set
+		last_login_time=#{lastLoginTime},login_ip=#{loginIp}
+		where id=#{id}
+	</update>
+	<select id="countUser" resultType="int">
+		SELECT count(*) FROM (
+		SELECT
+		su.id,
+		su.login_id,
+		sr.role_name,
+		su.user_name,
+		su.user_tel,
+		su.`password`,
+		su.user_status,
+		su.email,
+		sso.org_name
+		FROM sys_user su JOIN sys_user_role sur ON su.id =
+		sur.user_id
+		JOIN sys_role sr ON sur.role_id = sr.id JOIN sys_org sso ON
+		su.org_id =
+		sso.id
+		WHERE su.user_valid = 0 and sr.id != 4 and su.org_id
+		in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<include refid="userDynaSql"></include>
+		<include refid="userDynaSqlName"></include>
+		UNION
+		SELECT
+		su.id,
+		su.login_id,
+		sr.role_name,
+		su.user_name,
+		su.user_tel,
+		su.`password`,
+		su.user_status,
+		su.email,
+		sso.org_name
+		FROM sys_user su
+		JOIN sys_user_role sur ON su.id = sur.user_id
+		JOIN sys_role sr ON
+		sur.role_id = sr.id JOIN sys_org sso ON su.org_id =
+		sso.id
+		WHERE
+		su.user_valid = 0 and sr.id != 4 and su.org_id in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<include refid="userDynaSql"></include>
+		<include refid="userDynaSqlLoginId"></include>
+		UNION
+		SELECT
+		su.id,
+		su.login_id,
+		sr.role_name,
+		su.user_name,
+		su.user_tel,
+		su.`password`,
+		su.user_status,
+		su.email,
+		sso.org_name
+		FROM sys_user su
+		JOIN sys_user_role sur ON su.id = sur.user_id
+		JOIN sys_role sr ON
+		sur.role_id = sr.id JOIN sys_org sso ON su.org_id =
+		sso.id
+		WHERE
+		su.user_valid = 0 and sr.id != 4 and su.org_id in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<include refid="userDynaSql"></include>
+		<include refid="userDynaSqlUserTel"></include>
+		UNION
+		SELECT
+		su.id,
+		su.login_id,
+		sr.role_name,
+		su.user_name,
+		su.user_tel,
+		su.`password`,
+		su.user_status,
+		su.email,
+		sso.org_name
+		FROM sys_user su
+		JOIN sys_user_role sur ON su.id = sur.user_id
+		JOIN sys_role sr ON
+		sur.role_id = sr.id JOIN sys_org sso ON su.org_id =
+		sso.id
+		WHERE
+		su.user_valid = 0 and sr.id != 4 and su.org_id in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<include refid="userDynaSql"></include>
+		<include refid="userDynaSqlEmail"></include>
+		)temp
+	</select>
+	<sql id="userDynaSql">
+		<if test="status != null and status != ''">
+			and su.user_status = #{status}
+		</if>
+		<if test="roleIdList != null and roleIdList.size() > 0">
+			<foreach collection="roleIdList" item="item"
+				open=" and sr.id in(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</sql>
+	<sql id="userDynaSqlName">
+		<if test="content != null and content != ''">
+			and su.user_name like CONCAT(#{content},'%')
+		</if>
+	</sql>
+	<sql id="userDynaSqlLoginId">
+		<if test="content != null and content != ''">
+			and su.login_id like CONCAT(#{content},'%')
+		</if>
+	</sql>
+	<sql id="userDynaSqlUserTel">
+		<if test="content != null and content != ''">
+			and su.user_tel like CONCAT(#{content},'%')
+		</if>
+	</sql>
+	<sql id="userDynaSqlEmail">
+		<if test="content != null and content != ''">
+			and su.email like CONCAT(#{content},'%')
+		</if>
+	</sql>
+	<resultMap id="userInfoMap" type="java.util.HashMap">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="login_id" property="loginId" jdbcType="VARCHAR" />
+		<result column="role_name" property="roleName"
+			jdbcType="VARCHAR" />
+		<result column="role_id" property="roleId" jdbcType="VARCHAR" />
+		<result column="user_name" property="userName"
+			jdbcType="VARCHAR" />
+		<result column="user_tel" property="userTel" jdbcType="VARCHAR" />
+		<result column="icon_url" property="iconUrl" jdbcType="VARCHAR" />
+		<result column="user_status" property="userStatus"
+			jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="org_id " property="orgId" jdbcType="VARCHAR" />
+		<result column="use_tel " property="use_tel" jdbcType="VARCHAR" />
+		<result column="org_name " property="orgName"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="listUserInfo" parameterType="hashmap"
+		resultMap="userInfoMap">
+		SELECT
+		id,login_id,role_name,role_id,user_name,user_tel,icon_url,user_status,email,org_id,use_tel,org_name
+		FROM (
+		SELECT
+		su.id,
+		su.login_id,
+		(CASE
+		WHEN sr.role_valid = 1 THEN '--'
+		ELSE sr.role_name END)role_name,
+		sr.id role_id,
+		su.user_name,
+		su.user_tel,
+		su.icon_url,
+		su.user_status,
+		su.email,
+		su.org_id,
+		su.use_tel,
+		sso.org_name
+		FROM sys_user su JOIN sys_user_role sur ON su.id =
+		sur.user_id
+		JOIN sys_role sr ON sur.role_id = sr.id JOIN sys_org sso ON
+		su.org_id =
+		sso.id
+		WHERE su.user_valid = 0 and sr.id != 4 and su.org_id
+		in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<include refid="userDynaSql"></include>
+		<include refid="userDynaSqlName"></include>
+		UNION
+		SELECT
+		su.id,
+		su.login_id,
+		(CASE
+		WHEN sr.role_valid = 1 THEN '--'
+		ELSE sr.role_name END)role_name,
+		sr.id role_id,
+		su.user_name,
+		su.user_tel,
+		su.icon_url,
+		su.user_status,
+		su.email,
+		su.org_id,
+		su.use_tel,
+		sso.org_name
+		FROM sys_user su JOIN sys_user_role sur ON su.id =
+		sur.user_id
+		JOIN sys_role sr ON sur.role_id = sr.id JOIN sys_org sso ON
+		su.org_id =
+		sso.id
+		WHERE su.user_valid = 0 and sr.id != 4 and su.org_id
+		in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<include refid="userDynaSql"></include>
+		<include refid="userDynaSqlLoginId"></include>
+		UNION
+		SELECT
+		su.id,
+		su.login_id,
+		(CASE
+		WHEN sr.role_valid = 1 THEN '--'
+		ELSE sr.role_name END)role_name,
+		sr.id role_id,
+		su.user_name,
+		su.user_tel,
+		su.icon_url,
+		su.user_status,
+		su.email,
+		su.org_id,
+		su.use_tel,
+		sso.org_name
+		FROM sys_user su JOIN sys_user_role sur ON su.id =
+		sur.user_id
+		JOIN sys_role sr ON sur.role_id = sr.id JOIN sys_org sso ON
+		su.org_id =
+		sso.id
+		WHERE su.user_valid = 0 and sr.id != 4 and su.org_id
+		in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<include refid="userDynaSql"></include>
+		<include refid="userDynaSqlUserTel"></include>
+		UNION
+		SELECT
+		su.id,
+		su.login_id,
+		(CASE
+		WHEN sr.role_valid = 1 THEN '--'
+		ELSE sr.role_name END)role_name,
+		sr.id role_id,
+		su.user_name,
+		su.user_tel,
+		su.icon_url,
+		su.user_status,
+		su.email,
+		su.org_id,
+		su.use_tel,
+		sso.org_name
+		FROM sys_user su JOIN sys_user_role sur ON su.id =
+		sur.user_id
+		JOIN sys_role sr ON sur.role_id = sr.id JOIN sys_org sso ON
+		su.org_id =
+		sso.id
+		WHERE su.user_valid = 0 and sr.id != 4 and su.org_id
+		in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<include refid="userDynaSql"></include>
+		<include refid="userDynaSqlEmail"></include>
+		)temp
+		limit #{min},#{max};
+	</select>
+	<update id="updateUserStatus" parameterType="hashmap">
+		UPDATE sys_user s
+		SET s.user_status = #{status},s.last_modify_time =
+		#{lastModifyTime},s.last_modify_user = #{id} WHERE s.id = #{uid}
+	</update>
+	<update id="updateUserValid" parameterType="java.util.Map">
+		UPDATE sys_user s SET s.user_valid = 1,s.last_modify_time =
+		#{lastModifyTime},s.last_modify_user = #{id} WHERE s.id in
+		<foreach collection="ids" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<select id="getUserInfoById" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT
+		ssu.id,
+		ssu.user_name,
+		ssu.user_tel,
+		ssu.email,
+		ssu.`password`,
+		ssr.role_name,
+		ssu.user_weixin,
+		ssu.user_type,
+		ssu.icon_url
+		FROM sys_user ssu
+		JOIN sys_user_role sur
+		ON ssu.id =
+		sur.user_id
+		JOIN sys_role ssr
+		ON sur.role_id = ssr.id
+		WHERE ssu.id =
+		#{userId}
+	</select>
+	<update id="updateUserById" parameterType="hashmap">
+		UPDATE sys_user ssu
+		SET
+		ssu.user_name= #{userName},
+		ssu.user_tel = #{userTel},
+		ssu.email=
+		#{email},
+		ssu.`password`= #{password},
+		ssu.last_modify_time =
+		#{lastModifyTime},
+		ssu.last_modify_user = #{lastModifyUser}
+		WHERE ssu.id
+		= #{userId}
+	</update>
+	<update id="updateRoleById" parameterType="hashmap">
+		UPDATE sys_user_role
+		sur SET
+		sur.role_id = #{roleId}
+		WHERE sur.user_id = #{userId}
+	</update>
+	<select id="getUserInfo" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT
+		s.id,
+		s.icon_url,
+		s.user_name,
+		s.user_tel,
+		s.login_id,
+		s.email,
+		s.`password`
+		FROM sys_user s
+		WHERE s.id = #{userId}
+	</select>
+	<update id="updateUserInfo" parameterType="sysuser">
+		UPDATE
+		sys_user s
+		SET
+		s.user_name = #{userName},
+		s.user_tel = #{userTel},
+		s.login_id =
+		#{loginId},
+		s.email = #{email},
+		s.last_modify_time = #{lastModifyTime},
+		s.last_modify_user = #{id}
+		WHERE s.id = #{id}
+	</update>
+	<select id="getTelNotMyself" resultMap="BaseResultMap">
+		SELECT * FROM sys_user s
+		WHERE s.user_tel = #{userTel} AND s.id != #{id} AND
+		s.user_valid = 0
+	</select>
+	<select id="getEmailNotMyself" resultMap="BaseResultMap">
+		SELECT * FROM sys_user
+		s WHERE s.email = #{email} AND s.id != #{id} AND
+		s.user_valid = 0
+	</select>
+	<select id="getLoginNotMyself" resultMap="BaseResultMap">
+		SELECT * FROM sys_user
+		s WHERE s.login_id = #{loginId} AND s.id != #{id} AND
+		s.user_valid = 0
+	</select>
+	<update id="deletePlantUser" parameterType="hashmap">
+		UPDATE sys_user s SET
+		s.user_valid = 1,s.last_modify_time =#{lastModifyTime}
+		,s.last_modify_user = #{lastModifyUser} WHERE s.id = #{id}
+	</update>
+	<update id="updatePlantUser" parameterType="hashmap">
+		UPDATE
+		sys_user s
+		SET
+		s.user_name = #{userName},
+		s.user_tel = #{userTel},
+		s.email = #{email},
+		s.login_id = #{loginId},
+		s.user_status = #{status},
+		s.last_modify_time =
+		#{lastModifyTime} ,
+		s.last_modify_user = #{lastModifyUser}
+		WHERE s.id =
+		#{id}
+	</update>
+	<update id="updateUser4Plant" parameterType="hashmap">
+		UPDATE
+		sys_user_plant s join plant_info p on p.id = s.plant_id SET s.user_id
+		= #{id} WHERE s.plant_id = #{plantId} and
+		s.create_time=#{lastModifyTime} and s.create_user=#{id}
+	</update>
+	<update id="updateUserIcon" parameterType="String">
+		UPDATE sys_user s SET
+		s.icon_url = NULL WHERE s.id = #{userId}
+	</update>
+	<update id="insertUserIcon" parameterType="hashmap">
+		UPDATE sys_user s SET
+		s.icon_url =
+		#{url},s.last_modify_time=#{createTime},s.last_modify_user = #{userId}
+		WHERE s.id = #{userId}
+	</update>
+	<insert id="inserNewUser" parameterType="sysuser"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO sys_user(
+		login_id,
+		password,
+		user_name,
+		gender,
+		user_tel,
+		email,
+		org_id,
+		pinyin_search,
+		last_modify_time,
+		last_modify_user,
+		create_time,
+		user_valid,
+		user_status,
+		user_type,
+		use_tel)
+		VALUES (
+		#{loginId},
+		#{password},
+		#{userName},
+		#{gender},
+		#{userTel},
+		#{email},
+		#{orgId},
+		#{pinyinSearch},
+		#{lastModifyTime},
+		#{lastModifyUser},
+		#{createTime},
+		#{userValid},
+		#{userStatus},
+		#{userType},
+		#{useTel})
+	</insert>
+	<select id="selectUserInfo" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT
+		ssu.id,
+		ssu.user_name,
+		ssu.user_tel,
+		ssu.email,
+		ssu.login_id,
+		ssu.user_status,
+		ssu.org_id,
+		sso.org_name,
+		ssr.role_name,
+		ssu.icon_url
+		FROM sys_user ssu JOIN sys_org sso ON ssu.org_id = sso.id
+		JOIN sys_user_role sur ON sur.user_id = ssu.id
+		JOIN sys_role ssr ON
+		ssr.id = sur.role_id WHERE ssu.id = #{userId}
+	</select>
+	<update id="updateAccountById" parameterType="hashmap">
+		UPDATE sys_user ssu
+		SET
+		ssu.user_name= #{userName},
+		ssu.pinyin_search = #{pinYin},
+		ssu.org_id = #{orgId},
+		ssu.user_tel = #{userTel},
+		ssu.email= #{email},
+		ssu.login_id = #{loginId},
+		ssu.user_status = #{status},
+		ssu.use_tel =
+		#{useTel},
+		ssu.last_modify_time = #{lastModifyTime},
+		ssu.last_modify_user = #{lastModifyUser}
+		WHERE ssu.id = #{userId}
+	</update>
+	<select id="getUserPwd" parameterType="hashmap"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM sys_user WHERE id = #{userId} AND `password` = #{password}
+	</select>
+	<update id="updatePwd" parameterType="hashmap">
+		UPDATE sys_user ssu SET
+		ssu.password = #{password},
+		ssu.last_modify_time = #{lastModifyTime},
+		ssu.last_modify_user = #{lastModifyUser}
+		WHERE ssu.id = #{userId}
+	</update>
+	<select id="getOrgUser" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT
+		ssu.id,
+		ssu.login_id,
+		ssu.email,
+		ssu.user_tel
+		FROM
+		sys_user ssu WHERE ssu.org_id = #{orgId} AND ssu.default_type = 1
+		limit 0,1
+	</select>
+	<insert id="insertAdminUser" parameterType="sysuser"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO sys_user(
+		login_id,
+		email,
+		password,
+		user_name,
+		user_tel,
+		org_id,
+		create_time,
+		user_valid,
+		user_status,
+		default_type,
+		user_type,
+		pinyin_search,
+		use_tel)
+		VALUES (
+		#{loginId},
+		#{email},
+		#{password},
+		#{userName},
+		#{userTel},
+		#{orgId},
+		#{createTime},
+		#{userValid},
+		#{userStatus},
+		#{defaultType},
+		#{userType},
+		#{pinyinSearch},
+		#{useTel})
+	</insert>
+	<update id="updateOrgUser" parameterType="sysuser">
+		UPDATE
+		sys_user s
+		SET
+		s.user_tel = #{userTel},
+		s.login_id = #{loginId},
+		s.email = #{email},
+		s.last_modify_time = #{lastModifyTime},
+		s.last_modify_user =
+		#{lastModifyUser}
+		WHERE s.id = #{id}
+	</update>
+	<select id="selectOrgIsNull" parameterType="list"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM sys_user WHERE org_id in
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getUserByPlant" parameterType="map"
+		resultMap="BaseResultMap">
+		SELECT o.user_name,o.user_tel from sys_user o
+		join plant_info pi on
+		pi.contacts=o.id
+		where pi.id in
+		<foreach collection="reList" index="index" item="item"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<select id="getUserjoinPlant" parameterType="String"
+		resultMap="BaseResultMap">
+		SELECT o.user_name,o.user_tel from sys_user o where
+		user_valid=0 and
+		o.id=#{contacts}
+	</select>
+	<select id="getUsers" parameterType="map" resultType="String">
+		SELECT o.id
+		from sys_user o where user_valid=0
+		and o.user_name LIKE
+		CONCAT('%',#{condition},'%') or o.user_tel LIKE
+		CONCAT('%',#{condition},'%')
+	</select>
+	<select id="getPidByUser" parameterType="map"
+		resultType="integer">
+		SELECT pi.id from plant_info pi join sys_user o on pi.contacts=o.id
+		where user_valid=0
+		<foreach collection="oreList" item="orgId"
+			open=" and o.id IN (" separator="," close=")">
+			#{orgId}
+		</foreach>
+	</select>
+	<select id="getUsersByIds" parameterType="List"
+		resultMap="BaseResultMap">
+		select * from sys_user where user_valid!=1
+		<foreach collection="list" item="item" open=" and id IN ("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	<update id="updateUserTel" parameterType="hashmap">
+		update sys_user set
+		user_tel=#{userTel},last_modify_time=#{lastModifyTime},last_modify_user=#{lastModifyUser}
+		where id=#{userId}
+	</update>
+	<update id="updateUserOrg" parameterType="hashmap">
+		update sys_user set
+		org_id=#{orgId},last_modify_time=#{lastModifyTime},last_modify_user=#{lastModifyUser}
+		where id=#{userId}
+	</update>
+	<update id="updateUserName" parameterType="hashmap">
+		update sys_user set
+		user_name=#{userName},last_modify_time=#{lastModifyTime},last_modify_user=#{lastModifyUser}
+		where id=#{userId}
+	</update>
+	<update id="updateUser" parameterType="sysuser">
+		update sys_user set
+		password=#{password},user_name=#{userName},user_tel=#{userTel},
+		pinyin_search=#{pinyinSearch},gender=#{gender},
+		user_valid=#{userValid},user_status=#{userStatus},
+		user_type=#{userType},user_weixin=#{userWeixin},
+		last_modify_time=#{lastModifyTime},last_modify_user =
+		#{lastModifyUser} ,weixin_uuid=#{weixinUUID}
+		where id=#{id}
+	</update>
+	<update id="updateAdminValid" parameterType="list">
+		UPDATE sys_user SET user_valid = 1 WHERE default_type = 1 AND org_id
+		IN
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<select id="getUserByUid" parameterType="integer"
+		resultMap="BaseResultMap" useCache="false">
+		SELECT su.*
+		FROM sys_user su
+		JOIN sys_user_plant sup ON su.id
+		= sup.user_id
+		JOIN plant_info p ON p.id = sup.plant_id
+		where p.id=#{id}
+		AND p.plant_valid = 0 and su.user_valid = 0
+	</select>
+	<update id="updateUserUUID" parameterType="sysuser">
+		update sys_user
+		<set>
+			<if test="weixinUUID != null">
+				weixin_uuid = #{weixinUUID,jdbcType=VARCHAR},
+			</if>
+			<if test="iconUrl != null">
+				icon_url = #{iconUrl,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id=#{id};
+	</update>
+	<select id="getUserByUUID" parameterType="String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user where weixin_uuid=#{uuid}
+	</select>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.synpower.bean.SysUser">
+		update sys_user
+		<set>
+			<if test="loginId != null">
+				login_id = #{loginId,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="workCode != null">
+				work_code = #{workCode,jdbcType=VARCHAR},
+			</if>
+			<if test="userName != null">
+				user_name = #{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="iconUrl != null">
+				icon_url = #{iconUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="gender != null">
+				gender = #{gender,jdbcType=CHAR},
+			</if>
+			<if test="userTel != null">
+				user_tel = #{userTel,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="userPost != null">
+				user_post = #{userPost,jdbcType=INTEGER},
+			</if>
+			<if test="orgId != null">
+				org_id = #{orgId,jdbcType=INTEGER},
+			</if>
+			<if test="pinyinSearch != null">
+				pinyin_search = #{pinyinSearch,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModifyTime != null">
+				last_modify_time = #{lastModifyTime,jdbcType=BIGINT},
+			</if>
+			<if test="lastModifyUser != null">
+				last_modify_user = #{lastModifyUser,jdbcType=INTEGER},
+			</if>
+			<if test="lastLoginTime != null">
+				last_login_time = #{lastLoginTime,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="loginIp != null">
+				login_ip = #{loginIp,jdbcType=VARCHAR},
+			</if>
+			<if test="userValid != null">
+				user_valid = #{userValid,jdbcType=CHAR},
+			</if>
+			<if test="userStatus != null">
+				user_status = #{userStatus,jdbcType=CHAR},
+			</if>
+			<if test="userType != null">
+				user_type = #{userType,jdbcType=CHAR},
+			</if>
+			<if test="userWeixin != null">
+				user_weixin = #{userWeixin,jdbcType=VARCHAR},
+			</if>
+			<if test="defaultType != null">
+				default_type = #{defaultType,jdbcType=CHAR},
+			</if>
+			<if test="useTel != null">
+				use_tel = #{useTel,jdbcType=CHAR},
+			</if>
+			<if test="weixinUUID != null">
+				weixin_uuid = #{weixinUUID,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<insert id="insertSelective"
+		parameterType="com.synpower.bean.SysUser" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into sys_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="loginId != null">
+				login_id,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="workCode != null">
+				work_code,
+			</if>
+			<if test="userName != null">
+				user_name,
+			</if>
+			<if test="iconUrl != null">
+				icon_url,
+			</if>
+			<if test="gender != null">
+				gender,
+			</if>
+			<if test="userTel != null">
+				user_tel,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+			<if test="userPost != null">
+				user_post,
+			</if>
+			<if test="orgId != null">
+				org_id,
+			</if>
+			<if test="pinyinSearch != null">
+				pinyin_search,
+			</if>
+			<if test="lastModifyTime != null">
+				last_modify_time,
+			</if>
+			<if test="lastModifyUser != null">
+				last_modify_user,
+			</if>
+			<if test="lastLoginTime != null">
+				last_login_time,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="loginIp != null">
+				login_ip,
+			</if>
+			<if test="userValid != null">
+				user_valid,
+			</if>
+			<if test="userStatus != null">
+				user_status,
+			</if>
+			<if test="userType != null">
+				user_type,
+			</if>
+			<if test="userWeixin != null">
+				user_weixin,
+			</if>
+			<if test="defaultType != null">
+				default_type,
+			</if>
+			<if test="useTel != null">
+				use_tel,
+			</if>
+			<if test="weixinUUID != null">
+				weixin_uuid,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="loginId != null">
+				#{loginId,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="workCode != null">
+				#{workCode,jdbcType=VARCHAR},
+			</if>
+			<if test="userName != null">
+				#{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="iconUrl != null">
+				#{iconUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="gender != null">
+				#{gender,jdbcType=CHAR},
+			</if>
+			<if test="userTel != null">
+				#{userTel,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+			<if test="userPost != null">
+				#{userPost,jdbcType=INTEGER},
+			</if>
+			<if test="orgId != null">
+				#{orgId,jdbcType=INTEGER},
+			</if>
+			<if test="pinyinSearch != null">
+				#{pinyinSearch,jdbcType=VARCHAR},
+			</if>
+			<if test="lastModifyTime != null">
+				#{lastModifyTime,jdbcType=BIGINT},
+			</if>
+			<if test="lastModifyUser != null">
+				#{lastModifyUser,jdbcType=INTEGER},
+			</if>
+			<if test="lastLoginTime != null">
+				#{lastLoginTime,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="loginIp != null">
+				#{loginIp,jdbcType=VARCHAR},
+			</if>
+			<if test="userValid != null">
+				#{userValid,jdbcType=CHAR},
+			</if>
+			<if test="userStatus != null">
+				#{userStatus,jdbcType=CHAR},
+			</if>
+			<if test="userType != null">
+				#{userType,jdbcType=CHAR},
+			</if>
+			<if test="userWeixin != null">
+				#{userWeixin,jdbcType=VARCHAR},
+			</if>
+			<if test="defaultType != null">
+				#{defaultType,jdbcType=CHAR},
+			</if>
+			<if test="useTel != null">
+				#{useTel,jdbcType=CHAR},
+			</if>
+			<if test="weixinUUID != null">
+				#{weixinUUID,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<select id="getUserByOrgIds" parameterType="list"
+		resultMap="BaseResultMap">
+		SELECT id FROM sys_user WHERE user_valid = 0
+		<foreach collection="list" item="item" open=" AND org_id IN ("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+</mapper>

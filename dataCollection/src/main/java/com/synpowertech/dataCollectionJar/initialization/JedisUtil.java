@@ -57,7 +57,7 @@ public class JedisUtil {
 	public void initMethod() {
 		jedisUtil = new JedisUtil();
 		logger.info("jedisUtilCache inits succefully！");
-		
+
 	}
 	
 	

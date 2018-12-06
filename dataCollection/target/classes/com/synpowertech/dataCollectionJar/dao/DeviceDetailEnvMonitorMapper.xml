@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.synpowertech.dataCollectionJar.dao.DeviceDetailEnvMonitorMapper">
+    <resultMap id="BaseResultMap" type="com.synpowertech.dataCollectionJar.domain.DeviceDetailEnvMonitor">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="model_identity" property="modelIdentity" jdbcType="VARCHAR"/>
+        <result column="device_type" property="deviceType" jdbcType="INTEGER"/>
+        <result column="manufacturer" property="manufacturer" jdbcType="VARCHAR"/>
+        <result column="model" property="model" jdbcType="VARCHAR"/>
+        <result column="power" property="power" jdbcType="INTEGER"/>
+        <result column="photo_path" property="photoPath" jdbcType="VARCHAR"/>
+        <result column="valid" property="valid" jdbcType="CHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, model_identity, device_type, manufacturer, model, power, photo_path, valid
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from device_detail_env_monitor
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        DELETE FROM device_detail_env_monitor
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.synpowertech.dataCollectionJar.domain.DeviceDetailEnvMonitor">
+        INSERT INTO device_detail_env_monitor (id, model_identity, device_type,
+                                               manufacturer, model, power,
+                                               photo_path, valid)
+        VALUES (#{id,jdbcType=INTEGER}, #{modelIdentity,jdbcType=VARCHAR}, #{deviceType,jdbcType=INTEGER},
+                #{manufacturer,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{power,jdbcType=INTEGER},
+                #{photoPath,jdbcType=VARCHAR}, #{valid,jdbcType=CHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.synpowertech.dataCollectionJar.domain.DeviceDetailEnvMonitor">
+        insert into device_detail_env_monitor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="modelIdentity != null">
+                model_identity,
+            </if>
+            <if test="deviceType != null">
+                device_type,
+            </if>
+            <if test="manufacturer != null">
+                manufacturer,
+            </if>
+            <if test="model != null">
+                model,
+            </if>
+            <if test="power != null">
+                power,
+            </if>
+            <if test="photoPath != null">
+                photo_path,
+            </if>
+            <if test="valid != null">
+                valid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="modelIdentity != null">
+                #{modelIdentity,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                #{deviceType,jdbcType=INTEGER},
+            </if>
+            <if test="manufacturer != null">
+                #{manufacturer,jdbcType=VARCHAR},
+            </if>
+            <if test="model != null">
+                #{model,jdbcType=VARCHAR},
+            </if>
+            <if test="power != null">
+                #{power,jdbcType=INTEGER},
+            </if>
+            <if test="photoPath != null">
+                #{photoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="valid != null">
+                #{valid,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.synpowertech.dataCollectionJar.domain.DeviceDetailEnvMonitor">
+        update device_detail_env_monitor
+        <set>
+            <if test="modelIdentity != null">
+                model_identity = #{modelIdentity,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                device_type = #{deviceType,jdbcType=INTEGER},
+            </if>
+            <if test="manufacturer != null">
+                manufacturer = #{manufacturer,jdbcType=VARCHAR},
+            </if>
+            <if test="model != null">
+                model = #{model,jdbcType=VARCHAR},
+            </if>
+            <if test="power != null">
+                power = #{power,jdbcType=INTEGER},
+            </if>
+            <if test="photoPath != null">
+                photo_path = #{photoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="valid != null">
+                valid = #{valid,jdbcType=CHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.synpowertech.dataCollectionJar.domain.DeviceDetailEnvMonitor">
+        UPDATE device_detail_env_monitor
+        SET model_identity = #{modelIdentity,jdbcType=VARCHAR},
+            device_type    = #{deviceType,jdbcType=INTEGER},
+            manufacturer   = #{manufacturer,jdbcType=VARCHAR},
+            model          = #{model,jdbcType=VARCHAR},
+            power          = #{power,jdbcType=INTEGER},
+            photo_path     = #{photoPath,jdbcType=VARCHAR},
+            valid          = #{valid,jdbcType=CHAR}
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

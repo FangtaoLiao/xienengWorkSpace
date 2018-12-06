@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DeviceDetailAlertorMapper">
+  <resultMap id="BaseResultMap" type="com.synpower.bean.DeviceDetailAlertor">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="model_identity" jdbcType="VARCHAR" property="modelIdentity" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="protocol" jdbcType="VARCHAR" property="protocol" />
+    <result column="close_sound_instructions" jdbcType="VARCHAR" property="closeSoundInstructions" />
+    <result column="close_red_light_instructions" jdbcType="VARCHAR" property="closeRedLightInstructions" />
+    <result column="open_sound_instructions" jdbcType="VARCHAR" property="openSoundInstructions" />
+    <result column="open_red_light_instructions" jdbcType="VARCHAR" property="openRedLightInstructions" />
+    <result column="photo_path" jdbcType="VARCHAR" property="photoPath" />
+    <result column="valid" jdbcType="CHAR" property="valid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, model_identity, device_type, manufacturer, model, protocol, close_sound_instructions, 
+    close_red_light_instructions, open_sound_instructions, open_red_light_instructions, 
+    photo_path, valid
+  </sql>
+  <!-- <include refid="Base_Column_List" /> -->
+  <select id="getOrderById" parameterType="int" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List" /> FROM device_detail_alertor WHERE id = #{id}
+  </select>
+</mapper>
