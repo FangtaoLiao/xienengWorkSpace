@@ -1,20 +1,49 @@
 package com.synpower.bean;
 
-import java.util.Date;
-import java.util.List;
-
 /**
  * @author SP0025
  * 所有参数类封装
  */
 public class AllParam {
 
-   private Integer length; //每页记录数
-   private String orderName;//排序字段名
-   private String order;    //排序规则
-   private Integer start;  //起始页
-   private String taskStatus; //任务状态
-   private String tokenId;
+    private Integer length; //每页记录数
+    private String orderName;//排序字段名
+    private String order;    //排序规则
+    private Integer start;  //起始页
+    private String taskStatus; //任务状态
+    private String tokenId;
+    private String total;//总数
+    private String taskName;  //任务名称
+    private String breakTime; //创建时间
+    private String updateTime; //更新任务时间
+    private String addr;//电站地址
+    private String plantName;//电站名称
+    private String plantStatus;//电站状态
+    private String devName;//设备名称
+    private Integer dev_id;
+    private Integer yx_id;
+    private String devStatus;//设备状态
+    private String status_name;//告警名称
+    private String level;//告警等级
+    private String avaTar;   //用户头像
+    private String userName;//用户名
+    private String userTell;//用户电话
+
+    public Integer getDev_id() {
+        return dev_id;
+    }
+
+    public Integer getYx_id() {
+        return yx_id;
+    }
+
+    public void setYx_id(Integer yx_id) {
+        this.yx_id = yx_id;
+    }
+
+    public void setDev_id(Integer dev_id) {
+        this.dev_id = dev_id;
+    }
 
     public String getTokenId() {
         return tokenId;
@@ -136,20 +165,6 @@ public class AllParam {
         this.userTell = userTell;
     }
 
-    private String total;//总数
-   private String taskName;  //任务名称
-   private String breakTime; //创建时间
-   private String updateTime; //更新任务时间
-   private String addr;//电站地址
-   private String plantName;//电站名称
-   private String plantStatus;//电站状态
-   private String devName;//设备名称
-   private String devStatus;//设备状态
-   private String status_name;//告警名称
-   private String level;//告警等级
-   private String avaTar;   //用户头像
-   private String userName;//用户名
-   private String userTell;//用户电话
 
 
 

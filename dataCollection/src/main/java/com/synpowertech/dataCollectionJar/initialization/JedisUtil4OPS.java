@@ -382,12 +382,14 @@ public class JedisUtil4OPS extends JedisUtil {
         HashMap<String, String> map = new HashMap<>();
         map.put("status_value", dataYx.getStatusValue());
         map.put("data_time", changeTime + "");
+        map.put("alarm_id",dataYx.getId()+"");
         map.put("data_time_f", Util4j.longToDateString(changeTime, "yy-MM-dd hh:mm:ss"));
         map.put("sys_time", System.currentTimeMillis() + "");
         map.put("task_status", "0");
         map.put("yx_id", dataYx.getYxId()+"");
         Integer yxId = dataYx.getYxId();
         map.put("level", DeviceCache.alramLevelMap.get(yxId));
+        map.put("status_name",dataYx.getStatus());
         //添加设备名称，遥信名称，电站id，电站名称
         Map<String,Object > Yx_map = new HashMap<>();
         //根据设备id和yxid找出遥信名称Signal_name、设备名称device_name、电站id plant_id，电站名plant_name
@@ -399,6 +401,7 @@ public class JedisUtil4OPS extends JedisUtil {
                    map.put("device_name",yxInfo.getDevice_name());
                    map.put("plant_name",yxInfo.getPlant_name());
                    map.put("plant_id",String.valueOf(yxInfo.getPlant_id()));
+                   map.put("area_id",yxInfo.getArea_id()+"");
                    break;
                }
         }

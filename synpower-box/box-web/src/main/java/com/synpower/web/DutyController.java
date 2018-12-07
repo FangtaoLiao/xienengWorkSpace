@@ -41,7 +41,7 @@ public class DutyController extends ErrorHandler {
     @RequestMapping("/distribution")
     public MessageBean distribution(@RequestBody String json) throws SessionTimeoutException, SessionException {
         boolean flag = taskService.distribution(getJsonMap(), getUser());
-        return getMB(flag, "任务下发失败");
+        return getMB(flag, "请检查该任务是否已派发，或操作失误");
     }
 
     @RequestMapping("/reback")
@@ -88,7 +88,17 @@ public class DutyController extends ErrorHandler {
             return MessageBeanUtil.getOkMB("操作失败");
         }
     }
-
+    @RequestMapping("/getDutys")
+    public MessageBean getDutys(@RequestBody String json) {
+        try {
+            Map<String, Object> jsonMap = getJsonMap();
+            jsonMap.put("taskStatus", 1);
+            return MessageBeanUtil.getOkMB(taskService.getList(jsonMap));
+        }catch (Exception e){
+            log.debug(e.getMessage());
+            return MessageBeanUtil.getOkMB("操作失败");
+        }
+    }
     /**
      * @author SP0025
      * @method 未派发列表

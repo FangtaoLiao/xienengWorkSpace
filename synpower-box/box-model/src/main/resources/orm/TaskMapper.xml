@@ -62,6 +62,11 @@
       #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{taskStatus,jdbcType=CHAR}, 
       #{taskValid,jdbcType=CHAR})
   </insert>
+
+  <select id="selectTasked" parameterType="com.synpower.bean.Task" resultType="com.synpower.bean.Task">
+      select id,task_name as taskName,yx_id,device_id as dev_id from task
+      where task_status=1 and device_id=#{dev_id} and yx_id = #{yx_id}
+  </select>
   <insert id="insertSelective" parameterType="com.synpower.bean.Task" >
     insert into task
     <trim prefix="(" suffix=")" suffixOverrides="," >

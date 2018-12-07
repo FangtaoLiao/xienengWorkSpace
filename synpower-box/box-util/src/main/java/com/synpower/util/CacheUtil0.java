@@ -123,6 +123,23 @@ public class CacheUtil0 {// 和官方命令一样的格式，方便查询，具�
         return result;
     }
 
+    public Long hdel(String key,String field) throws ServiceException {
+        Jedis jedis = null;
+        Long result = 0L;
+        try{
+            jedis = cachePool0.getResource();
+            result = jedis.hdel(key,field);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            throw  new ServiceException(e,"操作失败，请查看日志");
+        }finally {
+            if(jedis != null){
+                jedis.close();
+            }
+        }
+        return result;
+    }
+
     public Object setNx(String key, String value) {
         Jedis jedis = null;
         Long result = 0L;

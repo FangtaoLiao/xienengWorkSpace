@@ -7,6 +7,15 @@ public class YxInfo {
     private String  plant_name;
     private String  signal_name;
     private Integer yx_id;
+    private Integer area_id;
+
+    public Integer getArea_id() {
+        return area_id;
+    }
+
+    public void setArea_id(Integer area_id) {
+        this.area_id = area_id;
+    }
 
     public Integer getDevice_id() {
         return device_id;

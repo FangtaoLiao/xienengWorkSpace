@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.synpower.dao.DistPerson">
+
+    <select id="getDistPerson" resultType="com.synpower.bean.OpeartionsModel" parameterType="com.synpower.bean.OpeartionsModel">
+        select icon_url as avatar,id,lineStatus,user_name,user_tel from sys_user
+        <if test="lineStatus != null and lineStatus != ''">
+            and lineStatus=#{lineStatus}
+        </if>
+    </select>
+
+    <update id="updateLinstatus" parameterType="com.synpower.bean.OpeartionsModel">
+        update sys_user set lineStatus = #{lineStatus} where id=#{user_id}
+    </update>
+
+    <select id=""></select>
+</mapper>

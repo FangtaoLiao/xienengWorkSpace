@@ -29,6 +29,13 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     CacheUtil0 cacheUtil0;
 
+    /**
+     * @D  派发任务，当同样设备，同样告警信息时，先检查是否派发
+     * @author SP0025
+     * @param parMap
+     * @param user
+     * @return
+     */
     @Override
     @Transactional
     public boolean distribution(Map<String, Object> parMap, User user) {
@@ -53,6 +60,18 @@ public class TaskServiceImpl implements TaskService {
         task.setTaskStatus("0");
         task.setTaskValid("0");
         task.setTaskName(alarmName);
+        CacheUtil0 cacheUtil0 = new CacheUtil0();
+        try{
+              cacheUtil0.hdel(deviceId+"",yxId+"");
+        }catch (Exception e){
+              System.err.print(e.getMessage());
+        }
+        AllParam allParam = new AllParam();
+        allParam.setDev_id(deviceId);
+        allParam.setYx_id(yxId);
+        if( taskMapper.selectTasked(allParam)!=null){
+            return false;
+        }
         return taskMapper.insertSelective(task) == 1 ? true : false;
     }
 
@@ -113,7 +132,5 @@ public class TaskServiceImpl implements TaskService {
             allParam.setStart(0);
         }
         return taskMapper.selectTaskListByStatus(allParam);
-
-
     }
 }

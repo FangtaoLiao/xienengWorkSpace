@@ -85,5 +85,8 @@ public class AlarmController extends ErrorHandler{
 //
 		return alarmService.recentAlarmListByLevel(getJsonMap());
 	}
-
+    @RequestMapping("/getPlantInfo")
+	public MessageBean getPlantInfo(@RequestBody String json){
+		return alarmService.getPlantInfo();
+	}
 }

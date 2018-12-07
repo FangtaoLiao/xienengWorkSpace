@@ -289,6 +289,15 @@ public class AlarmServiceImpl implements AlarmService {
 		return msg;
 	}
 
+	/**
+	 *
+	 * @param jsonData
+	 * @param session
+	 * @return 当前告警的详情
+	 * @throws ServiceException
+	 * @throws SessionException
+	 * @throws SessionTimeoutException
+	 */
 	@Override
 	public MessageBean alarmLine(String jsonData, Session session)
 			throws ServiceException, SessionException, SessionTimeoutException {
@@ -556,26 +565,25 @@ public class AlarmServiceImpl implements AlarmService {
 		List<Map<String, String>> listMap = (List<Map<String, String>>) jsonMap.get("orderName");
         Map orderMap = new HashMap();
         orderMap = listMap.get(0);
-		List<String> list = null;
-		List<Integer> plantIds = null;
-		if(jsonMap.get("plantIds")!=null||jsonMap.get("plantIds")!="") {
-			list = (List<String>) jsonMap.get("plantIds");
+		List<String> list = new ArrayList<>();
+		List<Integer> plantIds = new ArrayList<>();
+		System.out.print(jsonMap.toString());
+		String s = (String) jsonMap.get("start");
+		Integer start = Integer.parseInt(s);
+		Integer length = 20;
+		String plant = (String) jsonMap.get("plantIds");
+		if(plant!=null&&plant!="") {
+			System.out.println(plant);
+			list.add(plant);
 			plantIds = list.stream().map(Integer::parseInt).collect(Collectors.toList());//转为integer数组
+			List<Map<String,Object>> subList = recentAlarmListByplantId(plantIds, orderMap);
+			Integer total = subList.size();
+			return returnSubList(subList,total,length,start);
 		}
 //		for (Integer i: plantIds){
 //			System.out.print(i);
 //		}
 		//根据电站Id排序并获取告警列表
-		System.out.print(jsonMap.toString());
-		String s = (String) jsonMap.get("start");
-		Integer start = Integer.parseInt(s);
-		String l = (String) jsonMap.get("length");
-		Integer length = Integer.parseInt(l);
-        if(list.size()>0) {
-        	List<Map<String,Object>> subList = recentAlarmListByplantId(plantIds, orderMap);
-			Integer total = subList.size();
-            return returnSubList(subList,total,length,start);
-        }
 	  	List<Map<String,Object>> subList =recentAllAlarmList(orderMap);
         Integer total = subList.size();
 		return returnSubList(subList,total,length,start);
@@ -692,6 +700,11 @@ public class AlarmServiceImpl implements AlarmService {
 				listGetMap.put("plant_id", jsonObject.get("plant_id"));
 				listGetMap.put("plant_name", jsonObject.get("plant_name"));
 				listGetMap.put("device_name", jsonObject.get("device_name"));
+				listGetMap.put("area_id",jsonObject.get("area_id"));
+				listGetMap.put("location",jsonObject.get("location"));
+				listGetMap.put("singlePlantType",jsonObject.get("singlePlantType"));
+				listGetMap.put("status",jsonObject.get("status_name"));
+				listGetMap.put("alarm_id",jsonObject.get("alarm_id"));
 				list.add(listGetMap);
 
 			}
@@ -713,18 +726,17 @@ public class AlarmServiceImpl implements AlarmService {
         List<Map<String, String>> listMap = (List<Map<String, String>>) jsonMap.get("orderName");
         Map orderMap = new HashMap();
         orderMap = listMap.get(0);
-        List<String> list = null;
-        List<Integer> plantIds = null;
-        if(jsonMap.get("plantIds")!=null||jsonMap.get("plantIds")!="") {
-            list = (List<String>) jsonMap.get("plantIds");
+        List<String> list = new ArrayList<>();
+        List<Integer> plantIds = new ArrayList<>();
+        if(jsonMap.get("plantIds")!=null&&jsonMap.get("plantIds")!="") {
+            list.add((String) jsonMap.get("plantIds"));
             plantIds = list.stream().map(Integer::parseInt).collect(Collectors.toList());//转为integer数组
         }
         //根据电站Id排序并获取告警列表
         System.out.print(jsonMap.toString());
         String s = (String) jsonMap.get("start");
         Integer start = Integer.parseInt(s);
-        String l = (String) jsonMap.get("length");
-        Integer length = Integer.parseInt(l);
+        Integer length = 20;
         List<Map<String,Object>> subList = getAlarmListByLevel(plantIds, orderMap,jsonMap.get("level").toString());
         Integer total = subList.size();
         return returnSubList(subList,total,length,start);
@@ -735,7 +747,7 @@ public class AlarmServiceImpl implements AlarmService {
         //map<电站编号,map<设备类型，list<设备编号>>
         Map<Integer, Map<Integer, List<Integer>>> deviceOfPlant = SystemCache.deviceOfPlant;  //从设备缓存取出设备id
         //根据电站id获取该电站的所有设备告警信息
-        if(plantIds.size()>0){
+        if(plantIds!=null){
             System.out.print("第几："+plantIds.get(0));
             for(Integer plantId:plantIds){
                 for(List<Integer> devIds : deviceOfPlant.get(plantId).values()){
@@ -791,6 +803,7 @@ public class AlarmServiceImpl implements AlarmService {
                     listGetMap.put("plant_id", jsonObject.get("plant_id"));
                     listGetMap.put("plant_name", jsonObject.get("plant_name"));
                     listGetMap.put("device_name", jsonObject.get("device_name"));
+                    listGetMap.put("area_id",jsonObject.get("area_id"));
                     list.add(listGetMap);
                 }
             }

@@ -21,5 +21,5 @@ public interface TaskMapper {
 
     List<AllParam> selectTaskListByStatus(AllParam allParam);
 
-
+    AllParam selectTasked(AllParam allParam);
 }
